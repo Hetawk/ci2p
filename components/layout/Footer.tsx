@@ -6,22 +6,18 @@ import { Heart, Mail, Linkedin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const footerLinks = {
-  explore: [
-    { name: "About Me", href: "/about" },
+  patience: [
     { name: "Portfolio", href: "/portfolio" },
-    { name: "Awards & Recognition", href: "/portfolio/awards" },
-    { name: "Research", href: "/portfolio/research" },
+    { name: "About Patience", href: "/portfolio/about" },
   ],
   herPromise: [
-    { name: "About the Organization", href: "/her-promise-fulfilled/about" },
-    { name: "Programs", href: "/her-promise-fulfilled/programs" },
-    { name: "Impact Stories", href: "/her-promise-fulfilled/impact" },
-    { name: "Get Involved", href: "/her-promise-fulfilled/get-involved" },
+    { name: "About the Organization", href: "/about" },
+    { name: "Our Values", href: "/about#values" },
+    { name: "Contact Us", href: "/contact" },
   ],
   connect: [
-    { name: "Contact Me", href: "/contact" },
-    { name: "Blog", href: "/blog" },
-    { name: "Newsletter", href: "#newsletter" },
+    { name: "Email", href: "mailto:feropatience@gmail.com" },
+    { name: "LinkedIn", href: "https://linkedin.com/in/patiefero" },
   ],
 };
 
@@ -92,11 +88,11 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Explore links */}
+            {/* Patience Portfolio links */}
             <div>
-              <h4 className="text-lg font-semibold mb-4">Explore</h4>
+              <h4 className="text-lg font-semibold mb-4">Patience Fero</h4>
               <ul className="space-y-3">
-                {footerLinks.explore.map((link) => (
+                {footerLinks.patience.map((link) => (
                   <li key={link.name}>
                     <Link
                       href={link.href}
@@ -129,18 +125,26 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Connect links */}
+            {/* Connect & Location */}
             <div>
               <h4 className="text-lg font-semibold mb-4">Connect</h4>
               <ul className="space-y-3">
                 {footerLinks.connect.map((link) => (
                   <li key={link.name}>
-                    <Link
+                    <a
                       href={link.href}
-                      className="text-gray-300 hover:text-brand-400 transition-colors duration-300 text-sm"
+                      target={
+                        link.href.startsWith("http") ? "_blank" : undefined
+                      }
+                      rel={
+                        link.href.startsWith("http")
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                      className="text-gray-300 hover:text-brand-400 transition-colors duration-300 text-sm flex items-center gap-2"
                     >
                       {link.name}
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -154,26 +158,12 @@ export function Footer() {
           <Separator className="bg-white/10 mb-8" />
 
           {/* Bottom section */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-            <p>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-gray-400">
+            <p className="text-center">
               © {currentYear} Patience Fero. All rights reserved. Built with{" "}
               <Heart className="inline w-4 h-4 text-accent-cyan-400" /> and
               purpose.
             </p>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/privacy"
-                className="hover:text-brand-400 transition-colors duration-300"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href="/terms"
-                className="hover:text-brand-400 transition-colors duration-300"
-              >
-                Terms of Service
-              </Link>
-            </div>
           </div>
         </div>
       </div>

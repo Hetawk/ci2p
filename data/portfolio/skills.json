@@ -1,0 +1,63 @@
+{
+    "technical": [
+        "Research & Analysis",
+        "Economics & Policy Analysis",
+        "Project Management",
+        "Data Analysis",
+        "Computer Networking",
+        "Programming",
+        "Software Development",
+        "Web Development",
+        "Digital Communication",
+        "E-commerce & Live Streaming"
+    ],
+    "soft": [
+        "Communication & Public Speaking",
+        "Leadership & Team Management",
+        "Social Entrepreneurship",
+        "Cross-Cultural Competence",
+        "Critical Thinking",
+        "Problem Solving",
+        "Academic Writing",
+        "Debate & Argumentation",
+        "Volunteer Management",
+        "Event Coordination"
+    ],
+    "categories": {
+        "researchAnalysis": {
+            "name": "Research & Analysis",
+            "skills": [
+                "Research & Analysis",
+                "Economics & Policy Analysis",
+                "Data Analysis",
+                "Critical Thinking"
+            ]
+        },
+        "technical": {
+            "name": "Technical Skills",
+            "skills": [
+                "Programming",
+                "Software Development",
+                "Web Development",
+                "Computer Networking"
+            ]
+        },
+        "leadership": {
+            "name": "Leadership & Communication",
+            "skills": [
+                "Leadership & Team Management",
+                "Communication & Public Speaking",
+                "Project Management",
+                "Event Coordination"
+            ]
+        },
+        "impact": {
+            "name": "Social Impact",
+            "skills": [
+                "Social Entrepreneurship",
+                "Cross-Cultural Competence",
+                "Volunteer Management"
+            ]
+        }
+    }
+}

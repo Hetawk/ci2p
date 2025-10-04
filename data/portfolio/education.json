@@ -1,0 +1,26 @@
+[
+    {
+        "id": "masters-economics",
+        "degree": "Master of Applied Economics",
+        "degreeShort": "Master's in Applied Economics",
+        "institution": "Zhejiang Sci-Tech University",
+        "location": "Hangzhou, China",
+        "startDate": "2023",
+        "endDate": "Present",
+        "status": "In Progress",
+        "description": "Advancing expertise in economic policy analysis, development economics, and research methodologies to drive sustainable development initiatives.",
+        "achievements": []
+    },
+    {
+        "id": "bachelors-cs",
+        "degree": "Bachelor of Science in Computer Science & Technology",
+        "degreeShort": "Bachelor's in Computer Science & Technology",
+        "institution": "Zhejiang Sci-Tech University",
+        "location": "Hangzhou, China",
+        "startDate": "2019",
+        "endDate": "2023",
+        "status": "Completed",
+        "description": "Built a strong foundation in technology, problem-solving, and analytical thinking while developing leadership skills and social impact initiatives.",
+        "achievements": []
+    }
+]

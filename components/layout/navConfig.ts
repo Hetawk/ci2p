@@ -27,6 +27,12 @@ export const patienceNavItems: NavItem[] = [
     icon: Briefcase,
     action: "navigate",
   },
+  {
+    name: "About",
+    href: "/portfolio/about",
+    icon: User,
+    action: "navigate",
+  },
   { name: "Her Promise", href: "#herpromise", icon: Heart, action: "toggle" },
 ];
 

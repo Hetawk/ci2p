@@ -1,0 +1,46 @@
+[
+    {
+        "id": "grand-prize-public-speaking-2022",
+        "title": "Grand Prize (Special Prize)",
+        "category": "Public Speaking",
+        "organization": "\"FLTRP-ETIC Cup\" English Public Speaking Contest",
+        "date": "2022",
+        "description": "Achieved the highest distinction in the Online Contest of China's prestigious national competition.",
+        "type": "Academic",
+        "certificateImage": null,
+        "featured": true
+    },
+    {
+        "id": "third-prize-national-final-2022",
+        "title": "Third Prize, National Final",
+        "category": "Public Speaking",
+        "organization": "\"FLTRP-ETIC Cup\" Contest Organizing Committee",
+        "date": "2022",
+        "description": "Secured a top-three finish in the National Final, competing against students nationwide.",
+        "type": "Academic",
+        "certificateImage": null,
+        "featured": true
+    },
+    {
+        "id": "badminton-third-place-2020",
+        "title": "Third Place, Mixed Doubles Badminton",
+        "category": "Sports",
+        "organization": "Committee for Physical Education & Sports, ZSTU",
+        "date": "2020",
+        "description": "Recognized for athletic performance and teamwork in the university badminton tournament.",
+        "type": "Sports",
+        "certificateImage": null,
+        "featured": false
+    },
+    {
+        "id": "video-competition-third-prize-2021",
+        "title": "Third Prize, Video Competition",
+        "category": "Multimedia",
+        "organization": "China Africa Bridge (Lofica)",
+        "date": "Sept 2021",
+        "description": "Awarded for creativity and technical skills in multimedia content production.",
+        "type": "Technical",
+        "certificateImage": null,
+        "featured": false
+    }
+]

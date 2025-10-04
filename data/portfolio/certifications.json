@@ -1,0 +1,29 @@
+[
+    {
+        "id": "china-africa-live-streamer",
+        "title": "China-Africa Live Streamer",
+        "organization": "China Africa Bridge (Lofica)",
+        "date": "Aug 2021",
+        "description": "Completed theoretical and practical training in digital communication, cross-border e-commerce, and live-streaming operations.",
+        "skills": [
+            "Digital Communication",
+            "E-commerce",
+            "Live Streaming"
+        ],
+        "certificateImage": null
+    },
+    {
+        "id": "owcce-computer-concepts",
+        "title": "Online Winter Computer Concepts Event (OWCCE)",
+        "organization": "TIT & Urneeds Technology, with Gopawe and MITSG",
+        "date": "Jan 2022",
+        "description": "Gained proficiency in Computer Networking, Programming, Software, and Web Development.",
+        "skills": [
+            "Computer Networking",
+            "Programming",
+            "Software Development",
+            "Web Development"
+        ],
+        "certificateImage": null
+    }
+]
