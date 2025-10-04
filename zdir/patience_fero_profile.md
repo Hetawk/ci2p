@@ -18,16 +18,16 @@
 
 ## **Profile Summary**
 
-Ambitious and multidisciplinary scholar with a background in **Computer Science & Technology**, ongoing postgraduate studies, and extensive leadership experience in **academic, cultural, and volunteer organizations**. Recognized for **research potential, analytical problem-solving, and public speaking excellence** at national competitions.
+Ambitious and multidisciplinary scholar pursuing a **Master's degree in Applied Economics**, with a background in **Computer Science & Technology** and extensive leadership experience in **academic, cultural, and volunteer organizations**. Recognized for **research potential, analytical problem-solving, and public speaking excellence** at national competitions.
 
-Patience combines **technical expertise** with **cross-cultural communication skills** and has consistently demonstrated **leadership, service, and academic merit**. She is passionate about advancing research that fosters innovation and global collaboration, while contributing positively to both academic and professional communities.
+Patience combines **academic rigor** with **cross-cultural communication skills** and has consistently demonstrated **leadership, service, and social entrepreneurship**. She is passionate about advancing research in economics, fostering innovation, and empowering communities through education and social impact initiatives.
 
 ---
 
 ## **Education**
 
-**Master's Degree (In Progress)**
-_Zhejiang University, Hangzhou, China_
+**Master of Applied Economics (In Progress)**
+_Zhejiang Sci-Tech University, Hangzhou, China_
 2023 – Present
 
 **Bachelor of Science in Computer Science & Technology**
@@ -115,12 +115,12 @@ _2020 – Present_
 
 ## **Key Skills**
 
-- **Research & Analysis:** Identifying academic problems, conducting inquiry, developing solutions.
-- **Project Management:** Leading student bodies, organizing academic and cultural programs.
-- **Technical Competence:** Programming, networking, web development, digital content creation.
-- **Communication:** Accomplished public speaker, debate skills, academic writing.
-- **Leadership:** Proven record in student governance, event coordination, and volunteer management.
-- **Cross-Cultural Competence:** Experience working with international and multicultural communities.
+- **Research & Analysis:** Identifying academic problems, conducting inquiry, developing economic and social research solutions.
+- **Economics & Policy Analysis:** Applied economics research, data analysis, and evidence-based problem-solving.
+- **Project Management:** Leading student bodies, organizing academic and cultural programs, nonprofit management.
+- **Communication & Public Speaking:** Award-winning public speaker (Grand Prize winner), debate skills, academic writing and presentations.
+- **Leadership & Social Entrepreneurship:** Proven record in student governance, event coordination, volunteer management, and founding community empowerment initiatives.
+- **Cross-Cultural Competence:** Experience working with international and multicultural communities across multiple continents.
 
 ---
 
@@ -135,9 +135,10 @@ _2020 – Present_
 
 ## **Interests**
 
-- Research in education, technology, and global development
+- Applied economics research, policy analysis, and sustainable development
 - Public speaking, debate, and communication excellence
-- Cross-cultural collaboration and community empowerment
+- Social entrepreneurship and community empowerment
+- Cross-cultural collaboration and global development
 - Sports and wellness (badminton, outdoor fitness, team activities)
 
 ---
