@@ -6,11 +6,12 @@ const prisma = new PrismaClient();
 // GET - Fetch single skill
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const skill = await prisma.skill.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!skill) {
@@ -30,12 +31,13 @@ export async function GET(
 // PUT - Update skill
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await request.json();
     const skill = await prisma.skill.update({
-      where: { id: params.id },
+      where: { id },
       data,
     });
     return NextResponse.json(skill);
@@ -51,11 +53,12 @@ export async function PUT(
 // DELETE - Delete skill
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.skill.delete({
-      where: { id: params.id },
+      where: { id },
     });
     return NextResponse.json({ message: "Skill deleted successfully" });
   } catch (error) {

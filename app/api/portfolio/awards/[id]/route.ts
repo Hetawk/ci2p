@@ -6,11 +6,12 @@ const prisma = new PrismaClient();
 // GET - Fetch single award
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const award = await prisma.award.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!award) {
@@ -30,12 +31,13 @@ export async function GET(
 // PUT - Update award
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await request.json();
     const award = await prisma.award.update({
-      where: { id: params.id },
+      where: { id },
       data,
     });
     return NextResponse.json(award);
@@ -51,11 +53,12 @@ export async function PUT(
 // DELETE - Delete award
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.award.delete({
-      where: { id: params.id },
+      where: { id },
     });
     return NextResponse.json({ message: "Award deleted successfully" });
   } catch (error) {

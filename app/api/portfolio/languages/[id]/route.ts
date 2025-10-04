@@ -6,11 +6,12 @@ const prisma = new PrismaClient();
 // GET - Fetch single language
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const language = await prisma.language.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!language) {
@@ -33,12 +34,13 @@ export async function GET(
 // PUT - Update language
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await request.json();
     const language = await prisma.language.update({
-      where: { id: params.id },
+      where: { id },
       data,
     });
     return NextResponse.json(language);
@@ -54,11 +56,12 @@ export async function PUT(
 // DELETE - Delete language
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.language.delete({
-      where: { id: params.id },
+      where: { id },
     });
     return NextResponse.json({ message: "Language deleted successfully" });
   } catch (error) {

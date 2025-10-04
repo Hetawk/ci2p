@@ -6,11 +6,12 @@ const prisma = new PrismaClient();
 // GET - Fetch single research
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const research = await prisma.research.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!research) {
@@ -33,12 +34,13 @@ export async function GET(
 // PUT - Update research
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await request.json();
     const research = await prisma.research.update({
-      where: { id: params.id },
+      where: { id },
       data,
     });
     return NextResponse.json(research);
@@ -54,11 +56,12 @@ export async function PUT(
 // DELETE - Delete research
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.research.delete({
-      where: { id: params.id },
+      where: { id },
     });
     return NextResponse.json({ message: "Research deleted successfully" });
   } catch (error) {

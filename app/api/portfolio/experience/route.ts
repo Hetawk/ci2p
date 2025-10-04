@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   try {
     const experience = await prisma.experience.findMany({
       where: {
-        ...(type && { type: type as any }),
+        ...(type && { type: type as never }),
       },
       orderBy: { order: "asc" },
     });

@@ -6,11 +6,12 @@ const prisma = new PrismaClient();
 // GET - Fetch single experience
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const experience = await prisma.experience.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!experience) {
@@ -33,12 +34,13 @@ export async function GET(
 // PUT - Update experience
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await request.json();
     const experience = await prisma.experience.update({
-      where: { id: params.id },
+      where: { id },
       data,
     });
     return NextResponse.json(experience);
@@ -54,11 +56,12 @@ export async function PUT(
 // DELETE - Delete experience
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.experience.delete({
-      where: { id: params.id },
+      where: { id },
     });
     return NextResponse.json({ message: "Experience deleted successfully" });
   } catch (error) {

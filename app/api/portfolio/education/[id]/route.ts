@@ -6,11 +6,12 @@ const prisma = new PrismaClient();
 // GET - Fetch single education record
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const education = await prisma.education.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!education) {
@@ -33,12 +34,13 @@ export async function GET(
 // PUT - Update education record
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await request.json();
     const education = await prisma.education.update({
-      where: { id: params.id },
+      where: { id },
       data,
     });
     return NextResponse.json(education);
@@ -54,11 +56,12 @@ export async function PUT(
 // DELETE - Delete education record
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.education.delete({
-      where: { id: params.id },
+      where: { id },
     });
     return NextResponse.json({ message: "Education deleted successfully" });
   } catch (error) {

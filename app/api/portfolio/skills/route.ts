@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   try {
     const skills = await prisma.skill.findMany({
       where: {
-        ...(category && { category: category as any }),
+        ...(category && { category: category as never }),
       },
       orderBy: { order: "asc" },
     });

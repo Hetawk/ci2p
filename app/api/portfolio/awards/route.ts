@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const awards = await prisma.award.findMany({
       where: {
         ...(featured === "true" && { featured: true }),
-        ...(category && { category: category as any }),
+        ...(category && { category: category as never }),
       },
       orderBy: { order: "asc" },
     });

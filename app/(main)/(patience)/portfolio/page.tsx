@@ -23,6 +23,7 @@ import {
   SkillPill,
 } from "@/components/portfolio/PortfolioCards";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 interface PortfolioData {
   personalInfo: any;
   education: any[];
@@ -546,11 +547,11 @@ export default function PortfolioPage() {
                 <TrendingUp className="w-16 h-16 text-cyan-600 mx-auto mb-6" />
               </motion.div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Let's Connect
+                Let&apos;s Connect
               </h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
                 Interested in collaboration, speaking engagements, or learning
-                more about my work? I'd love to hear from you.
+                more about my work? I&apos;d love to hear from you.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/portfolio/about">
