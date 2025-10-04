@@ -1,0 +1,223 @@
+// Prisma Schema for Patience Fero & Her Promise Fulfilled
+// Database: MySQL
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// User model for authentication
+model User {
+    id        String    @id @default(cuid())
+    email     String    @unique
+    name      String?
+    password  String
+    role      Role      @default(USER)
+    image     String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    posts     Post[]
+    accounts  Account[]
+    sessions  Session[]
+
+    @@map("users")
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+// NextAuth Account model
+model Account {
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
+    type              String
+    provider          String
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+// NextAuth Session model
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
+}
+
+// Blog Post model
+model Post {
+    id          String    @id @default(cuid())
+    title       String
+    slug        String    @unique
+    content     String    @db.Text
+    excerpt     String?   @db.Text
+    coverImage  String?
+    published   Boolean   @default(false)
+    publishedAt DateTime?
+    authorId    String    @map("author_id")
+    author      User      @relation(fields: [authorId], references: [id])
+    categoryId  String?   @map("category_id")
+    category    Category? @relation(fields: [categoryId], references: [id])
+    tags        Tag[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([slug])
+    @@index([authorId])
+    @@index([categoryId])
+    @@index([published])
+    @@map("posts")
+}
+
+// Blog Category model
+model Category {
+    id        String   @id @default(cuid())
+    name      String   @unique
+    slug      String   @unique
+    posts     Post[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([slug])
+    @@map("categories")
+}
+
+// Blog Tag model
+model Tag {
+    id        String   @id @default(cuid())
+    name      String   @unique
+    slug      String   @unique
+    posts     Post[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([slug])
+    @@map("tags")
+}
+
+// Program model for Her Promise Fulfilled
+model Program {
+    id          String   @id @default(cuid())
+    name        String
+    slug        String   @unique
+    description String   @db.Text
+    image       String?
+    category    String
+    impact      String?  @db.Text
+    active      Boolean  @default(true)
+    featured    Boolean  @default(false)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([slug])
+    @@index([category])
+    @@index([active])
+    @@map("programs")
+}
+
+// Testimonial model
+model Testimonial {
+    id        String   @id @default(cuid())
+    name      String
+    role      String?
+    content   String   @db.Text
+    image     String?
+    featured  Boolean  @default(false)
+    rating    Int?     @default(5)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([featured])
+    @@map("testimonials")
+}
+
+// Contact form submissions
+model Contact {
+    id        String   @id @default(cuid())
+    name      String
+    email     String
+    subject   String
+    message   String   @db.Text
+    read      Boolean  @default(false)
+    replied   Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    @@index([read])
+    @@index([createdAt])
+    @@map("contacts")
+}
+
+// Impact Metrics for dashboard
+model ImpactMetric {
+    id        String   @id @default(cuid())
+    label     String
+    value     Int
+    icon      String?
+    order     Int      @default(0)
+    active    Boolean  @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([order])
+    @@index([active])
+    @@map("impact_metrics")
+}
+
+// Newsletter subscribers
+model Newsletter {
+    id             String    @id @default(cuid())
+    email          String    @unique
+    name           String?
+    active         Boolean   @default(true)
+    subscribedAt   DateTime  @default(now())
+    unsubscribedAt DateTime?
+
+    @@index([email])
+    @@index([active])
+    @@map("newsletters")
+}
+
+// Volunteer applications
+model Volunteer {
+    id        String          @id @default(cuid())
+    name      String
+    email     String
+    phone     String?
+    message   String          @db.Text
+    skills    String?         @db.Text
+    resumeUrl String?         @map("resume_url")
+    status    VolunteerStatus @default(PENDING)
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
+
+    @@index([email])
+    @@index([status])
+    @@map("volunteers")
+}
+
+enum VolunteerStatus {
+    PENDING
+    APPROVED
+    REJECTED
+    CONTACTED
+}
