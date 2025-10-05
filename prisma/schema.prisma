@@ -12,20 +12,25 @@ datasource db {
 
 // User model for authentication
 model User {
-  id        String          @id @default(cuid())
-  email     String          @unique
-  name      String?
-  password  String
-  role      Role            @default(USER)
-  image     String?
-  dashboard DashboardAccess @default(NONE)
-  active    Boolean         @default(true)
-  lastLogin DateTime?
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  posts     Post[]
-  accounts  Account[]
-  sessions  Session[]
+  id                String          @id @default(cuid())
+  email             String          @unique
+  username          String?         @unique
+  name              String?
+  password          String
+  role              Role            @default(USER)
+  image             String?
+  dashboard         DashboardAccess @default(NONE)
+  active            Boolean         @default(true)
+  emailVerified     Boolean         @default(false)
+  verificationToken String?         @unique
+  resetToken        String?         @unique
+  resetTokenExpiry  DateTime?
+  lastLogin         DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  posts             Post[]
+  accounts          Account[]
+  sessions          Session[]
 
   @@map("users")
 }

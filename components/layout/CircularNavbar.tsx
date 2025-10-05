@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, useScroll } from "framer-motion";
 import { patienceNavItems, organizationNavItems } from "./navConfig";
 import { ViewSwitcher } from "./ViewSwitcher";
+import UserMenu from "./UserMenu";
 
 type ViewMode = "patience" | "organization";
 
@@ -35,6 +36,11 @@ export default function CircularNavbar({
     <>
       {/* ViewSwitcher to the left of navbar */}
       <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
+
+      {/* User Menu in top right */}
+      <div className="fixed top-6 right-6 z-50">
+        <UserMenu />
+      </div>
 
       {/* Main Navbar */}
       <motion.nav
