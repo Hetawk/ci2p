@@ -12,14 +12,17 @@ datasource db {
 
 // User model for authentication
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
+  id        String          @id @default(cuid())
+  email     String          @unique
   name      String?
   password  String
-  role      Role      @default(USER)
+  role      Role            @default(USER)
   image     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  dashboard DashboardAccess @default(NONE)
+  active    Boolean         @default(true)
+  lastLogin DateTime?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   posts     Post[]
   accounts  Account[]
   sessions  Session[]
@@ -29,7 +32,16 @@ model User {
 
 enum Role {
   USER
+  EDITOR
   ADMIN
+  SUPER_ADMIN
+}
+
+enum DashboardAccess {
+  NONE
+  PORTFOLIO
+  HERPROMISE
+  BOTH
 }
 
 // NextAuth Account model
@@ -117,21 +129,28 @@ model Tag {
 
 // Program model for Her Promise Fulfilled
 model Program {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String   @db.Text
-  image       String?
-  category    String
-  impact      String?  @db.Text
-  active      Boolean  @default(true)
-  featured    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  description   String   @db.Text
+  image         String?
+  gallery       String?  @db.Text // JSON array of images
+  category      String
+  impact        String?  @db.Text
+  beneficiaries Int?     @default(0)
+  startDate     String?
+  endDate       String?
+  location      String?
+  active        Boolean  @default(true)
+  featured      Boolean  @default(false)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([slug])
   @@index([category])
   @@index([active])
+  @@index([order])
   @@map("programs")
 }
 
@@ -169,18 +188,72 @@ model Contact {
 
 // Impact Metrics for dashboard
 model ImpactMetric {
-  id        String   @id @default(cuid())
-  label     String
-  value     Int
-  icon      String?
-  order     Int      @default(0)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  label       String
+  value       String // Changed to String to support "1000+" formats
+  description String?  @db.Text
+  icon        String?
+  category    String?
+  year        String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([order])
   @@index([active])
+  @@index([featured])
   @@map("impact_metrics")
+}
+
+// Donation model
+model Donation {
+  id        String         @id @default(cuid())
+  name      String
+  email     String
+  amount    Float
+  currency  String         @default("USD")
+  message   String?        @db.Text
+  anonymous Boolean        @default(false)
+  status    DonationStatus @default(PENDING)
+  paymentId String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("donations")
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// Donation Campaigns
+model DonationCampaign {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  description String    @db.Text
+  goal        Float
+  raised      Float     @default(0)
+  currency    String    @default("USD")
+  image       String?
+  startDate   DateTime
+  endDate     DateTime?
+  active      Boolean   @default(true)
+  featured    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([active])
+  @@index([featured])
+  @@map("donation_campaigns")
 }
 
 // Newsletter subscribers
