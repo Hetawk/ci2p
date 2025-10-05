@@ -1,13 +1,52 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  parsePaginationParams,
+  calculatePaginationValues,
+  createPaginatedResponse,
+  createOrderBy,
+} from "@/lib/pagination";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const published = searchParams.get("published");
+    const search = searchParams.get("search");
+    const categoryId = searchParams.get("categoryId");
 
+    // Parse pagination parameters
+    const { page, limit, sortBy, sortOrder } = parsePaginationParams(
+      searchParams,
+      { defaultLimit: 12, maxLimit: 50 }
+    );
+    const { skip, take } = calculatePaginationValues(page, limit);
+
+    // Build where clause
+    const where: {
+      published?: boolean;
+      OR?: Array<{ [key: string]: { contains: string; mode: string } }>;
+      categoryId?: string;
+    } = {};
+    if (published === "true") {
+      where.published = true;
+    }
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { excerpt: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+      ];
+    }
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+
+    // Get total count for pagination
+    const total = await prisma.post.count({ where });
+
+    // Fetch paginated posts
     const posts = await prisma.post.findMany({
-      where: published === "true" ? { published: true } : undefined,
+      where,
       include: {
         author: {
           select: {
@@ -20,13 +59,17 @@ export async function GET(request: Request) {
         category: true,
         tags: true,
       },
-      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+      orderBy:
+        sortBy === "publishedAt"
+          ? [{ publishedAt: sortOrder }, { createdAt: sortOrder }]
+          : createOrderBy(sortBy, sortOrder),
+      skip,
+      take,
     });
 
-    return NextResponse.json({
-      success: true,
-      data: posts,
-    });
+    return NextResponse.json(
+      createPaginatedResponse(posts, page, limit, total)
+    );
   } catch (error) {
     console.error("Error fetching posts:", error);
     return NextResponse.json(
