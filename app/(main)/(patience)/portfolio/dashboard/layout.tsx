@@ -1,5 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   User,
@@ -9,6 +12,8 @@ import {
   Sparkles,
   Languages,
   Lightbulb,
+  LogOut,
+  Loader2,
 } from "lucide-react";
 
 export default function PortfolioDashboardLayout({
@@ -16,6 +21,20 @@ export default function PortfolioDashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/portfolio/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      setIsLoggingOut(false);
+    }
+  };
+
   const menuItems = [
     { href: "/portfolio/dashboard", icon: LayoutDashboard, label: "Overview" },
     {
@@ -80,13 +99,30 @@ export default function PortfolioDashboardLayout({
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-slate-200/50">
+        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-slate-200/50 space-y-2">
           <Link
             href="/portfolio"
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium hover:shadow-lg hover:scale-105 transition-all"
           >
             View Portfolio
           </Link>
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 transition-all disabled:opacity-50"
+          >
+            {isLoggingOut ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Logging out...
+              </>
+            ) : (
+              <>
+                <LogOut className="w-4 h-4" />
+                Logout
+              </>
+            )}
+          </button>
         </div>
       </aside>
 
