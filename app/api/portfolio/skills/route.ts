@@ -7,11 +7,13 @@ const prisma = new PrismaClient();
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
+  const publishedOnly = searchParams.get("published") === "true";
 
   try {
     const skills = await prisma.skill.findMany({
       where: {
         ...(category && { category: category as never }),
+        ...(publishedOnly && { published: true }),
       },
       orderBy: { order: "asc" },
     });

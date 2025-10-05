@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Plus, Edit, Trash2, Save, X } from "lucide-react";
+import { PublishToggle } from "@/components/ui/PublishToggle";
 
 interface Skill {
   id: string;
   name: string;
   category: string;
   level: string;
+  published: boolean;
   order: number;
 }
 
@@ -376,19 +378,34 @@ export default function SkillsPage() {
                           {LEVELS.find((l) => l.value === skill.level)?.label}
                         </span>
                       </div>
-                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => handleEdit(skill)}
-                          className="p-2 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-colors"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(skill.id)}
-                          className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                      <div className="flex items-center gap-4">
+                        <PublishToggle
+                          id={skill.id}
+                          published={skill.published}
+                          endpoint="/api/portfolio/skills"
+                          onToggle={(published) => {
+                            setSkills((prev) =>
+                              prev.map((s) =>
+                                s.id === skill.id ? { ...s, published } : s
+                              )
+                            );
+                          }}
+                          size="sm"
+                        />
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => handleEdit(skill)}
+                            className="p-2 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-colors"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(skill.id)}
+                            className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}

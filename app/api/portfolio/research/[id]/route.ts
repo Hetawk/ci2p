@@ -53,6 +53,28 @@ export async function PUT(
   }
 }
 
+// PATCH - Partial update (for publish/unpublish)
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const data = await request.json();
+    const research = await prisma.research.update({
+      where: { id },
+      data,
+    });
+    return NextResponse.json(research);
+  } catch (error) {
+    console.error("Error updating research:", error);
+    return NextResponse.json(
+      { error: "Failed to update research" },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE - Delete research
 export async function DELETE(
   request: Request,

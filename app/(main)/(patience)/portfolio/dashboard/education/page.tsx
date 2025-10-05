@@ -11,6 +11,7 @@ import {
   X,
   MapPin,
 } from "lucide-react";
+import { PublishToggle } from "@/components/ui/PublishToggle";
 
 interface Education {
   id: string;
@@ -21,6 +22,7 @@ interface Education {
   endDate?: string;
   description?: string;
   order: number;
+  published: boolean;
 }
 
 export default function EducationPage() {
@@ -418,6 +420,20 @@ export default function EducationPage() {
                   )}
                 </div>
                 <div className="flex gap-2 ml-4">
+                  <PublishToggle
+                    id={edu.id}
+                    published={edu.published}
+                    endpoint="/api/portfolio/education"
+                    onToggle={(newPublished) => {
+                      setEducation(
+                        education.map((e) =>
+                          e.id === edu.id
+                            ? { ...e, published: newPublished }
+                            : e
+                        )
+                      );
+                    }}
+                  />
                   <button
                     onClick={() => handleEdit(edu)}
                     className="p-2 hover:bg-purple-50 text-purple-600 rounded-lg transition-colors"

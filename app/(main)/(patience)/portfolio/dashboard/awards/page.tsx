@@ -14,6 +14,7 @@ import {
   Building2,
   Image as ImageIcon,
 } from "lucide-react";
+import { PublishToggle } from "@/components/ui/PublishToggle";
 
 interface AwardData {
   id: string;
@@ -25,6 +26,7 @@ interface AwardData {
   imageUrl?: string;
   featured: boolean;
   order: number;
+  published: boolean;
 }
 
 const CATEGORIES = [
@@ -471,6 +473,20 @@ export default function AwardsPage() {
                   )}
                 </div>
                 <div className="flex gap-2 ml-4">
+                  <PublishToggle
+                    id={award.id}
+                    published={award.published}
+                    endpoint="/api/portfolio/awards"
+                    onToggle={(newPublished) => {
+                      setAwards(
+                        awards.map((a) =>
+                          a.id === award.id
+                            ? { ...a, published: newPublished }
+                            : a
+                        )
+                      );
+                    }}
+                  />
                   <button
                     onClick={() => handleEdit(award)}
                     className="p-2 hover:bg-orange-50 text-orange-600 rounded-lg transition-colors"

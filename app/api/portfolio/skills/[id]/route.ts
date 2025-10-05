@@ -50,6 +50,28 @@ export async function PUT(
   }
 }
 
+// PATCH - Partial update (for publish/unpublish)
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const data = await request.json();
+    const skill = await prisma.skill.update({
+      where: { id },
+      data,
+    });
+    return NextResponse.json(skill);
+  } catch (error) {
+    console.error("Error updating skill:", error);
+    return NextResponse.json(
+      { error: "Failed to update skill" },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE - Delete skill
 export async function DELETE(
   request: Request,

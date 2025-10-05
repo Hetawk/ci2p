@@ -12,6 +12,7 @@ import {
   MapPin,
   Calendar,
 } from "lucide-react";
+import { PublishToggle } from "@/components/ui/PublishToggle";
 
 interface Experience {
   id: string;
@@ -24,6 +25,7 @@ interface Experience {
   highlights?: string[];
   type: string;
   order: number;
+  published: boolean;
 }
 
 const TYPES = [
@@ -544,6 +546,20 @@ export default function ExperiencePage() {
                   )}
                 </div>
                 <div className="flex gap-2 ml-4">
+                  <PublishToggle
+                    id={exp.id}
+                    published={exp.published}
+                    endpoint="/api/portfolio/experience"
+                    onToggle={(newPublished) => {
+                      setExperiences(
+                        experiences.map((e) =>
+                          e.id === exp.id
+                            ? { ...e, published: newPublished }
+                            : e
+                        )
+                      );
+                    }}
+                  />
                   <button
                     onClick={() => handleEdit(exp)}
                     className="p-2 hover:bg-green-50 text-green-600 rounded-lg transition-colors"

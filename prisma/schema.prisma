@@ -313,11 +313,13 @@ model Education {
   startDate   String // Format: "YYYY" or "YYYY-MM"
   endDate     String? // Format: "YYYY" or "YYYY-MM" or "Present"
   description String?  @db.Text
+  published   Boolean  @default(true)
   order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([order])
+  @@index([published])
   @@map("education")
 }
 
@@ -330,6 +332,7 @@ model Award {
   description  String    @db.Text
   category     AwardType
   imageUrl     String? // Certificate/Award image (optional)
+  published    Boolean   @default(true)
   order        Int       @default(0)
   featured     Boolean   @default(false)
   createdAt    DateTime  @default(now())
@@ -337,6 +340,7 @@ model Award {
 
   @@index([category])
   @@index([featured])
+  @@index([published])
   @@index([order])
   @@map("awards")
 }
@@ -361,11 +365,13 @@ model Experience {
   description  String   @db.Text
   highlights   String?  @db.Text // JSON array of key achievements
   type         ExpType
+  published    Boolean  @default(true)
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   @@index([type])
+  @@index([published])
   @@index([order])
   @@map("experiences")
 }
@@ -383,11 +389,13 @@ model Skill {
   name      String
   category  SkillType
   level     SkillLevel?
+  published Boolean     @default(true)
   order     Int         @default(0)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
   @@index([category])
+  @@index([published])
   @@index([order])
   @@map("skills")
 }
@@ -414,10 +422,12 @@ model Language {
   id        String     @id @default(cuid())
   name      String     @unique
   level     SkillLevel
+  published Boolean    @default(true)
   order     Int        @default(0)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
+  @@index([published])
   @@index([order])
   @@map("languages")
 }
@@ -431,12 +441,14 @@ model Research {
   date        String? // Format: "YYYY" or "YYYY-MM"
   link        String? // Link to publication/project
   imageUrl    String? // Optional project image
+  published   Boolean  @default(true)
   order       Int      @default(0)
   featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([featured])
+  @@index([published])
   @@index([order])
   @@map("research")
 }

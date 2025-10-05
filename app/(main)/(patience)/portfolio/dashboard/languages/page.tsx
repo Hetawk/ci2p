@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Languages, Plus, Edit, Trash2, Save, X } from "lucide-react";
+import { PublishToggle } from "@/components/ui/PublishToggle";
 
 interface Language {
   id: string;
   name: string;
   level: string;
   order: number;
+  published: boolean;
 }
 
 const LEVELS = [
@@ -315,6 +317,21 @@ export default function LanguagesPage() {
                     </span>
                   </div>
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <PublishToggle
+                      id={language.id}
+                      published={language.published}
+                      endpoint="/api/portfolio/languages"
+                      onToggle={(newPublished) => {
+                        setLanguages(
+                          languages.map((l) =>
+                            l.id === language.id
+                              ? { ...l, published: newPublished }
+                              : l
+                          )
+                        );
+                      }}
+                      size="sm"
+                    />
                     <button
                       onClick={() => handleEdit(language)}
                       className="p-2 hover:bg-pink-50 text-pink-600 rounded-lg transition-colors"

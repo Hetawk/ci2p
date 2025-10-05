@@ -14,6 +14,7 @@ import {
   Image as ImageIcon,
   Star,
 } from "lucide-react";
+import { PublishToggle } from "@/components/ui/PublishToggle";
 
 interface Research {
   id: string;
@@ -25,6 +26,7 @@ interface Research {
   imageUrl?: string;
   featured: boolean;
   order: number;
+  published: boolean;
 }
 
 export default function ResearchPage() {
@@ -451,6 +453,20 @@ export default function ResearchPage() {
                   )}
                 </div>
                 <div className="flex gap-2 ml-4">
+                  <PublishToggle
+                    id={item.id}
+                    published={item.published}
+                    endpoint="/api/portfolio/research"
+                    onToggle={(newPublished) => {
+                      setResearch(
+                        research.map((r) =>
+                          r.id === item.id
+                            ? { ...r, published: newPublished }
+                            : r
+                        )
+                      );
+                    }}
+                  />
                   <button
                     onClick={() => handleEdit(item)}
                     className="p-2 hover:bg-teal-50 text-teal-600 rounded-lg transition-colors"
