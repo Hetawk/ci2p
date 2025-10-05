@@ -32,7 +32,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen">
-      <Hero viewMode={viewMode} setViewMode={setViewMode} />
+      <Hero viewMode={viewMode} />
 
       {/* Content Section - Target for scroll */}
       <section

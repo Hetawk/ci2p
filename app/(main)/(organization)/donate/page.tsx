@@ -12,9 +12,12 @@ import {
   Users,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Donate | Her Promise Fulfilled",
-  description: "Support our mission to empower and transform lives",
+  description:
+    "Support our mission to empower communities through your generous contributions",
 };
 
 async function getCampaigns() {

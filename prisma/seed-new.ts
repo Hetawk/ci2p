@@ -7,6 +7,7 @@ import {
 } from "@prisma/client";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { hashPassword } from "../lib/password";
 
 const prisma = new PrismaClient();
 
@@ -48,6 +49,48 @@ function mapExpType(type: string): ExpType {
 }
 async function main() {
   console.log("🌱 Starting seed from JSON files...");
+
+  // ============================================
+  // SUPER ADMIN USER
+  // ============================================
+  console.log("👤 Seeding super admin user...");
+
+  const adminEmail =
+    process.env.ADMIN_EMAIL || "patience@herpromisefulfilled.org";
+  const adminPassword = process.env.DASHBOARD_PASSWORD;
+
+  // Check if environment variables are set
+  if (!adminEmail || !adminPassword) {
+    console.warn(
+      "⚠️  Skipping super admin creation: ADMIN_EMAIL or DASHBOARD_PASSWORD not set in environment variables"
+    );
+  } else {
+    // Check if super admin already exists
+    const existingSuperAdmin = await prisma.user.findUnique({
+      where: { email: adminEmail },
+    });
+
+    if (!existingSuperAdmin) {
+      const hashedPassword = await hashPassword(adminPassword);
+
+      await prisma.user.create({
+        data: {
+          email: adminEmail,
+          name: "Patience Fero",
+          username: "patience_admin",
+          password: hashedPassword,
+          role: "SUPER_ADMIN",
+          dashboard: "BOTH",
+          active: true,
+          emailVerified: true,
+        },
+      });
+
+      console.log(`✅ Super admin created: ${adminEmail}`);
+    } else {
+      console.log(`ℹ️  Super admin already exists: ${adminEmail}`);
+    }
+  }
 
   // ============================================
   // PERSONAL INFORMATION

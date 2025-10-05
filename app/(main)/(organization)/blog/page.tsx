@@ -10,6 +10,8 @@ import {
   Tag as TagIcon,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog | Her Promise Fulfilled",
   description: "Stories, insights, and updates from Her Promise Fulfilled",

@@ -8,10 +8,9 @@ type ViewMode = "patience" | "organization";
 
 interface HeroProps {
   viewMode: ViewMode;
-  setViewMode: (mode: ViewMode) => void;
 }
 
-export function Hero({ viewMode, setViewMode }: HeroProps) {
+export function Hero({ viewMode }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated background gradient - Blue theme */}
@@ -128,7 +127,7 @@ export function Hero({ viewMode, setViewMode }: HeroProps) {
             )}
           </AnimatePresence>
 
-          {/* Dynamic CTA Buttons */}
+          {/* Dynamic CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -136,47 +135,27 @@ export function Hero({ viewMode, setViewMode }: HeroProps) {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
           >
             {viewMode === "patience" ? (
-              <>
-                <Button
-                  size="lg"
-                  className="gradient-primary text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                  onClick={() => {
-                    const element = document.getElementById("content");
-                    element?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
-                  Learn More About Me
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-8 py-6 text-lg rounded-full border-2 border-brand-600 text-brand-600 hover:bg-brand-50 transition-all duration-300 hover:scale-105"
-                  onClick={() => setViewMode("organization")}
-                >
-                  View Her Promise
-                </Button>
-              </>
+              <Button
+                size="lg"
+                className="gradient-primary text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                onClick={() => {
+                  const element = document.getElementById("content");
+                  element?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Learn More About Me
+              </Button>
             ) : (
-              <>
-                <Button
-                  size="lg"
-                  className="gradient-secondary text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                  onClick={() => {
-                    const element = document.getElementById("content");
-                    element?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
-                  Learn More About Us
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-8 py-6 text-lg rounded-full border-2 border-accent-cyan-600 text-accent-cyan-600 hover:bg-accent-cyan-50 transition-all duration-300 hover:scale-105"
-                  onClick={() => setViewMode("patience")}
-                >
-                  View Patience Profile
-                </Button>
-              </>
+              <Button
+                size="lg"
+                className="gradient-secondary text-white px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                onClick={() => {
+                  const element = document.getElementById("content");
+                  element?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Learn More About Us
+              </Button>
             )}
           </motion.div>
 

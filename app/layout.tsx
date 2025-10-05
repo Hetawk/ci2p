@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   title: "Patience Fero - Scholar, Leader, Social Entrepreneur",
   description:
     "Patience Fero's professional portfolio and Her Promise Fulfilled nonprofit organization",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({

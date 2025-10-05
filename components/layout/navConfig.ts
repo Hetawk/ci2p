@@ -4,8 +4,10 @@ import {
   Briefcase,
   BookOpen,
   Mail,
-  Heart,
   Building2,
+  Heart,
+  TrendingUp,
+  HandHeart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -33,7 +35,6 @@ export const patienceNavItems: NavItem[] = [
     icon: User,
     action: "navigate",
   },
-  { name: "Her Promise", href: "#herpromise", icon: Heart, action: "toggle" },
 ];
 
 // Her Promise Fulfilled organization navigation items
@@ -43,6 +44,24 @@ export const organizationNavItems: NavItem[] = [
     name: "About",
     href: "/about",
     icon: Building2,
+    action: "navigate",
+  },
+  {
+    name: "Programs",
+    href: "/programs",
+    icon: Heart,
+    action: "navigate",
+  },
+  {
+    name: "Impact",
+    href: "/impact",
+    icon: TrendingUp,
+    action: "navigate",
+  },
+  {
+    name: "Donate",
+    href: "/donate",
+    icon: HandHeart,
     action: "navigate",
   },
   {
@@ -57,5 +76,4 @@ export const organizationNavItems: NavItem[] = [
     icon: Mail,
     action: "navigate",
   },
-  { name: "Patience", href: "#patience", icon: User, action: "toggle" },
 ];

@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { Heart, Users, Target, ArrowRight, Sparkles } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Programs | Her Promise Fulfilled",
   description:

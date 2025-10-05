@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion, useScroll } from "framer-motion";
 import { patienceNavItems, organizationNavItems } from "./navConfig";
-import { ViewSwitcher } from "./ViewSwitcher";
 import UserMenu from "./UserMenu";
 
 type ViewMode = "patience" | "organization";
@@ -34,14 +33,6 @@ export default function CircularNavbar({
 
   return (
     <>
-      {/* ViewSwitcher to the left of navbar */}
-      <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
-
-      {/* User Menu in top right */}
-      <div className="fixed top-6 right-6 z-50">
-        <UserMenu />
-      </div>
-
       {/* Main Navbar */}
       <motion.nav
         initial={{ y: -50, opacity: 0 }}
@@ -73,59 +64,8 @@ export default function CircularNavbar({
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive =
-                item.action === "home"
-                  ? viewMode === "patience"
-                  : item.action === "toggle"
-                  ? viewMode === "organization"
-                  : false;
-              // All items are always enabled since navbar is on the side
+                item.action === "home" && viewMode === "patience";
               const isEnabled = true;
-
-              // Render toggle button (switches between views)
-              if (item.action === "toggle") {
-                return (
-                  <button
-                    key={item.name}
-                    onClick={() => {
-                      const newMode =
-                        viewMode === "patience" ? "organization" : "patience";
-                      setViewMode(newMode);
-
-                      if (newMode === "patience") {
-                        window.location.href = "/";
-                      } else {
-                        window.location.href = "/#herpromise";
-                      }
-                    }}
-                    className={`
-                      relative flex items-center gap-2 px-4 py-2 rounded-full
-                      transition-all duration-300 cursor-pointer
-                      ${
-                        isActive
-                          ? "text-white"
-                          : "text-gray-700 hover:text-brand-600"
-                      }
-                    `}
-                  >
-                    {/* Active background */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeTab"
-                        className="absolute inset-0 gradient-primary rounded-full"
-                        transition={{ type: "spring", duration: 0.6 }}
-                      />
-                    )}
-
-                    {/* Icon */}
-                    <Icon className="w-5 h-5 relative z-10" />
-
-                    {/* Text label */}
-                    <span className="text-sm font-medium whitespace-nowrap relative z-10">
-                      {item.name}
-                    </span>
-                  </button>
-                );
-              }
 
               // Render home button
               if (item.action === "home") {
@@ -198,6 +138,11 @@ export default function CircularNavbar({
                 </a>
               );
             })}
+
+            {/* User Menu integrated into navbar */}
+            <div className="pl-2 border-l border-gray-200/50">
+              <UserMenu />
+            </div>
           </div>
         </div>
       </motion.nav>

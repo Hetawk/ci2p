@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import CircularNavbar from "@/components/layout/CircularNavbar";
+import { ViewSwitcher } from "@/components/layout/ViewSwitcher";
 import { Hero } from "@/components/sections/Hero";
 import { Footer } from "@/components/layout/Footer";
 
@@ -47,8 +48,9 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen">
+      <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
       <CircularNavbar viewMode={viewMode} setViewMode={setViewMode} />
-      <Hero viewMode={viewMode} setViewMode={setViewMode} />
+      <Hero viewMode={viewMode} />
 
       {/* Content Section - Target for scroll */}
       <section

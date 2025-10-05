@@ -11,6 +11,8 @@ import {
   Book,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Our Impact | Her Promise Fulfilled",
   description: "See the real difference we're making in communities worldwide",

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useScroll } from "framer-motion";
 import { User, Heart } from "lucide-react";
 
 type ViewMode = "patience" | "organization";
@@ -12,17 +10,6 @@ interface ViewSwitcherProps {
 }
 
 export function ViewSwitcher({ viewMode, setViewMode }: ViewSwitcherProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  // Detect scroll to reposition switcher
-  const { scrollY } = useScroll();
-
-  useEffect(() => {
-    return scrollY.on("change", (latest) => {
-      setIsScrolled(latest > 50);
-    });
-  }, [scrollY]);
-
   const handleLeftClick = () => {
     setViewMode("patience");
     window.location.href = "/";
@@ -33,18 +20,12 @@ export function ViewSwitcher({ viewMode, setViewMode }: ViewSwitcherProps) {
     window.location.href = "/#herpromise";
   };
 
-  const positionStyles = isScrolled
-    ? { top: "1.5rem", left: "1.5rem", transform: "translateX(0) scale(0.9)" }
-    : {
-        top: "calc(1.5rem + 55px)",
-        left: "50%",
-        transform: "translateX(-50%) scale(1)",
-      };
-
   return (
     <div
       className="fixed z-[9999]"
       style={{
+        top: "1.5rem",
+        left: "1.5rem",
         width: "80px",
         height: "80px",
         background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
@@ -57,10 +38,8 @@ export function ViewSwitcher({ viewMode, setViewMode }: ViewSwitcherProps) {
         cursor: "pointer",
         pointerEvents: "auto",
         position: "fixed",
-        transition:
-          "top 0.4s ease, left 0.4s ease, transform 0.4s ease, opacity 0.3s ease",
+        transition: "opacity 0.3s ease",
         opacity: 1,
-        ...positionStyles,
       }}
     >
       {/* Vertical divider */}
