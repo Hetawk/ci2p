@@ -22,7 +22,7 @@ import {
 const getTeamMember = (id: string) => {
   // TODO: Replace with actual database query
   // const member = await prisma.user.findUnique({ where: { id } })
-  
+
   const members = [
     {
       id: "sijie-niu",
@@ -77,7 +77,9 @@ interface PageProps {
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const member = getTeamMember(params.id);
 
   if (!member) {
@@ -88,7 +90,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${member.name} - CI2P Research Lab Team`,
-    description: `Profile of ${member.name}, ${member.role} at CI2P Lab, University of Jinan. Research interests: ${member.researchInterests.join(", ")}.`,
+    description: `Profile of ${member.name}, ${
+      member.role
+    } at CI2P Lab, University of Jinan. Research interests: ${member.researchInterests.join(
+      ", "
+    )}.`,
   };
 }
 
@@ -255,11 +261,16 @@ export default function TeamMemberPage({ params }: PageProps) {
                   </h2>
                   <div className="space-y-4">
                     {member.education.map((edu, idx) => (
-                      <div key={idx} className="border-l-2 border-primary-300 pl-4">
+                      <div
+                        key={idx}
+                        className="border-l-2 border-primary-300 pl-4"
+                      >
                         <h3 className="font-semibold text-gray-900">
                           {edu.degree}
                         </h3>
-                        <p className="text-sm text-gray-600">{edu.institution}</p>
+                        <p className="text-sm text-gray-600">
+                          {edu.institution}
+                        </p>
                         <p className="text-xs text-gray-500">{edu.year}</p>
                       </div>
                     ))}

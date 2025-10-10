@@ -3,6 +3,7 @@
 **Last Updated:** October 10, 2025
 
 ## 📋 Table of Contents
+
 1. [Route Structure Overview](#route-structure-overview)
 2. [Public Routes (No Auth Required)](#public-routes)
 3. [Dashboard Routes (Auth Required)](#dashboard-routes)
@@ -32,28 +33,31 @@ app/
 ## Public Routes
 
 ### 🏠 Homepage & Main Pages
-| Route | Purpose | Status |
-|-------|---------|--------|
-| `/` | Homepage with hero, research areas, metrics | ✅ Complete |
-| `/about` | Lab information & Professor Niu profile | ✅ Complete |
-| `/team` | Team members grid (faculty, students, alumni) | ✅ Complete |
-| `/team/[id]` | **Individual member profile (PUBLIC VIEW)** | ✅ Complete |
-| `/contact` | Contact form & lab information | ✅ Complete |
+
+| Route        | Purpose                                       | Status      |
+| ------------ | --------------------------------------------- | ----------- |
+| `/`          | Homepage with hero, research areas, metrics   | ✅ Complete |
+| `/about`     | Lab information & Professor Niu profile       | ✅ Complete |
+| `/team`      | Team members grid (faculty, students, alumni) | ✅ Complete |
+| `/team/[id]` | **Individual member profile (PUBLIC VIEW)**   | ✅ Complete |
+| `/contact`   | Contact form & lab information                | ✅ Complete |
 
 ### 📚 Research & Publications
-| Route | Purpose | Status |
-|-------|---------|--------|
-| `/papers` | All publications with filters & pagination | 🔄 In Progress |
-| `/papers/featured` | Featured/highlighted papers | ⏳ Pending |
-| `/papers/[id]` | Individual paper details | ⏳ Pending |
-| `/research/projects` | Research projects showcase | ⏳ Pending |
-| `/research/projects/[id]` | Project details | ⏳ Pending |
+
+| Route                     | Purpose                                    | Status         |
+| ------------------------- | ------------------------------------------ | -------------- |
+| `/papers`                 | All publications with filters & pagination | 🔄 In Progress |
+| `/papers/featured`        | Featured/highlighted papers                | ⏳ Pending     |
+| `/papers/[id]`            | Individual paper details                   | ⏳ Pending     |
+| `/research/projects`      | Research projects showcase                 | ⏳ Pending     |
+| `/research/projects/[id]` | Project details                            | ⏳ Pending     |
 
 ### 📰 News & Resources
-| Route | Purpose | Status | 
-|-------|---------|--------|
-| `/news` | Lab news feed | ⏳ Pending |
-| `/news/[id]` | Individual news article | ⏳ Pending |
+
+| Route        | Purpose                   | Status     |
+| ------------ | ------------------------- | ---------- |
+| `/news`      | Lab news feed             | ⏳ Pending |
+| `/news/[id]` | Individual news article   | ⏳ Pending |
 | `/resources` | Lab resources & equipment | ⏳ Pending |
 
 ---
@@ -61,74 +65,83 @@ app/
 ## Dashboard Routes (Authenticated Users)
 
 ### 🔐 Authentication Context
+
 All `/dash/*` routes require user to be logged in via NextAuth.js
 
 ### User's Own Profile Management
-| Route | Purpose | Key Features |
-|-------|---------|--------------|
-| `/dash/home` | Dashboard overview | Stats, recent activity, quick actions |
-| `/dash/profile` | **View OWN profile** | User views their own profile |
-| `/dash/profile/edit` | **Edit OWN profile** | Update bio, photo, interests, etc. |
-| `/dash/profile/orcid/connect` | **Connect ORCID** | OAuth flow to link ORCID account |
-| `/dash/profile/orcid/sync` | **Sync ORCID papers** | Fetch publications from ORCID |
+
+| Route                         | Purpose               | Key Features                          |
+| ----------------------------- | --------------------- | ------------------------------------- |
+| `/dash/home`                  | Dashboard overview    | Stats, recent activity, quick actions |
+| `/dash/profile`               | **View OWN profile**  | User views their own profile          |
+| `/dash/profile/edit`          | **Edit OWN profile**  | Update bio, photo, interests, etc.    |
+| `/dash/profile/orcid/connect` | **Connect ORCID**     | OAuth flow to link ORCID account      |
+| `/dash/profile/orcid/sync`    | **Sync ORCID papers** | Fetch publications from ORCID         |
 
 ### Content Management
-| Route | Purpose | Key Features |
-|-------|---------|--------------|
-| `/dash/papers` | User's papers list | Manage own publications |
-| `/dash/papers/new` | Add new paper | Manual paper entry or ORCID import |
-| `/dash/projects` | User's projects | Manage research projects |
-| `/dash/projects/new` | Create project | Add collaborators, descriptions |
-| `/dash/awards` | User's awards | Track achievements |
-| `/dash/awards/new` | Add award | Certificates, honors |
+
+| Route                | Purpose            | Key Features                       |
+| -------------------- | ------------------ | ---------------------------------- |
+| `/dash/papers`       | User's papers list | Manage own publications            |
+| `/dash/papers/new`   | Add new paper      | Manual paper entry or ORCID import |
+| `/dash/projects`     | User's projects    | Manage research projects           |
+| `/dash/projects/new` | Create project     | Add collaborators, descriptions    |
+| `/dash/awards`       | User's awards      | Track achievements                 |
+| `/dash/awards/new`   | Add award          | Certificates, honors               |
 
 ### Settings
-| Route | Purpose | Key Features |
-|-------|---------|--------------|
-| `/dash/settings/notif` | Notification preferences | Email alerts, updates |
-| `/dash/settings/security` | Security settings | Password, 2FA, sessions |
+
+| Route                     | Purpose                  | Key Features            |
+| ------------------------- | ------------------------ | ----------------------- |
+| `/dash/settings/notif`    | Notification preferences | Email alerts, updates   |
+| `/dash/settings/security` | Security settings        | Password, 2FA, sessions |
 
 ---
 
 ## Admin Routes (Admin Role Only)
 
 ### 📊 Admin Panel Overview
-| Route | Purpose | Status |
-|-------|---------|--------|
-| `/admin/overview` | Admin dashboard | ⏳ Pending |
-| `/admin/users` | User management | ⏳ Pending |
-| `/admin/users/new` | Create user | ⏳ Pending |
+
+| Route              | Purpose         | Status     |
+| ------------------ | --------------- | ---------- |
+| `/admin/overview`  | Admin dashboard | ⏳ Pending |
+| `/admin/users`     | User management | ⏳ Pending |
+| `/admin/users/new` | Create user     | ⏳ Pending |
 
 ### Content Moderation
-| Route | Purpose | Status |
-|-------|---------|--------|
-| `/admin/papers` | All papers moderation | ⏳ Pending |
+
+| Route                    | Purpose                | Status     |
+| ------------------------ | ---------------------- | ---------- |
+| `/admin/papers`          | All papers moderation  | ⏳ Pending |
 | `/admin/papers/featured` | Manage featured papers | ⏳ Pending |
-| `/admin/projects` | Projects moderation | ⏳ Pending |
-| `/admin/news` | News management | ⏳ Pending |
-| `/admin/news/new` | Create news article | ⏳ Pending |
+| `/admin/projects`        | Projects moderation    | ⏳ Pending |
+| `/admin/news`            | News management        | ⏳ Pending |
+| `/admin/news/new`        | Create news article    | ⏳ Pending |
 
 ### Resources & Analytics
-| Route | Purpose | Status |
-|-------|---------|--------|
-| `/admin/resources` | Equipment management | ⏳ Pending |
-| `/admin/resources/bookings` | Booking requests | ⏳ Pending |
-| `/admin/analytics/users` | User analytics | ⏳ Pending |
-| `/admin/analytics/papers` | Publication metrics | ⏳ Pending |
-| `/admin/analytics/orcid` | ORCID sync stats | ⏳ Pending |
+
+| Route                       | Purpose              | Status     |
+| --------------------------- | -------------------- | ---------- |
+| `/admin/resources`          | Equipment management | ⏳ Pending |
+| `/admin/resources/bookings` | Booking requests     | ⏳ Pending |
+| `/admin/analytics/users`    | User analytics       | ⏳ Pending |
+| `/admin/analytics/papers`   | Publication metrics  | ⏳ Pending |
+| `/admin/analytics/orcid`    | ORCID sync stats     | ⏳ Pending |
 
 ### Settings
-| Route | Purpose | Status |
-|-------|---------|--------|
-| `/admin/settings/general` | Site-wide settings | ⏳ Pending |
-| `/admin/settings/email` | Email configuration | ⏳ Pending |
-| `/admin/settings/integrations/orcid` | ORCID API config | ⏳ Pending |
+
+| Route                                | Purpose             | Status     |
+| ------------------------------------ | ------------------- | ---------- |
+| `/admin/settings/general`            | Site-wide settings  | ⏳ Pending |
+| `/admin/settings/email`              | Email configuration | ⏳ Pending |
+| `/admin/settings/integrations/orcid` | ORCID API config    | ⏳ Pending |
 
 ---
 
 ## API Routes
 
 ### Authentication API
+
 ```
 POST   /api/auth/register           # Create new account
 POST   /api/auth/login              # Login
@@ -140,6 +153,7 @@ POST   /api/auth/verify-email       # Verify email
 ```
 
 ### User & Profile API
+
 ```
 GET    /api/users/[id]              # Get user profile
 PATCH  /api/users/[id]              # Update user
@@ -149,6 +163,7 @@ POST   /api/users/[id]/orcid/sync     # Sync ORCID papers
 ```
 
 ### Papers API
+
 ```
 GET    /api/papers                  # List papers (with filters)
 POST   /api/papers                  # Create paper
@@ -159,6 +174,7 @@ GET    /api/papers/featured         # Get featured papers
 ```
 
 ### ORCID Integration API
+
 ```
 GET    /api/orcid/authorize         # Start OAuth flow
 GET    /api/orcid/callback          # OAuth callback
@@ -166,6 +182,7 @@ POST   /api/orcid/webhook           # ORCID webhook (auto-sync)
 ```
 
 ### Upload API
+
 ```
 POST   /api/upload/avatar           # Upload profile photo
 POST   /api/upload/paper-pdf        # Upload paper PDF
@@ -234,28 +251,31 @@ Original ORCID data is preserved with isFromOrcid flag
 ### 🎨 Reusable Components
 
 #### Team Components (`components/team/`)
+
 ```typescript
 MemberCard        // Team member card (clickable)
   └─> Links to /team/[id]
-  
+
 ProfessorNiuCard  // Special card for lab director
 ```
 
 #### Paper Components (`components/papers/`)
+
 ```typescript
 PaperCard         // Paper display card
   - Variants: default, featured, compact
   - Shows: title, authors, year, journal, abstract
   - Actions: view, download, edit (if auth)
-  
+
 FeaturedPapers    // Section showing featured papers
   - Used on homepage
   - Grid layout (2 or 3 columns)
 ```
 
 #### Form Components (`components/forms/`)
+
 ```typescript
-ContactForm       // Contact form with validation
+ContactForm; // Contact form with validation
 ```
 
 ### 🎭 Page Component Patterns
@@ -285,18 +305,21 @@ ContactForm       // Contact form with validation
 ### ✅ Route Separation
 
 **PUBLIC** (`/team/[id]`)
+
 - Anyone can view without login
 - Read-only display
 - SEO-friendly for researchers
 - Shows published papers only
 
 **DASHBOARD** (`/dash/profile`)
+
 - Requires authentication
 - User edits THEIR OWN profile
 - Manage papers, ORCID connection
 - Privacy controls
 
 **ADMIN** (`/admin/users`)
+
 - Admin manages ALL users
 - Create accounts, assign ORCID IDs
 - Moderate content, feature papers
@@ -309,7 +332,7 @@ Middleware (middleware.ts):
   - Protects /dash/* routes → require auth
   - Protects /admin/* routes → require admin role
   - Public routes accessible to all
-  
+
 NextAuth Session:
   - User object: id, name, email, role, orcidId
   - Used in API routes for authorization
@@ -356,6 +379,7 @@ model Paper {
 ## Next Steps (Implementation Order)
 
 ### Phase 1: Public Pages (In Progress)
+
 - [x] Homepage
 - [x] About page
 - [x] Team page
@@ -366,6 +390,7 @@ model Paper {
 - [ ] Resources page `/resources`
 
 ### Phase 2: Authentication System
+
 - [ ] Login page `/auth/login`
 - [ ] Register page `/auth/register`
 - [ ] Password reset flow
@@ -373,6 +398,7 @@ model Paper {
 - [ ] NextAuth.js configuration
 
 ### Phase 3: User Dashboard
+
 - [ ] Dashboard home `/dash/home`
 - [ ] Profile view/edit `/dash/profile`
 - [ ] ORCID connection flow
@@ -380,6 +406,7 @@ model Paper {
 - [ ] Project management `/dash/projects`
 
 ### Phase 4: Admin Panel
+
 - [ ] Admin overview `/admin/overview`
 - [ ] User management `/admin/users`
 - [ ] Content moderation
@@ -387,6 +414,7 @@ model Paper {
 - [ ] Settings & configuration
 
 ### Phase 5: ORCID Integration
+
 - [ ] ORCID OAuth setup
 - [ ] Paper sync functionality
 - [ ] Webhook handlers
@@ -426,6 +454,7 @@ UPLOAD_MAX_SIZE="10485760"  # 10MB
 **Current Status:** Phase 1 - Public Pages (5/8 complete)
 
 **Key Achievement:** Proper route architecture with clear separation:
+
 - `/team/[id]` for public viewing
 - `/dash/profile` for self-management
 - `/admin/users` for administration
@@ -434,4 +463,4 @@ UPLOAD_MAX_SIZE="10485760"  # 10MB
 
 ---
 
-*This document will be updated as implementation progresses.*
+_This document will be updated as implementation progresses._
