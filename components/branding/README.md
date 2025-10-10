@@ -32,7 +32,7 @@ import { Logo, LogoFavicon } from "@/components/branding";
 
 ## Favicon Files
 
-The favicon is automatically served from `app/favicon.svg` and supports:
+The favicon is automatically served from `app/ci2p_logo.png` and supports:
 
 - Modern SVG favicon (scalable)
 - Traditional ICO format

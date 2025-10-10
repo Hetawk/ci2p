@@ -1,14 +1,14 @@
 {
-    "name": "Patience Fero & Her Promise Fulfilled",
-    "short_name": "Patience Fero",
-    "description": "Patience Fero's professional portfolio and Her Promise Fulfilled nonprofit organization",
+    "name": "CI2P Research Lab ",
+    "short_name": "CI2P",
+    "description": "CI2P Research Lab - Cutting-edge research and innovation in computer vision and image processing. ",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#3b82f6",
     "icons": [
         {
-            "src": "/favicon.svg",
+            "src": "/ci2p_logo.png",
             "sizes": "any",
             "type": "image/svg+xml",
             "purpose": "any maskable"
