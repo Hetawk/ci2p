@@ -28,7 +28,7 @@ const teamMembers: TeamMember[] = [
     orcid: "0000-0002-1401-9859",
     github: "sjniu",
   },
-  
+
   // Master's Students
   {
     id: "member-1",
@@ -121,7 +121,7 @@ const teamMembers: TeamMember[] = [
     category: "masters",
     researchInterests: ["AI", "Pattern Recognition"],
   },
-  
+
   // Undergraduate Students
   {
     id: "undergrad-1",
@@ -158,7 +158,7 @@ const teamMembers: TeamMember[] = [
     category: "undergrad",
     researchInterests: ["Computer Vision", "Pattern Recognition"],
   },
-  
+
   // Alumni (examples)
   {
     id: "alumni-1",
@@ -257,7 +257,10 @@ export default function TeamPage() {
 
         {/* Animated gradient orbs */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
+        <div
+          className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: "1s" }}
+        />
 
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center space-y-6">
@@ -271,28 +274,39 @@ export default function TeamPage() {
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
               Meet the talented researchers, students, and alumni driving
-              innovation in AI, Machine Learning, and Computer Vision at CI2P Lab
+              innovation in AI, Machine Learning, and Computer Vision at CI2P
+              Lab
             </p>
-            
+
             {/* Stats */}
             <div className="flex items-center justify-center gap-8 pt-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-secondary-400">{faculty.length}</div>
+                <div className="text-3xl font-bold text-secondary-400">
+                  {faculty.length}
+                </div>
                 <div className="text-sm text-gray-300">Faculty</div>
               </div>
               <div className="w-px h-12 bg-gray-600" />
               <div className="text-center">
-                <div className="text-3xl font-bold text-secondary-400">{masters.length}</div>
-                <div className="text-sm text-gray-300">Master&apos;s Students</div>
+                <div className="text-3xl font-bold text-secondary-400">
+                  {masters.length}
+                </div>
+                <div className="text-sm text-gray-300">
+                  Master&apos;s Students
+                </div>
               </div>
               <div className="w-px h-12 bg-gray-600" />
               <div className="text-center">
-                <div className="text-3xl font-bold text-secondary-400">{undergrads.length}</div>
+                <div className="text-3xl font-bold text-secondary-400">
+                  {undergrads.length}
+                </div>
                 <div className="text-sm text-gray-300">Undergrads</div>
               </div>
               <div className="w-px h-12 bg-gray-600" />
               <div className="text-center">
-                <div className="text-3xl font-bold text-secondary-400">{alumni.length}</div>
+                <div className="text-3xl font-bold text-secondary-400">
+                  {alumni.length}
+                </div>
                 <div className="text-sm text-gray-300">Alumni</div>
               </div>
             </div>
@@ -309,10 +323,12 @@ export default function TeamPage() {
             </div>
             <div>
               <h2 className="text-4xl font-bold text-gray-900">Faculty</h2>
-              <p className="text-gray-600">Lab Director & Principal Investigator</p>
+              <p className="text-gray-600">
+                Lab Director & Principal Investigator
+              </p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {faculty.map((member, index) => (
               <MemberCard key={member.id} member={member} index={index} />
@@ -329,11 +345,13 @@ export default function TeamPage() {
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-4xl font-bold text-gray-900">Master&apos;s Students</h2>
+              <h2 className="text-4xl font-bold text-gray-900">
+                Master&apos;s Students
+              </h2>
               <p className="text-gray-600">Graduate Researchers</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {masters.map((member, index) => (
               <MemberCard key={member.id} member={member} index={index} />
@@ -350,11 +368,13 @@ export default function TeamPage() {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-4xl font-bold text-gray-900">Undergraduate Researchers</h2>
+              <h2 className="text-4xl font-bold text-gray-900">
+                Undergraduate Researchers
+              </h2>
               <p className="text-gray-600">Future Leaders in AI Research</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {undergrads.map((member, index) => (
               <MemberCard key={member.id} member={member} index={index} />
@@ -375,7 +395,7 @@ export default function TeamPage() {
               <p className="text-gray-600">Success Stories from CI2P Lab</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {alumni.map((member, index) => (
               <MemberCard key={member.id} member={member} index={index} />
@@ -387,13 +407,11 @@ export default function TeamPage() {
       {/* Join Team CTA */}
       <section className="py-20 px-4 bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Join Our Team
-          </h2>
+          <h2 className="text-4xl font-bold text-white mb-6">Join Our Team</h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            We&apos;re always looking for talented, passionate researchers to join
-            our lab. Explore opportunities for Master&apos;s students, undergraduate
-            research, and collaborations.
+            We&apos;re always looking for talented, passionate researchers to
+            join our lab. Explore opportunities for Master&apos;s students,
+            undergraduate research, and collaborations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button

@@ -37,7 +37,10 @@ export default function ContactPage() {
 
         {/* Animated gradient orbs */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
+        <div
+          className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: "1s" }}
+        />
 
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center space-y-6">
@@ -50,8 +53,8 @@ export default function ContactPage() {
               Get in <span className="text-secondary-400">Touch</span>
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-              Have questions about our research, collaborations, or joining our team?
-              We&apos;d love to hear from you.
+              Have questions about our research, collaborations, or joining our
+              team? We&apos;d love to hear from you.
             </p>
           </div>
         </div>
@@ -68,7 +71,8 @@ export default function ContactPage() {
                   Send Us a Message
                 </h2>
                 <p className="text-gray-600">
-                  Fill out the form below and we&apos;ll get back to you as soon as possible.
+                  Fill out the form below and we&apos;ll get back to you as soon
+                  as possible.
                 </p>
               </div>
               <ContactForm />
@@ -94,7 +98,9 @@ export default function ContactPage() {
                       <Mail className="w-6 h-6 text-primary-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        Email
+                      </h3>
                       <a
                         href="mailto:ise_niusj@ujn.edu.cn"
                         className="text-primary-600 hover:text-primary-700 hover:underline"
@@ -112,11 +118,16 @@ export default function ContactPage() {
                       <MapPin className="w-6 h-6 text-secondary-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">Location</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        Location
+                      </h3>
                       <p className="text-gray-600 text-sm leading-relaxed">
-                        No. 336, Nanxinzhuang West Road<br />
-                        Shizhong District, Jinan<br />
-                        Shandong Province, 250022<br />
+                        No. 336, Nanxinzhuang West Road
+                        <br />
+                        Shizhong District, Jinan
+                        <br />
+                        Shandong Province, 250022
+                        <br />
                         China
                       </p>
                     </div>
@@ -130,9 +141,12 @@ export default function ContactPage() {
                       <Building2 className="w-6 h-6 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">Institution</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        Institution
+                      </h3>
                       <p className="text-gray-600 text-sm">
-                        University of Jinan<br />
+                        University of Jinan
+                        <br />
                         Key Laboratory of Intelligent Computing
                       </p>
                     </div>
@@ -146,9 +160,12 @@ export default function ContactPage() {
                       <Clock className="w-6 h-6 text-green-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">Office Hours</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        Office Hours
+                      </h3>
                       <p className="text-gray-600 text-sm">
-                        Monday - Friday<br />
+                        Monday - Friday
+                        <br />
                         9:00 AM - 5:00 PM (CST)
                       </p>
                     </div>

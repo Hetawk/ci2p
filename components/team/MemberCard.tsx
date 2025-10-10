@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Linkedin, Github, ExternalLink } from "lucide-react";
@@ -34,11 +35,12 @@ export function MemberCard({ member, index }: MemberCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
     >
-      <Card className="group relative overflow-hidden bg-white hover:shadow-2xl hover:shadow-primary-500/20 transition-all duration-300 border border-gray-200 hover:border-primary-300">
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-secondary-500/0 to-purple-500/0 group-hover:from-primary-500/5 group-hover:via-secondary-500/5 group-hover:to-purple-500/5 transition-all duration-300 pointer-events-none" />
-        
-        <div className="relative p-6 space-y-4">
+      <Link href={`/team/${member.id}`}>
+        <Card className="group relative overflow-hidden bg-white hover:shadow-2xl hover:shadow-primary-500/20 transition-all duration-300 border border-gray-200 hover:border-primary-300 cursor-pointer">
+          {/* Gradient overlay on hover */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-secondary-500/0 to-purple-500/0 group-hover:from-primary-500/5 group-hover:via-secondary-500/5 group-hover:to-purple-500/5 transition-all duration-300 pointer-events-none" />
+
+          <div className="relative p-6 space-y-4">
           {/* Photo */}
           <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
             {member.photo ? (
@@ -55,25 +57,28 @@ export function MemberCard({ member, index }: MemberCardProps) {
                 </span>
               </div>
             )}
-            
+
             {/* Category badge */}
             <div className="absolute top-3 right-3">
-              <Badge 
-                variant={member.category === "faculty" ? "default" : "secondary"}
+              <Badge
+                variant={
+                  member.category === "faculty" ? "default" : "secondary"
+                }
                 className={`
-                  ${member.category === "faculty" 
-                    ? "bg-primary-600 text-white" 
-                    : member.category === "masters"
-                    ? "bg-secondary-600 text-white"
-                    : member.category === "undergrad"
-                    ? "bg-purple-600 text-white"
-                    : "bg-gray-600 text-white"
+                  ${
+                    member.category === "faculty"
+                      ? "bg-primary-600 text-white"
+                      : member.category === "masters"
+                      ? "bg-secondary-600 text-white"
+                      : member.category === "undergrad"
+                      ? "bg-purple-600 text-white"
+                      : "bg-gray-600 text-white"
                   }
                   shadow-lg
                 `}
               >
-                {member.category === "faculty" 
-                  ? "Faculty" 
+                {member.category === "faculty"
+                  ? "Faculty"
                   : member.category === "masters"
                   ? "Master's"
                   : member.category === "undergrad"
@@ -91,13 +96,13 @@ export function MemberCard({ member, index }: MemberCardProps) {
             <p className="text-sm font-medium text-primary-600">
               {member.role}
             </p>
-            
+
             {member.graduationYear && (
               <p className="text-xs text-gray-500">
                 Graduated: {member.graduationYear}
               </p>
             )}
-            
+
             {member.currentPosition && (
               <p className="text-xs text-gray-600 font-medium">
                 {member.currentPosition}
@@ -108,7 +113,9 @@ export function MemberCard({ member, index }: MemberCardProps) {
           {/* Research Interests */}
           {member.researchInterests && member.researchInterests.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold text-gray-700">Research Interests:</p>
+              <p className="text-xs font-semibold text-gray-700">
+                Research Interests:
+              </p>
               <div className="flex flex-wrap gap-1.5">
                 {member.researchInterests.slice(0, 3).map((interest, idx) => (
                   <Badge
@@ -187,8 +194,9 @@ export function MemberCard({ member, index }: MemberCardProps) {
               </a>
             )}
           </div>
-        </div>
-      </Card>
+          </div>
+        </Card>
+      </Link>
     </motion.div>
   );
 }

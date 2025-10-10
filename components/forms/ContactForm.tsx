@@ -50,7 +50,9 @@ export function ContactForm({ className }: ContactFormProps) {
 
   if (isSuccess) {
     return (
-      <Card className={`p-12 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 ${className}`}>
+      <Card
+        className={`p-12 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 ${className}`}
+      >
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <div className="p-4 bg-green-100 rounded-full">
@@ -61,7 +63,8 @@ export function ContactForm({ className }: ContactFormProps) {
             Message Sent Successfully!
           </h3>
           <p className="text-green-700">
-            Thank you for contacting us. We&apos;ll get back to you within 24-48 hours.
+            Thank you for contacting us. We&apos;ll get back to you within 24-48
+            hours.
           </p>
         </div>
       </Card>
