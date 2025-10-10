@@ -39,7 +39,7 @@ export default async function AdminLayout({
 
   // Only SUPER_ADMIN can access admin panel
   if (!user || user.role !== "SUPER_ADMIN") {
-    redirect("/auth/login");
+    redirect("/login");
   }
 
   const navigation = [

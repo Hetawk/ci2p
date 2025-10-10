@@ -33,7 +33,7 @@ export function generateToken(): string {
  */
 export function generateVerificationUrl(token: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  return `${baseUrl}/auth/verify-email?token=${token}`;
+  return `${baseUrl}/verify-email?token=${token}`;
 }
 
 /**
@@ -41,7 +41,7 @@ export function generateVerificationUrl(token: string): string {
  */
 export function generateResetUrl(token: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  return `${baseUrl}/auth/reset-password?token=${token}`;
+  return `${baseUrl}/reset-password?token=${token}`;
 }
 
 /**

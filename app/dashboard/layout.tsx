@@ -38,7 +38,7 @@ export default async function DashboardLayout({
 
   // Redirect to login if not authenticated
   if (!user) {
-    redirect("/auth/login");
+    redirect("/login");
   }
 
   const navigation = [

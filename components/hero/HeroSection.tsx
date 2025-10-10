@@ -289,52 +289,56 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
               )}
             </div>
 
-            {/* Right: Team Member Carousel */}
+            {/* Right: Team Member Carousel - Bottom Right Corner */}
             {teamMembers.length > 0 && (
               <div
-                className="hidden lg:flex items-center justify-center animate-fade-in"
+                className="hidden lg:block absolute bottom-16 right-8 z-20 animate-fade-in"
                 style={{ animationDelay: "0.8s" }}
               >
                 <div className="relative">
                   {/* Decorative Rings */}
-                  <div className="absolute inset-0 -m-8 rounded-full border-2 border-primary-500/30 animate-spin-slow" />
-                  <div className="absolute inset-0 -m-16 rounded-full border border-secondary-500/20 animate-spin-slower" />
+                  <div className="absolute inset-0 -m-6 rounded-full border-2 border-primary-500/30 animate-spin-slow" />
+                  <div className="absolute inset-0 -m-12 rounded-full border border-secondary-500/20 animate-spin-slower" />
 
-                  {/* Member Card */}
-                  <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl w-80 transition-all duration-500 hover:scale-105">
-                    <div className="space-y-6">
-                      {/* Avatar */}
+                  {/* Member Card - Smaller Circular Card */}
+                  <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-full p-6 border border-white/20 shadow-2xl w-64 h-64 transition-all duration-500 hover:scale-105 flex items-center justify-center">
+                    <div className="flex flex-col items-center justify-center space-y-3 w-full">
                       {/* Avatar */}
                       <div className="flex justify-center">
-                        <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-gradient-to-r from-primary-500/70 to-secondary-500/70 shadow-xl shadow-primary-500/20">
+                        <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-gradient-to-r from-primary-500/70 to-secondary-500/70 shadow-xl shadow-primary-500/20 bg-gradient-to-br from-slate-700 to-slate-800">
                           <Image
-                            src={teamMembers[currentMember].avatar || "/SJ.jpg"}
+                            src={
+                              teamMembers[currentMember].avatar ||
+                              "/icons/avatar-people-user.svg"
+                            }
                             alt={teamMembers[currentMember].fullName}
                             fill
                             className="object-cover"
                           />
                         </div>
-                      </div>{" "}
+                      </div>
+
                       {/* Info */}
-                      <div className="text-center space-y-2">
-                        <h3 className="text-2xl font-bold text-white">
+                      <div className="text-center space-y-1">
+                        <h3 className="text-lg font-bold text-white">
                           {teamMembers[currentMember].fullName}
                         </h3>
-                        <p className="text-secondary-300">
+                        <p className="text-xs text-secondary-300 text-red-400">
                           {teamMembers[currentMember].title ||
                             "Research Member"}
                         </p>
                       </div>
+
                       {/* Carousel Indicators */}
-                      <div className="flex justify-center gap-2 pt-2">
+                      <div className="flex justify-center gap-1.5 pt-1">
                         {teamMembers.map((_, idx) => (
                           <button
                             key={idx}
                             onClick={() => setCurrentMember(idx)}
                             className={`rounded-full transition-all ${
                               idx === currentMember
-                                ? "bg-secondary-500 w-8 h-2 shadow-lg shadow-secondary-500/50"
-                                : "bg-white/30 w-2 h-2 hover:bg-white/50"
+                                ? "bg-secondary-500 w-6 h-1.5 shadow-lg shadow-secondary-500/50"
+                                : "bg-white/30 w-1.5 h-1.5 hover:bg-white/50"
                             }`}
                             aria-label={`View team member ${idx + 1}`}
                           />

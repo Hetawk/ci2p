@@ -84,7 +84,7 @@ export default function RegisterPage() {
 
       // Redirect to login after 2 seconds
       setTimeout(() => {
-        router.push("/auth/login");
+        router.push("/login");
       }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -124,12 +124,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 flex items-center justify-center p-4">
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl animate-float" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden opacity-40">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-200 rounded-full blur-3xl animate-float" />
         <div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl animate-float"
+          className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200 rounded-full blur-3xl animate-float"
           style={{ animationDelay: "1s" }}
         />
       </div>
@@ -140,18 +140,18 @@ export default function RegisterPage() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        <Card className="p-8 bg-white/95 backdrop-blur-sm">
+        <Card className="p-8 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 shadow-2xl border border-white/50 backdrop-blur-sm">
           {/* Logo and Title */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg">
+              <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <UserPlus className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
               Create Account
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-700 font-medium">
               Join the CI2P Lab research community
             </p>
           </div>
@@ -302,7 +302,7 @@ export default function RegisterPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full h-12 bg-primary-600 hover:bg-primary-700 text-white font-medium"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg shadow-blue-500/30"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -325,7 +325,7 @@ export default function RegisterPage() {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">
+              <span className="px-4 bg-white text-gray-700 font-semibold">
                 Already have an account?
               </span>
             </div>
@@ -333,10 +333,10 @@ export default function RegisterPage() {
 
           {/* Login Link */}
           <div className="text-center">
-            <Link href="/auth/login">
+            <Link href="/login">
               <Button
                 variant="outline"
-                className="w-full h-12 border-gray-300 hover:border-primary-500 hover:bg-primary-50"
+                className="w-full h-12 border-2 border-blue-300 hover:border-blue-500 hover:bg-blue-50 text-blue-700 font-semibold transition-all"
               >
                 Sign In Instead
               </Button>
@@ -347,7 +347,7 @@ export default function RegisterPage() {
           <div className="mt-6 text-center">
             <Link
               href="/"
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
               ← Back to Homepage
             </Link>
@@ -356,7 +356,7 @@ export default function RegisterPage() {
 
         {/* University Info */}
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray-700 font-medium">
             University of Jinan - Key Laboratory of Intelligent Computing
             Technology
           </p>

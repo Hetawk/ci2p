@@ -92,7 +92,7 @@ export default function UserMenu() {
   if (!user) {
     return (
       <Link
-        href="/auth/login"
+        href="/login"
         className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-700 hover:text-brand-600 font-medium transition-all duration-300"
       >
         <User className="w-5 h-5" />

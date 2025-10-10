@@ -15,8 +15,11 @@ async function main() {
     "🌱 Starting CI2P Research Lab seed with Professor Niu's real data..."
   );
 
-  const password = await hashPassword("password123");
+  // Load seed password from environment variable or use default
+  const seedPassword = process.env.SEED_PASSWORD || "";
+  const password = await hashPassword(seedPassword);
 
+  
   // ========================================
   // USERS & PROFILES - PROFESSOR NIU AND REAL TEAM MEMBERS
   // ========================================
@@ -750,7 +753,7 @@ async function main() {
   console.log("\n🔐 Login credentials:");
   console.log("  Professor Niu:");
   console.log("    Email: ise_niusj@ujn.edu.cn");
-  console.log("    Password: password123");
+  console.log(`    Password: ${seedPassword}`);
   console.log("\n📧 Contact: sjniu@hotmail.com");
   console.log("📞 Phone: 0531-82767569");
 }
