@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { GlobalLedgerBackground } from "@/components/effects";
 import "./globals.css";
 
 const inter = Inter({
@@ -51,9 +52,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
+        className={`${inter.variable} ${playfair.variable} font-sans antialiased bg-gradient-to-br from-slate-900 via-primary-900/10 to-slate-900`}
       >
-        {children}
+        {/* Global Ledger Background - Visible across all pages */}
+        <GlobalLedgerBackground
+          showDataFlow={true}
+          gridOpacity={0.5}
+          dataFlowOpacity={0.25}
+        />{" "}
+        {/* Main Content - Positioned above background */}
+        <div className="relative z-10">{children}</div>
       </body>
     </html>
   );

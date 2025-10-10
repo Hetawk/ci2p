@@ -82,32 +82,35 @@ export function ResearchShowcase() {
   };
 
   return (
-    <section className="relative py-20 bg-gradient-to-br from-slate-50 via-white to-primary-50 overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
+    <section className="relative py-20 overflow-hidden">
+      {/* Decorative gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-900/10 to-transparent" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 animate-fade-in">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
-            <span className="text-primary bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
-              Our Research
-            </span>{" "}
-            in Action
+            <span className="text-primary-400">Our Research</span>{" "}
+            <span className="text-white">in Action</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-white font-medium max-w-2xl mx-auto drop-shadow-lg">
             Explore our cutting-edge work in AI, Machine Learning, and Image
             Processing
           </p>
-        </div>
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="h-1 w-64 mx-auto mt-6 bg-gradient-to-r from-transparent via-primary-500 to-transparent rounded-full"
+          />
+        </motion.div>
 
         {/* Slider Container */}
         <div className="relative max-w-6xl mx-auto">

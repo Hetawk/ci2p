@@ -1,0 +1,1 @@
+export { ProfessorNiuCard } from "./ProfessorNiuCard";
