@@ -50,7 +50,7 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
           loop
           muted
           playsInline
-          className="object-cover w-full h-full opacity-30"
+          className="object-cover w-full h-full opacity-40"
         >
           <source src="/videos/lab-bg.mp4" type="video/mp4" />
         </video>

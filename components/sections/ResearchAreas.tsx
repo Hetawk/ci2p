@@ -60,8 +60,8 @@ const researchAreas = [
 
 export function ResearchAreas() {
   return (
-    <section className="py-20 px-4 bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative py-20 px-4 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">

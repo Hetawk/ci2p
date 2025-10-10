@@ -32,8 +32,8 @@ export function FeaturedProjects({
   }
 
   return (
-    <section className="py-16 px-4 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative py-16 px-4 bg-gray-50 overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

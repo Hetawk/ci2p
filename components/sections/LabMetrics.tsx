@@ -93,8 +93,8 @@ export function LabMetrics({
   citations = 0,
 }: LabMetricsProps) {
   return (
-    <section className="py-20 px-4 bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative py-20 px-4 bg-gradient-to-br from-blue-50 via-white to-cyan-50 overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">

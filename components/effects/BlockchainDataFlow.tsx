@@ -19,12 +19,16 @@ interface DataFlowProps {
   className?: string;
   nodeCount?: number;
   connectionDistance?: number;
+  speed?: number;
+  opacity?: number;
 }
 
 export function BlockchainDataFlow({
   className = "",
-  nodeCount = 25,
-  connectionDistance = 150,
+  nodeCount = 30,
+  connectionDistance = 180,
+  speed = 1,
+  opacity = 1,
 }: DataFlowProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -55,9 +59,9 @@ export function BlockchainDataFlow({
       nodes.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: 3 + Math.random() * 3,
+        vx: (Math.random() - 0.5) * 0.8 * speed,
+        vy: (Math.random() - 0.5) * 0.8 * speed,
+        radius: 4 + Math.random() * 4,
         color: colors[Math.floor(Math.random() * colors.length)],
         connections: [],
       });
@@ -95,9 +99,10 @@ export function BlockchainDataFlow({
             node.connections.push(idx);
 
             // Draw connection line with vibrant cyan color
-            const opacity = (1 - distance / connectionDistance) * 0.5; // Increased from 0.3
-            ctx.strokeStyle = `rgba(6, 182, 212, ${opacity})`; // Cyan for better visibility
-            ctx.lineWidth = 1.5; // Thicker lines
+            const lineOpacity =
+              (1 - distance / connectionDistance) * 0.7 * opacity;
+            ctx.strokeStyle = `rgba(6, 182, 212, ${lineOpacity})`; // Cyan
+            ctx.lineWidth = 2; // Even thicker lines
             ctx.beginPath();
             ctx.moveTo(node.x, node.y);
             ctx.lineTo(other.x, other.y);
@@ -137,7 +142,7 @@ export function BlockchainDataFlow({
       window.removeEventListener("resize", updateSize);
       cancelAnimationFrame(animationId);
     };
-  }, [nodeCount, connectionDistance]);
+  }, [nodeCount, connectionDistance, speed, opacity]);
 
   return (
     <canvas

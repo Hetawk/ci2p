@@ -1,9 +1,13 @@
 "use client";
 
 // Adaptive Ledger Grid Background
-// Automatically adjusts colors based on background (dark/light)
+// Automatically adjusts colors based on background with programmatic color calculations
 
 import { useEffect, useRef, useState } from "react";
+import {
+  getBackgroundColor,
+  getLedgerColorsWithPresets,
+} from "@/lib/ledger-colors";
 
 interface AdaptiveLedgerGridProps {
   className?: string;
@@ -29,47 +33,56 @@ export function AdaptiveLedgerGrid({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Auto-detect background color if theme is auto
-    if (theme === "auto") {
-      const parent = canvas.parentElement;
-      if (parent) {
-        const bgColor = window.getComputedStyle(parent).backgroundColor;
-        // Parse RGB values
-        const rgb = bgColor.match(/\d+/g);
-        if (rgb) {
-          const r = parseInt(rgb[0]);
-          const g = parseInt(rgb[1]);
-          const b = parseInt(rgb[2]);
-          // Calculate luminance
-          const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-          setDetectedTheme(luminance > 0.5 ? "light" : "dark");
-        }
-      }
+    // Programmatically detect and calculate optimal colors
+    let colors;
+
+    if (theme === "auto" && canvas.parentElement) {
+      // Get the actual background color from DOM
+      const bgColor = getBackgroundColor(canvas.parentElement);
+
+      // Calculate optimal ledger colors based on background
+      const optimalColors = getLedgerColorsWithPresets(bgColor);
+
+      // Update detected theme
+      setDetectedTheme(optimalColors.theme);
+
+      // Use calculated colors
+      colors = {
+        primary: optimalColors.primary,
+        secondary: optimalColors.secondary,
+        accent: optimalColors.accent,
+        baseOpacity: optimalColors.baseOpacity,
+        maxOpacity: optimalColors.maxOpacity,
+        highlightOpacity: optimalColors.baseOpacity * 1.2,
+        lineWidth: optimalColors.lineWidth,
+      };
+    } else {
+      // Manual theme selection
+      const activeTheme = theme === "auto" ? detectedTheme : theme;
+
+      const colorScheme = {
+        dark: {
+          primary: "96, 165, 250", // Bright blue
+          secondary: "34, 211, 238", // Bright cyan
+          accent: "192, 132, 252", // Bright purple
+          baseOpacity: 0.4,
+          maxOpacity: 0.9,
+          highlightOpacity: 0.4,
+          lineWidth: 1.5,
+        },
+        light: {
+          primary: "30, 64, 175", // Dark blue
+          secondary: "8, 145, 178", // Dark cyan
+          accent: "126, 34, 206", // Dark purple
+          baseOpacity: 0.6, // Increased from 0.35
+          maxOpacity: 0.9, // Increased from 0.75
+          highlightOpacity: 0.7, // Increased from 0.3
+          lineWidth: 2.5, // Thicker lines
+        },
+      };
+
+      colors = colorScheme[activeTheme];
     }
-
-    const activeTheme = theme === "auto" ? detectedTheme : theme;
-
-    // Color schemes based on theme
-    const colorScheme = {
-      dark: {
-        primary: "59, 130, 246", // Blue
-        secondary: "6, 182, 212", // Cyan
-        accent: "168, 85, 247", // Purple
-        baseOpacity: 0.35,
-        maxOpacity: 0.9,
-        highlightOpacity: 0.4,
-      },
-      light: {
-        primary: "30, 64, 175", // Darker blue for light bg
-        secondary: "8, 145, 178", // Darker cyan
-        accent: "126, 34, 206", // Darker purple
-        baseOpacity: 0.25,
-        maxOpacity: 0.6,
-        highlightOpacity: 0.3,
-      },
-    };
-
-    const colors = colorScheme[activeTheme];
 
     // Set canvas size
     const updateSize = () => {
@@ -98,7 +111,7 @@ export function AdaptiveLedgerGrid({
         // Alternate between primary and secondary colors
         const colorRGB = i % 2 === 0 ? colors.secondary : colors.primary;
         ctx.strokeStyle = `rgba(${colorRGB}, ${interactiveOpacity})`;
-        ctx.lineWidth = activeTheme === "light" ? 2 : 1.5;
+        ctx.lineWidth = colors.lineWidth;
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, canvas.height);
@@ -116,7 +129,7 @@ export function AdaptiveLedgerGrid({
 
         const colorRGB = i % 2 === 0 ? colors.secondary : colors.primary;
         ctx.strokeStyle = `rgba(${colorRGB}, ${interactiveOpacity})`;
-        ctx.lineWidth = activeTheme === "light" ? 2 : 1.5;
+        ctx.lineWidth = colors.lineWidth;
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);

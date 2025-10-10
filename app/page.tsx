@@ -9,6 +9,7 @@ import { FeaturedProjects } from "@/components/projects/FeaturedProjects";
 import { ResearchAreas } from "@/components/sections/ResearchAreas";
 import { LabMetrics } from "@/components/sections/LabMetrics";
 import { Footer } from "@/components/layout/Footer";
+import { SectionLedger } from "@/components/effects";
 import { prisma } from "@/lib/prisma";
 
 // Revalidate every hour
@@ -152,12 +153,16 @@ export default async function HomePage() {
       <main className="min-h-screen">
         {/* Hero Section with Video Background */}
         <HeroSection teamMembers={data.teamMembers} stats={data.stats} />
+        {/* LEDGER DISABLED - Uncomment to enable */}
+        {/* <SectionLedger preset="hero" override={{ nodeOpacity: 0.25, gridOpacity: 0.1, nodeCount: 25 }} /> */}
 
         {/* Research Showcase Slider - Beautiful Image Gallery */}
         <ResearchShowcase />
 
         {/* Research Areas */}
         <ResearchAreas />
+        {/* LEDGER DISABLED - Uncomment to enable */}
+        {/* <SectionLedger preset="light" override={{ nodeOpacity: 0.15, gridOpacity: 0.5, nodeCount: 15 }} /> */}
 
         {/* Lab Impact Metrics */}
         <LabMetrics
@@ -166,6 +171,8 @@ export default async function HomePage() {
           projects={data.stats.projects}
           citations={data.stats.citations}
         />
+        {/* LEDGER DISABLED - Uncomment to enable */}
+        {/* <SectionLedger preset="light" override={{ nodeOpacity: 0.15, gridOpacity: 0.5, nodeCount: 15 }} /> */}
 
         {/* Featured Publications */}
         {data.featuredPapers.length > 0 && (
@@ -176,6 +183,8 @@ export default async function HomePage() {
         {data.featuredProjects.length > 0 && (
           <FeaturedProjects projects={data.featuredProjects} />
         )}
+        {/* LEDGER DISABLED - Uncomment to enable */}
+        {/* <SectionLedger preset="light" override={{ nodeOpacity: 0.15, gridOpacity: 0.5, nodeCount: 12 }} /> */}
       </main>
 
       {/* Footer */}

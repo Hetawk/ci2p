@@ -149,3 +149,152 @@ h1, h2, h3, h4, h5, h6 {
   background: #bfdbfe;
   color: #1e3a8a;
 }
+
+/* ============================================ */
+/* Blockchain Ledger Background Patterns */
+/* ============================================ */
+/* Usage: Add class to any section for subtle ledger effect */
+/* Example: <section className="ledger-light bg-white"> */
+
+@layer utilities {
+  /* Light backgrounds (white, gray-50, blue-50, etc.) */
+  .ledger-light {
+    position: relative;
+    background-image: 
+      /* Vertical lines */
+      repeating-linear-gradient(
+        90deg,
+        rgba(30, 64, 175, 0.08) 0px,
+        rgba(30, 64, 175, 0.08) 1px,
+        transparent 1px,
+        transparent 60px,
+        rgba(8, 145, 178, 0.08) 60px,
+        rgba(8, 145, 178, 0.08) 61px,
+        transparent 61px,
+        transparent 120px
+      ),
+      /* Horizontal lines */
+      repeating-linear-gradient(
+        0deg,
+        rgba(30, 64, 175, 0.08) 0px,
+        rgba(30, 64, 175, 0.08) 1px,
+        transparent 1px,
+        transparent 60px,
+        rgba(8, 145, 178, 0.08) 60px,
+        rgba(8, 145, 178, 0.08) 61px,
+        transparent 61px,
+        transparent 120px
+      );
+    background-size: 120px 120px;
+  }
+
+  /* Dark backgrounds (slate-900, dark gradients, etc.) */
+  .ledger-dark {
+    position: relative;
+    background-image: 
+      /* Vertical lines */
+      repeating-linear-gradient(
+        90deg,
+        rgba(96, 165, 250, 0.12) 0px,
+        rgba(96, 165, 250, 0.12) 1px,
+        transparent 1px,
+        transparent 60px,
+        rgba(34, 211, 238, 0.12) 60px,
+        rgba(34, 211, 238, 0.12) 61px,
+        transparent 61px,
+        transparent 120px
+      ),
+      /* Horizontal lines */
+      repeating-linear-gradient(
+        0deg,
+        rgba(96, 165, 250, 0.12) 0px,
+        rgba(96, 165, 250, 0.12) 1px,
+        transparent 1px,
+        transparent 60px,
+        rgba(34, 211, 238, 0.12) 60px,
+        rgba(34, 211, 238, 0.12) 61px,
+        transparent 61px,
+        transparent 120px
+      );
+    background-size: 120px 120px;
+  }
+
+  /* Medium/Gray backgrounds */
+  .ledger-medium {
+    position: relative;
+    background-image: 
+      repeating-linear-gradient(
+        90deg,
+        rgba(30, 64, 175, 0.1) 0px,
+        rgba(30, 64, 175, 0.1) 1px,
+        transparent 1px,
+        transparent 60px,
+        rgba(8, 145, 178, 0.1) 60px,
+        rgba(8, 145, 178, 0.1) 61px,
+        transparent 61px,
+        transparent 120px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(30, 64, 175, 0.1) 0px,
+        rgba(30, 64, 175, 0.1) 1px,
+        transparent 1px,
+        transparent 60px,
+        rgba(8, 145, 178, 0.1) 60px,
+        rgba(8, 145, 178, 0.1) 61px,
+        transparent 61px,
+        transparent 120px
+      );
+    background-size: 120px 120px;
+  }
+
+  /* Stronger variant for very light backgrounds */
+  .ledger-strong {
+    position: relative;
+    background-image: 
+      repeating-linear-gradient(
+        90deg,
+        rgba(30, 64, 175, 0.15) 0px,
+        rgba(30, 64, 175, 0.15) 2px,
+        transparent 2px,
+        transparent 60px,
+        rgba(8, 145, 178, 0.15) 60px,
+        rgba(8, 145, 178, 0.15) 62px,
+        transparent 62px,
+        transparent 120px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(30, 64, 175, 0.15) 0px,
+        rgba(30, 64, 175, 0.15) 2px,
+        transparent 2px,
+        transparent 60px,
+        rgba(8, 145, 178, 0.15) 60px,
+        rgba(8, 145, 178, 0.15) 62px,
+        transparent 62px,
+        transparent 120px
+      );
+    background-size: 120px 120px;
+  }
+
+  /* Subtle variant for minimal effect */
+  .ledger-subtle {
+    position: relative;
+    background-image: 
+      repeating-linear-gradient(
+        90deg,
+        rgba(30, 64, 175, 0.04) 0px,
+        rgba(30, 64, 175, 0.04) 1px,
+        transparent 1px,
+        transparent 80px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(30, 64, 175, 0.04) 0px,
+        rgba(30, 64, 175, 0.04) 1px,
+        transparent 1px,
+        transparent 80px
+      );
+    background-size: 80px 80px;
+  }
+}
