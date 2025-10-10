@@ -14,7 +14,7 @@
 
 - ✅ Added white background containers for CI2P logo
 - ✅ Enhanced with shadows, rings, and hover effects
-- ✅ Fixed all logo paths to use `/logo.png`
+- ✅ Fixed all logo paths to use `/ci2p_logo.png`
 - ✅ Proper sizing and padding for clarity
 - ✅ Responsive design for mobile and desktop
 
@@ -128,7 +128,7 @@ Created stunning image carousel featuring:
 3. `components/effects/ParticleEffect.tsx` - Particle animation
 4. `components/effects/index.ts` - Effects export
 5. `prisma/seed-ci2p.ts` - Database seed for CI2P Lab
-6. `public/logo.png` - CI2P Lab logo
+6. `public/ci2p_logo.png` - CI2P Lab logo
 7. `public/SJ.jpg` - Professor Niu's photo
 8. `public/videos/lab-bg.mp4` - Hero background video
 
@@ -143,7 +143,7 @@ Created stunning image carousel featuring:
 ### Deleted Files:
 
 - `public/ID_photo.jpg` (replaced with SJ.jpg)
-- `public/logo.svg`, `logo-192x192.png`, `logo-512x512.png` (replaced with logo.png)
+- `public/logo.svg`, `logo-192x192.png`, `logo-512x512.png` (replaced with ci2p_logo.png)
 
 ---
 
@@ -359,7 +359,7 @@ Created stunning image carousel featuring:
 
 ### Asset Paths:
 
-- **Logo**: `/logo.png` (CI2P Lab logo)
+- **Logo**: `/ci2p_logo.png` (CI2P Lab logo)
 - **Professor Niu**: `/SJ.jpg`
 - **Research Images**: `/utils/*.jpg` (4 images)
 - **Video Background**: `/videos/lab-bg.mp4`

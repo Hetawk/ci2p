@@ -17,7 +17,7 @@ This document explains how the CI2P Lab logo is implemented with proper white ba
   }`}
 >
   <Image
-    src="/logo.png"
+    src="/ci2p_logo.png"
     alt="CI2P Lab"
     width={40}
     height={40}
@@ -47,7 +47,7 @@ This document explains how the CI2P Lab logo is implemented with proper white ba
 ```tsx
 <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl shadow-primary-500/30 p-3 ring-2 ring-white/20 ring-offset-2 ring-offset-slate-900">
   <Image
-    src="/logo.png"
+    src="/ci2p_logo.png"
     alt="CI2P Lab"
     width={64}
     height={64}
@@ -190,7 +190,7 @@ import Image from "next/image";
 // 1. Simple logo with white background
 <div className="w-12 h-12 bg-white rounded-lg p-1.5">
   <Image
-    src="/logo.png"
+    src="/ci2p_logo.png"
     alt="CI2P Lab"
     width={40}
     height={40}
@@ -201,7 +201,7 @@ import Image from "next/image";
 // 2. Logo with shadow
 <div className="w-12 h-12 bg-white rounded-lg p-1.5 shadow-lg">
   <Image
-    src="/logo.png"
+    src="/ci2p_logo.png"
     alt="CI2P Lab"
     width={40}
     height={40}
@@ -212,7 +212,7 @@ import Image from "next/image";
 // 3. Logo with hover effect
 <div className="w-12 h-12 bg-white rounded-lg p-1.5 shadow-lg hover:scale-110 transition-transform">
   <Image
-    src="/logo.png"
+    src="/ci2p_logo.png"
     alt="CI2P Lab"
     width={40}
     height={40}
@@ -223,7 +223,7 @@ import Image from "next/image";
 // 4. Logo with ring and colored shadow (Premium)
 <div className="w-16 h-16 bg-white rounded-2xl p-2 shadow-2xl shadow-primary-500/30 ring-2 ring-white/20 ring-offset-2 ring-offset-slate-900">
   <Image
-    src="/logo.png"
+    src="/ci2p_logo.png"
     alt="CI2P Lab"
     width={56}
     height={56}

@@ -56,23 +56,42 @@ export function Navbar() {
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
-            {/* Logo */}
+            {/* Logos - CI2P + UJN */}
             <Link href="/" className="flex items-center gap-3 group">
+              {/* CI2P Logo */}
               <div
-                className={`relative w-12 h-12 rounded-lg transition-all group-hover:scale-110 p-1.5 ${
+                className={`relative w-11 h-11 rounded-lg transition-all group-hover:scale-110 p-1.5 ${
                   isScrolled
                     ? "bg-white shadow-md"
                     : "bg-white/95 shadow-lg shadow-white/20"
                 }`}
               >
                 <Image
-                  src="/logo.png"
+                  src="/ci2p_logo.png"
                   alt="CI2P Lab"
-                  width={40}
-                  height={40}
+                  width={32}
+                  height={32}
                   className="object-contain"
                 />
               </div>
+
+              {/* UJN Logo */}
+              <div
+                className={`relative w-11 h-11 rounded-lg transition-all group-hover:scale-110 p-1.5 ${
+                  isScrolled
+                    ? "bg-white shadow-md"
+                    : "bg-white/95 shadow-lg shadow-white/20"
+                }`}
+              >
+                <Image
+                  src="/ujn_logo.png"
+                  alt="University of Jinan"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
+              </div>
+
               <div>
                 <h1
                   className={`text-xl font-bold transition-colors ${

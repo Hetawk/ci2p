@@ -4,6 +4,7 @@
 // Modern footer with lab information, quick links, and social connections
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -56,47 +57,62 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 text-white">
-      {/* Decorative top wave */}
-      <div className="absolute top-0 left-0 right-0 overflow-hidden leading-none">
-        <svg
-          className="relative block w-full h-12"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
-            className="fill-gray-50"
-          />
-        </svg>
-      </div>
+    <footer className="relative bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 text-white mt-20">
+      {/* Modern Ledger-style Top Border */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-50" />
+      <div className="absolute top-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-secondary-400 to-transparent" />
 
-      <div className="relative pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="relative pt-16 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Main footer content */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            {/* Brand section */}
-            <div className="space-y-4">
+            {/* Brand section - Modern Card Design */}
+            <div className="space-y-6">
               <Link href="/" className="inline-block group">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/10 rounded-lg backdrop-blur flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                    <Microscope className="w-6 h-6 text-secondary-400" />
+                {/* Dual Logo Display */}
+                <div className="flex items-center gap-3 mb-4">
+                  {/* CI2P Logo Card */}
+                  <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow p-2">
+                    <Image
+                      src="/ci2p_logo.png"
+                      alt="CI2P Lab"
+                      width={40}
+                      height={40}
+                      className="object-contain"
+                    />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-secondary-400 to-accent-400">
-                      CI2P Lab
-                    </h3>
-                    <p className="text-xs text-gray-400">University of Jinan</p>
+
+                  {/* UJN Logo Card */}
+                  <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow p-2">
+                    <Image
+                      src="/ujn_logo.png"
+                      alt="University of Jinan"
+                      width={40}
+                      height={40}
+                      className="object-contain"
+                    />
                   </div>
                 </div>
+
+                <div>
+                  <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-secondary-400 to-accent-400 mb-1">
+                    CI2P Research Lab
+                  </h3>
+                  <p className="text-sm text-gray-400">University of Jinan</p>
+                </div>
               </Link>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                Advancing research in Machine Learning, Artificial Intelligence,
-                and Image Processing. Key Laboratory of Intelligent Computing
-                Technology.
-              </p>
-              <div className="flex items-center gap-3 pt-2">
+
+              {/* Description Card */}
+              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  Advancing research in Machine Learning, Artificial
+                  Intelligence, and Image Processing. Key Laboratory of
+                  Intelligent Computing Technology.
+                </p>
+              </div>
+
+              {/* Social Links */}
+              <div className="flex items-center gap-3">
                 {socialLinks.map((social) => (
                   <motion.a
                     key={social.name}
@@ -105,7 +121,7 @@ export function Footer() {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="p-2 rounded-full bg-white/10 hover:bg-secondary-500/30 transition-colors duration-300"
+                    className="p-2.5 rounded-lg bg-white/10 hover:bg-secondary-500/30 transition-colors duration-300 border border-white/5"
                     aria-label={social.name}
                   >
                     <social.icon className="w-5 h-5" />
@@ -114,10 +130,12 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Research Links */}
-            <div>
+            {/* Research Links - Card Style */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-secondary-400/30 transition-colors">
               <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Microscope className="w-5 h-5 text-secondary-400" />
+                <div className="p-2 rounded-lg bg-secondary-500/20">
+                  <Microscope className="w-5 h-5 text-secondary-400" />
+                </div>
                 Research
               </h4>
               <ul className="space-y-3">
@@ -138,10 +156,12 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* About Links */}
-            <div>
+            {/* About Links - Card Style */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-accent-400/30 transition-colors">
               <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-accent-400" />
+                <div className="p-2 rounded-lg bg-accent-500/20">
+                  <BookOpen className="w-5 h-5 text-accent-400" />
+                </div>
                 About Us
               </h4>
               <ul className="space-y-3">
@@ -162,13 +182,15 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Contact & Resources */}
-            <div>
+            {/* Contact & Resources - Card Style */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-primary-400/30 transition-colors">
               <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Mail className="w-5 h-5 text-primary-400" />
+                <div className="p-2 rounded-lg bg-primary-500/20">
+                  <Mail className="w-5 h-5 text-primary-400" />
+                </div>
                 Get in Touch
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-3 mb-6">
                 {footerLinks.resources.map((link) => {
                   const Icon = link.icon;
                   return (
@@ -184,11 +206,13 @@ export function Footer() {
                   );
                 })}
               </ul>
-              <div className="mt-6 p-4 rounded-lg bg-white/5 border border-white/10 backdrop-blur">
-                <p className="text-sm text-gray-300 mb-2 font-semibold">
+
+              {/* Location Card */}
+              <div className="p-4 rounded-lg bg-gradient-to-br from-primary-500/10 to-secondary-500/10 border border-primary-400/20">
+                <p className="text-xs text-primary-300 mb-2 font-semibold uppercase tracking-wider">
                   Location
                 </p>
-                <p className="text-white text-sm font-medium">
+                <p className="text-white text-sm font-medium leading-relaxed">
                   University of Jinan
                   <br />
                   Jinan, Shandong, China

@@ -98,7 +98,7 @@ export function ResearchShowcase() {
         {/* Section Header */}
         <div className="text-center mb-12 animate-fade-in">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
+            <span className="text-primary bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
               Our Research
             </span>{" "}
             in Action

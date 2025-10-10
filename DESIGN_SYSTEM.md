@@ -300,7 +300,7 @@ className = "shadow-glow-accent"; // Purple glow
 
 ```tsx
 <div className="animate-float shadow-glow-primary">
-  <img src="/logo.png" alt="CI2P Lab" />
+  <img src="/ci2p_logo.png" alt="CI2P Lab" />
 </div>
 ```
 

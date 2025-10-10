@@ -98,17 +98,30 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
         <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
           {/* Left: Text Content */}
           <div className="space-y-8 text-white">
-            {/* Lab Logo/Badge */}
+            {/* Lab Logos - CI2P + UJN */}
             <div className="flex items-center gap-4 animate-fade-in">
-              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl shadow-primary-500/30 p-3 ring-2 ring-white/20 ring-offset-2 ring-offset-slate-900">
+              {/* CI2P Logo */}
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl shadow-primary-500/30 p-3 ring-2 ring-white/20 ring-offset-2 ring-offset-slate-900 transition-transform hover:scale-105">
                 <Image
-                  src="/logo.png"
+                  src="/ci2p_logo.png"
                   alt="CI2P Lab"
                   width={64}
                   height={64}
                   className="object-contain"
                 />
               </div>
+
+              {/* UJN Logo */}
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl shadow-secondary-500/30 p-3 ring-2 ring-white/20 ring-offset-2 ring-offset-slate-900 transition-transform hover:scale-105">
+                <Image
+                  src="/ujn_logo.png"
+                  alt="University of Jinan"
+                  width={64}
+                  height={64}
+                  className="object-contain"
+                />
+              </div>
+
               <div>
                 <h1 className="text-2xl font-bold text-white drop-shadow-lg">
                   CI2P Research Lab
