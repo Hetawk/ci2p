@@ -10,8 +10,9 @@ import { motion } from "framer-motion";
 export interface TeamMember {
   id: string;
   name: string;
+  chineseName?: string;
   role: string;
-  category: "faculty" | "masters" | "undergrad" | "alumni";
+  category: "faculty" | "phd" | "masters" | "undergrad" | "alumni";
   photo?: string;
   email?: string;
   researchInterests?: string[];
@@ -21,6 +22,8 @@ export interface TeamMember {
   website?: string;
   graduationYear?: string;
   currentPosition?: string;
+  publications?: number;
+  projects?: number;
 }
 
 interface MemberCardProps {

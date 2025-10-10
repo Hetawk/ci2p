@@ -220,6 +220,18 @@ export default function UserMenu() {
                   Dashboards
                 </p>
 
+                {/* Admin Dashboard - Only for SUPER_ADMIN */}
+                {user.isSuperAdmin && (
+                  <Link
+                    href="/admin/overview"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-blue-600 transition-colors group"
+                  >
+                    <Shield className="w-4 h-4 group-hover:text-blue-600" />
+                    <span className="text-sm font-medium">Admin Dashboard</span>
+                  </Link>
+                )}
+
                 {(user.dashboard === "BOTH" ||
                   user.dashboard === "HERPROMISE" ||
                   user.isSuperAdmin) && (

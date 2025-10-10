@@ -8,13 +8,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Rocket,
   Users,
   Calendar,
   Tag,
   ArrowLeft,
   ExternalLink,
-  Building2,
   Award,
   GitBranch,
   CheckCircle2,
@@ -22,7 +20,6 @@ import {
   AlertCircle,
   DollarSign,
   Target,
-  TrendingUp,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -144,7 +141,11 @@ export default function ProjectDetailPage() {
   // Status badge configuration
   const statusConfig: Record<
     string,
-    { label: string; color: string; icon: any }
+    {
+      label: string;
+      color: string;
+      icon: React.ComponentType<{ className?: string }>;
+    }
   > = {
     ACTIVE: {
       label: "Active",

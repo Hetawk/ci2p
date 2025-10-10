@@ -23,11 +23,11 @@ export async function GET(request: NextRequest) {
     const where: Prisma.ResourceWhereInput = {};
 
     if (type) {
-      where.type = type as any;
+      where.type = type as Prisma.ResourceWhereInput["type"];
     }
 
     if (status) {
-      where.status = status as any;
+      where.status = status as Prisma.ResourceWhereInput["status"];
     }
 
     if (isBookable !== null && isBookable !== undefined) {

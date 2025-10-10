@@ -1,6 +1,7 @@
 "use client";
 
-import { ViewMode } from "@/app/(main)/page";
+// ViewMode type for view switching functionality
+type ViewMode = "patience" | "organization";
 
 interface HeroProps {
   viewMode: ViewMode;

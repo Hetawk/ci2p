@@ -15,72 +15,42 @@ import {
   GraduationCap,
   ArrowLeft,
   FileText,
+  Linkedin,
+  Phone,
+  Globe,
 } from "lucide-react";
 
-// This would normally come from your database
-// For now, using the same data structure from team page
-const getTeamMember = (id: string) => {
-  // TODO: Replace with actual database query
-  // const member = await prisma.user.findUnique({ where: { id } })
-
-  const members = [
-    {
-      id: "sijie-niu",
-      name: "Prof. Sijie Niu",
-      role: "Professor & Doctoral Supervisor",
-      category: "faculty" as const,
-      photo: "/SJ.jpg",
-      email: "ise_niusj@ujn.edu.cn",
-      bio: "Professor Sijie Niu is the director of CI2P Lab at University of Jinan. He received his PhD from Nanjing University of Science and Technology in 2016, and completed postdoctoral research at UNC Chapel Hill (2019-2021) with Prof. Dinggang Shen. His research focuses on machine learning, pattern recognition, medical image analysis, and remote sensing.",
-      researchInterests: [
-        "Machine Learning",
-        "Pattern Recognition",
-        "Medical Image Analysis",
-        "Remote Sensing",
-        "Deep Learning",
-        "Computer Vision",
-      ],
-      education: [
-        {
-          degree: "Ph.D. in Pattern Recognition and Intelligent Systems",
-          institution: "Nanjing University of Science and Technology",
-          year: "2016",
-        },
-        {
-          degree: "Visiting Scholar",
-          institution: "Stanford University",
-          year: "2014",
-        },
-      ],
-      achievements: [
-        "ACM Jinan Rising Star Award",
-        "Leader of Shandong Province Youth Innovation Team",
-        "Top 1% ESI Highly Cited Paper (2017-2021)",
-        "59+ Published Papers",
-        "7+ Research Projects (NSFC, Provincial Grants)",
-      ],
-      orcid: "0000-0002-1401-9859",
-      github: "sjniu",
-      googleScholar: "https://scholar.google.com",
-      researchGate: "https://researchgate.net",
-      location: "Jinan, Shandong, China",
-    },
-    // Add other members as needed
-  ];
-
-  return members.find((m) => m.id === id);
-};
-
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
+}
+
+// Fetch team member from API
+async function getTeamMember(id: string) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/users/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching team member:", error);
+    return null;
+  }
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const member = getTeamMember(params.id);
+  const { id } = await params;
+  const member = await getTeamMember(id);
 
   if (!member) {
     return {
@@ -89,159 +59,240 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${member.name} - CI2P Research Lab Team`,
-    description: `Profile of ${member.name}, ${
-      member.role
-    } at CI2P Lab, University of Jinan. Research interests: ${member.researchInterests.join(
-      ", "
-    )}.`,
+    title: `${member.profile.fullName} - CI2P Research Lab Team`,
+    description: `Profile of ${member.profile.fullName}, ${
+      member.profile.title || "Researcher"
+    } at CI2P Lab, University of Jinan. Research interests: ${
+      member.profile.interests || ""
+    }.`,
   };
 }
 
-export default function TeamMemberPage({ params }: PageProps) {
-  const member = getTeamMember(params.id);
+export default async function TeamMemberPage({ params }: PageProps) {
+  const { id } = await params;
+  const member = await getTeamMember(id);
 
   if (!member) {
     notFound();
   }
 
+  const profile = member.profile;
+  const researchInterests = profile.interests
+    ? profile.interests.split(",").map((i: string) => i.trim())
+    : [];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-white">
-      {/* Back Button */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto max-w-7xl px-4 py-4">
-          <Button variant="ghost" asChild>
-            <Link href="/team">
+    <main className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-slate-50">
+      {/* Header */}
+      <section className="relative py-12 px-4 bg-white border-b border-gray-200">
+        <div className="container mx-auto max-w-7xl">
+          <Link href="/team">
+            <Button
+              variant="ghost"
+              className="mb-6 hover:bg-blue-50 text-blue-600"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Team
-            </Link>
-          </Button>
-        </div>
-      </div>
+            </Button>
+          </Link>
 
-      {/* Profile Header */}
-      <section className="py-12 px-4 bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid md:grid-cols-[300px_1fr] gap-8">
+          <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Profile Photo */}
-            <div className="space-y-4">
-              <div className="relative aspect-square w-full rounded-2xl overflow-hidden border-4 border-white shadow-2xl">
-                {member.photo ? (
-                  <Image
-                    src={member.photo}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
-                    <span className="text-6xl font-bold text-primary-600">
-                      {member.name.charAt(0)}
-                    </span>
-                  </div>
+            <div className="relative w-48 h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex-shrink-0 shadow-lg">
+              {profile.avatar ? (
+                <Image
+                  src={profile.avatar}
+                  alt={profile.fullName}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-5xl font-bold">
+                  {profile.fullName.charAt(0)}
+                </div>
+              )}
+            </div>
+
+            {/* Basic Info */}
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-4xl font-bold text-gray-900">
+                  {profile.fullName}
+                </h1>
+                {profile.chineseName && (
+                  <span className="text-2xl text-gray-600">
+                    ({profile.chineseName})
+                  </span>
                 )}
               </div>
 
-              {/* Quick Contact */}
-              <Card className="p-4 bg-white/95 backdrop-blur">
-                <div className="space-y-3">
-                  {member.email && (
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary-600 transition-colors"
-                    >
-                      <Mail className="w-4 h-4" />
-                      {member.email}
+              <p className="text-xl text-blue-600 mb-4">{profile.title}</p>
+
+              {profile.bio && (
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  {profile.bio}
+                </p>
+              )}
+
+              {/* Contact & Links */}
+              <div className="flex flex-wrap gap-3">
+                {profile.email && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+                  >
+                    <a href={`mailto:${profile.email}`}>
+                      <Mail className="w-4 h-4 mr-2" />
+                      Email
                     </a>
-                  )}
-                  {member.location && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <MapPin className="w-4 h-4" />
-                      {member.location}
+                  </Button>
+                )}
+
+                {profile.phone && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+                  >
+                    <a href={`tel:${profile.phone}`}>
+                      <Phone className="w-4 h-4 mr-2" />
+                      Phone
+                    </a>
+                  </Button>
+                )}
+
+                {profile.github && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-gray-200 hover:bg-gray-50"
+                  >
+                    <a
+                      href={`https://github.com/${profile.github}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Github className="w-4 h-4 mr-2" />
+                      GitHub
+                    </a>
+                  </Button>
+                )}
+
+                {profile.linkedin && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-blue-600 hover:bg-blue-50"
+                  >
+                    <a
+                      href={profile.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Linkedin className="w-4 h-4 mr-2" />
+                      LinkedIn
+                    </a>
+                  </Button>
+                )}
+
+                {profile.website && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-gray-200 hover:bg-gray-50"
+                  >
+                    <a
+                      href={profile.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Globe className="w-4 h-4 mr-2" />
+                      Website
+                    </a>
+                  </Button>
+                )}
+
+                {profile.orcidId && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-green-200 hover:bg-green-50"
+                  >
+                    <a
+                      href={`https://orcid.org/${profile.orcidId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      ORCID
+                    </a>
+                  </Button>
+                )}
+
+                {profile.googleScholar && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-blue-200 hover:bg-blue-50"
+                  >
+                    <a
+                      href={profile.googleScholar}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <GraduationCap className="w-4 h-4 mr-2" />
+                      Google Scholar
+                    </a>
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Stats Card */}
+            <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+              <h3 className="text-sm font-semibold text-gray-600 mb-4">
+                Research Metrics
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <div className="text-3xl font-bold text-blue-600">
+                    {profile.publicationCount || 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Publications</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-purple-600">
+                    {profile.projectCount || 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Projects</div>
+                </div>
+                {profile.citationCount !== null &&
+                  profile.citationCount !== undefined && (
+                    <div>
+                      <div className="text-3xl font-bold text-green-600">
+                        {profile.citationCount}
+                      </div>
+                      <div className="text-sm text-gray-600">Citations</div>
                     </div>
                   )}
-                </div>
-              </Card>
-
-              {/* Social Links */}
-              <Card className="p-4 bg-white/95 backdrop-blur">
-                <h3 className="font-semibold text-gray-900 mb-3">Connect</h3>
-                <div className="flex flex-wrap gap-2">
-                  {member.orcid && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      asChild
-                    >
-                      <Link
-                        href={`https://orcid.org/${member.orcid}`}
-                        target="_blank"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-1" />
-                        ORCID
-                      </Link>
-                    </Button>
-                  )}
-                  {member.github && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      asChild
-                    >
-                      <Link
-                        href={`https://github.com/${member.github}`}
-                        target="_blank"
-                      >
-                        <Github className="w-4 h-4 mr-1" />
-                        GitHub
-                      </Link>
-                    </Button>
-                  )}
-                </div>
-              </Card>
-            </div>
-
-            {/* Profile Info */}
-            <div className="space-y-6">
-              <div>
-                <Badge className="mb-3 bg-primary-500 text-white">
-                  {member.category === "faculty"
-                    ? "Faculty"
-                    : member.category === "masters"
-                    ? "Master's Student"
-                    : member.category === "undergrad"
-                    ? "Undergraduate Researcher"
-                    : "Alumni"}
-                </Badge>
-                <h1 className="text-4xl lg:text-5xl font-bold text-white mb-2">
-                  {member.name}
-                </h1>
-                <p className="text-xl text-secondary-300 mb-6">{member.role}</p>
-                <p className="text-gray-200 leading-relaxed">{member.bio}</p>
+                {profile.hIndex !== null && profile.hIndex !== undefined && (
+                  <div>
+                    <div className="text-3xl font-bold text-orange-600">
+                      {profile.hIndex}
+                    </div>
+                    <div className="text-sm text-gray-600">h-Index</div>
+                  </div>
+                )}
               </div>
-
-              {/* Research Interests */}
-              <div>
-                <h2 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-secondary-400" />
-                  Research Interests
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {member.researchInterests.map((interest, idx) => (
-                    <Badge
-                      key={idx}
-                      variant="outline"
-                      className="bg-white/10 text-white border-white/30 backdrop-blur"
-                    >
-                      {interest}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </div>
+            </Card>
           </div>
         </div>
       </section>
@@ -249,88 +300,195 @@ export default function TeamMemberPage({ params }: PageProps) {
       {/* Main Content */}
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-7xl">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left Column - Education & Achievements */}
-            <div className="space-y-6">
-              {/* Education */}
-              {member.education && member.education.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Research Interests */}
+              {researchInterests.length > 0 && (
                 <Card className="p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <GraduationCap className="w-6 h-6 text-primary-600" />
-                    Education
-                  </h2>
-                  <div className="space-y-4">
-                    {member.education.map((edu, idx) => (
-                      <div
-                        key={idx}
-                        className="border-l-2 border-primary-300 pl-4"
-                      >
-                        <h3 className="font-semibold text-gray-900">
-                          {edu.degree}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          {edu.institution}
-                        </p>
-                        <p className="text-xs text-gray-500">{edu.year}</p>
-                      </div>
-                    ))}
+                  <div className="flex items-center gap-2 mb-4">
+                    <Award className="w-5 h-5 text-blue-600" />
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      Research Interests
+                    </h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {researchInterests.map(
+                      (interest: string, index: number) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="px-3 py-1.5 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200"
+                        >
+                          {interest}
+                        </Badge>
+                      )
+                    )}
                   </div>
                 </Card>
               )}
 
-              {/* Achievements */}
-              {member.achievements && member.achievements.length > 0 && (
+              {/* Publications */}
+              {member.publications && member.publications.length > 0 && (
                 <Card className="p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Award className="w-6 h-6 text-secondary-600" />
-                    Achievements
-                  </h2>
-                  <ul className="space-y-2">
-                    {member.achievements.map((achievement, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start gap-2 text-sm text-gray-700"
-                      >
-                        <span className="text-primary-500 mt-1">•</span>
-                        {achievement}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="flex items-center gap-2 mb-6">
+                    <BookOpen className="w-5 h-5 text-green-600" />
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      Recent Publications
+                    </h2>
+                  </div>
+                  <div className="space-y-4">
+                    {member.publications
+                      .slice(0, 5)
+                      .map(
+                        (pub: {
+                          id: string;
+                          title: string;
+                          journal?: string;
+                          conference?: string;
+                          year: number;
+                          customTags?: string;
+                        }) => (
+                          <Link
+                            key={pub.id}
+                            href={`/papers/${pub.id}`}
+                            className="block group"
+                          >
+                            <div className="p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50/50 transition-all">
+                              <h3 className="font-semibold text-gray-900 group-hover:text-green-600 mb-2">
+                                {pub.title}
+                              </h3>
+                              <p className="text-sm text-gray-600 mb-2">
+                                {pub.journal || pub.conference} • {pub.year}
+                              </p>
+                              {pub.customTags && (
+                                <div className="flex flex-wrap gap-1">
+                                  {pub.customTags
+                                    .split(",")
+                                    .slice(0, 3)
+                                    .map((tag: string, i: number) => (
+                                      <Badge
+                                        key={i}
+                                        variant="outline"
+                                        className="text-xs"
+                                      >
+                                        {tag.trim()}
+                                      </Badge>
+                                    ))}
+                                </div>
+                              )}
+                            </div>
+                          </Link>
+                        )
+                      )}
+                  </div>
+                  {member.publications.length > 5 && (
+                    <Button variant="outline" className="w-full mt-4" asChild>
+                      <Link href="/papers">
+                        View All Publications ({member.publications.length})
+                      </Link>
+                    </Button>
+                  )}
+                </Card>
+              )}
+
+              {/* Projects */}
+              {member.projects && member.projects.length > 0 && (
+                <Card className="p-6">
+                  <div className="flex items-center gap-2 mb-6">
+                    <FileText className="w-5 h-5 text-purple-600" />
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      Active Projects
+                    </h2>
+                  </div>
+                  <div className="space-y-4">
+                    {member.projects.map(
+                      (project: {
+                        id: string;
+                        title: string;
+                        description: string;
+                        status: string;
+                        startDate?: string;
+                      }) => (
+                        <Link
+                          key={project.id}
+                          href={`/research/projects/${project.id}`}
+                          className="block group"
+                        >
+                          <div className="p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all">
+                            <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 mb-2">
+                              {project.title}
+                            </h3>
+                            <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                              {project.description}
+                            </p>
+                            <div className="flex items-center gap-4 text-xs text-gray-500">
+                              <span className="flex items-center gap-1">
+                                <Award className="w-3 h-3" />
+                                {project.status}
+                              </span>
+                              {project.startDate && (
+                                <span>
+                                  Started:{" "}
+                                  {new Date(
+                                    project.startDate
+                                  ).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                    )}
+                  </div>
                 </Card>
               )}
             </div>
 
-            {/* Right Column - Publications */}
-            <div className="lg:col-span-2">
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <FileText className="w-6 h-6 text-primary-600" />
-                    Publications
-                  </h2>
-                  {member.orcid && (
-                    <Badge className="bg-green-100 text-green-700 border-green-300">
-                      <ExternalLink className="w-3 h-3 mr-1" />
-                      Synced from ORCID
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Placeholder for papers - This will be fetched from ORCID */}
-                <div className="text-center py-12 text-gray-500">
-                  <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p>Publications will be displayed here</p>
-                  <p className="text-sm">
-                    Papers synced from ORCID: {member.orcid || "Not connected"}
-                  </p>
-                </div>
-
-                {/* TODO: Integrate with PaperCard component to show actual papers */}
-              </Card>
+            {/* Right Column - Additional Info */}
+            <div className="space-y-6">
+              {/* Contact Card */}
+              {(profile.office || profile.phone || profile.email) && (
+                <Card className="p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    Contact Information
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    {profile.office && (
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-600">{profile.office}</span>
+                      </div>
+                    )}
+                    {profile.phone && (
+                      <div className="flex items-start gap-2">
+                        <Phone className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                        <a
+                          href={`tel:${profile.phone}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          {profile.phone}
+                        </a>
+                      </div>
+                    )}
+                    {profile.email && (
+                      <div className="flex items-start gap-2">
+                        <Mail className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                        <a
+                          href={`mailto:${profile.email}`}
+                          className="text-blue-600 hover:underline break-all"
+                        >
+                          {profile.email}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              )}
             </div>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

@@ -1,6 +1,10 @@
 // CI2P Lab Platform - ORCID Integration Service (Simplified Public API)
 // No OAuth or API keys required - just use ORCID IDs!
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Note: This file uses 'any' types for external ORCID API responses
+// which have complex, dynamic structures
+
 import { OrcidProfile, OrcidWork, OrcidSyncResult } from "@/lib/types";
 
 const ORCID_PUBLIC_API_URL =

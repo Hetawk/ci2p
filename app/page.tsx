@@ -9,7 +9,6 @@ import { FeaturedProjects } from "@/components/projects/FeaturedProjects";
 import { ResearchAreas } from "@/components/sections/ResearchAreas";
 import { LabMetrics } from "@/components/sections/LabMetrics";
 import { Footer } from "@/components/layout/Footer";
-import { SectionLedger } from "@/components/effects";
 import { prisma } from "@/lib/prisma";
 
 // Revalidate every hour

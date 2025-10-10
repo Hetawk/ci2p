@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { motion, useScroll } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import UserMenu from "./UserMenu";
 import {
   Menu,
   X,
@@ -17,8 +17,6 @@ import {
   Users,
   BookOpen,
   Mail,
-  LogIn,
-  User,
 } from "lucide-react";
 
 const navLinks = [
@@ -144,37 +142,9 @@ export function Navbar() {
               })}
             </div>
 
-            {/* Auth Buttons */}
+            {/* User Menu or Auth Buttons */}
             <div className="hidden lg:flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className={
-                  isScrolled
-                    ? "text-gray-700 hover:text-primary-600 hover:bg-primary-50"
-                    : "text-white hover:bg-white/20"
-                }
-              >
-                <Link href="/login">
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Login
-                </Link>
-              </Button>
-              <Button
-                size="sm"
-                asChild
-                className={
-                  isScrolled
-                    ? "bg-primary-600 hover:bg-primary-700 text-white"
-                    : "bg-white text-primary-900 hover:bg-gray-100"
-                }
-              >
-                <Link href="/register">
-                  <User className="w-4 h-4 mr-2" />
-                  Join Us
-                </Link>
-              </Button>
+              <UserMenu />
             </div>
 
             {/* Mobile Menu Button */}
@@ -235,20 +205,9 @@ export function Navbar() {
             })}
           </div>
 
-          {/* Mobile Auth Buttons */}
-          <div className="space-y-3 pt-6 border-t">
-            <Button variant="outline" size="lg" className="w-full" asChild>
-              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <LogIn className="w-5 h-5 mr-2" />
-                Login
-              </Link>
-            </Button>
-            <Button size="lg" className="w-full" asChild>
-              <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                <User className="w-5 h-5 mr-2" />
-                Join Us
-              </Link>
-            </Button>
+          {/* Mobile User Menu */}
+          <div className="pt-6 border-t">
+            <UserMenu />
           </div>
 
           {/* Contact Info */}

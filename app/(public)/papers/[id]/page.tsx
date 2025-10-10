@@ -84,7 +84,9 @@ export default function PaperDetailPage() {
   author={${
     Array.isArray(paper.authors)
       ? paper.authors
-          .map((a: any) => (typeof a === "string" ? a : a.name))
+          .map((a: string | { name: string }) =>
+            typeof a === "string" ? a : a.name
+          )
           .join(" and ")
       : firstAuthor
   }},
@@ -257,14 +259,16 @@ export default function PaperDetailPage() {
                     <div className="flex flex-wrap gap-x-2 gap-y-1">
                       {Array.isArray(paper.authors) &&
                       paper.authors.length > 0 ? (
-                        paper.authors.map((author: any, idx: number) => (
-                          <span key={idx} className="text-gray-700">
-                            {typeof author === "string"
-                              ? author
-                              : author.name || author}
-                            {idx < paper.authors.length - 1 && ","}
-                          </span>
-                        ))
+                        paper.authors.map(
+                          (author: string | { name: string }, idx: number) => (
+                            <span key={idx} className="text-gray-700">
+                              {typeof author === "string"
+                                ? author
+                                : author.name}
+                              {idx < paper.authors.length - 1 && ","}
+                            </span>
+                          )
+                        )
                       ) : (
                         <span className="text-gray-700">
                           {paper.author?.profile?.fullName || "Unknown Author"}

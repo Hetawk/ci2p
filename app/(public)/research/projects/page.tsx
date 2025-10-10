@@ -15,10 +15,8 @@ import {
   Search,
   TrendingUp,
   X,
-  ExternalLink,
   Loader2,
   AlertCircle,
-  Calendar,
   DollarSign,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -163,7 +161,7 @@ export default function ProjectsPage() {
         try {
           const tags = JSON.parse(project.tags);
           tags.forEach((tag: string) => tagsSet.add(tag));
-        } catch (e) {
+        } catch {
           // Ignore parse errors
         }
       }
@@ -177,31 +175,6 @@ export default function ProjectsPage() {
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
     setCurrentPage(1);
-  };
-
-  // Get team members string
-  const getTeamString = (members: Project["members"]) => {
-    if (!members || members.length === 0) return "No team members";
-    const leads = members.filter(
-      (m) => m.role === "LEAD" || m.role === "CO_LEAD"
-    );
-    if (leads.length > 0) {
-      const leadNames = leads
-        .map((m) => m.user.profile?.fullName || "Unknown")
-        .join(", ");
-      return `Led by ${leadNames}`;
-    }
-    return `${members.length} team member${members.length > 1 ? "s" : ""}`;
-  };
-
-  // Get tags array
-  const getTagsArray = (tagsJson?: string): string[] => {
-    if (!tagsJson) return [];
-    try {
-      return JSON.parse(tagsJson);
-    } catch {
-      return [];
-    }
   };
 
   // Stats

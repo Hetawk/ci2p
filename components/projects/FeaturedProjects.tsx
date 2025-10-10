@@ -56,7 +56,10 @@ export function FeaturedProjects({
         {/* Projects Grid */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => {
-            const tags = project.tags ? JSON.parse(project.tags as string) : [];
+            // Tags are stored as comma-separated strings, not JSON
+            const tags = project.tags
+              ? project.tags.split(",").map((t: string) => t.trim())
+              : [];
             const memberCount =
               project._count?.members || project.members?.length || 0;
 

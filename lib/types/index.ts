@@ -174,7 +174,7 @@ export interface LoadingProps {
 export interface EmptyStateProps {
   title: string;
   description?: string;
-  icon?: React.ComponentType<any>;
+  icon?: React.ComponentType<{ className?: string }>;
   action?: {
     label: string;
     onClick: () => void;

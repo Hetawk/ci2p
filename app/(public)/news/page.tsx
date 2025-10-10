@@ -9,7 +9,6 @@ import Pagination from "@/components/ui/Pagination";
 import {
   Newspaper,
   Search,
-  Calendar,
   TrendingUp,
   X,
   Loader2,
@@ -42,18 +41,6 @@ interface PaginationData {
 }
 
 const NEWS_PER_PAGE = 12;
-
-const CATEGORY_COLORS: Record<string, string> = {
-  LAB_NEWS: "bg-blue-100 text-blue-700",
-  PUBLICATION: "bg-purple-100 text-purple-700",
-  AWARD: "bg-yellow-100 text-yellow-700",
-  EVENT: "bg-green-100 text-green-700",
-  SEMINAR: "bg-indigo-100 text-indigo-700",
-  RECRUITMENT: "bg-red-100 text-red-700",
-  COLLABORATION: "bg-pink-100 text-pink-700",
-  MEDIA: "bg-cyan-100 text-cyan-700",
-  OTHER: "bg-gray-100 text-gray-700",
-};
 
 const CATEGORY_LABELS: Record<string, string> = {
   LAB_NEWS: "Lab News",
@@ -151,7 +138,7 @@ export default function NewsPage() {
         try {
           const tags = JSON.parse(article.tags);
           tags.forEach((tag: string) => tagsSet.add(tag));
-        } catch (e) {
+        } catch {
           // Ignore parse errors
         }
       }
@@ -165,16 +152,6 @@ export default function NewsPage() {
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
     setCurrentPage(1);
-  };
-
-  // Get tags array
-  const getTagsArray = (tagsJson?: string): string[] => {
-    if (!tagsJson) return [];
-    try {
-      return JSON.parse(tagsJson);
-    } catch {
-      return [];
-    }
   };
 
   // Stats
@@ -271,7 +248,11 @@ export default function NewsPage() {
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                 >
                   <NewsCard
-                    article={article as any}
+                    article={
+                      article as unknown as Parameters<
+                        typeof NewsCard
+                      >[0]["article"]
+                    }
                     index={index}
                     variant="featured"
                   />
@@ -424,7 +405,14 @@ export default function NewsPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                   >
-                    <NewsCard article={article as any} index={index} />
+                    <NewsCard
+                      article={
+                        article as unknown as Parameters<
+                          typeof NewsCard
+                        >[0]["article"]
+                      }
+                      index={index}
+                    />
                   </motion.div>
                 ))}
               </div>

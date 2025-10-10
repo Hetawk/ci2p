@@ -17,7 +17,6 @@ import {
   Eye,
   Loader2,
   AlertCircle,
-  User,
 } from "lucide-react";
 import { motion } from "framer-motion";
 

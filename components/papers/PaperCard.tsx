@@ -28,7 +28,7 @@ export function PaperCard({
   onTogglePublished,
 }: PaperCardProps) {
   const authorNames = JSON.parse((paper.authors as string) || "[]")
-    .map((a: any) => a.name)
+    .map((a: { name: string }) => a.name)
     .join(", ");
 
   return (
