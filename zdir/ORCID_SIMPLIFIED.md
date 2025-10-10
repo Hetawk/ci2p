@@ -15,6 +15,7 @@ ORCID_PUBLIC_API_URL="https://pub.orcid.org/v3.0"
 
 That's it! No client IDs, secrets, or redirect URIs needed.
 
+
 ### 2. Usage Examples
 
 #### Fetch Researcher Profile

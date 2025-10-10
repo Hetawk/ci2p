@@ -17,6 +17,13 @@ export async function GET(request: Request) {
     // Find user with this verification token
     const user = await prisma.user.findUnique({
       where: { verificationToken: token },
+      include: {
+        profile: {
+          select: {
+            fullName: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -44,7 +51,7 @@ export async function GET(request: Request) {
 
     // Send welcome email
     const welcomeTemplate = emailTemplates.welcomeEmail(
-      user.name || user.email
+      user.profile?.fullName || user.email
     );
     await sendEmail({
       to: user.email,

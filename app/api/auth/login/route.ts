@@ -41,6 +41,13 @@ export async function POST(request: Request) {
       where: {
         OR: [{ email: identifier }, { username: identifier }],
       },
+      include: {
+        profile: {
+          select: {
+            fullName: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -84,16 +91,8 @@ export async function POST(request: Request) {
       data: { lastLogin: new Date() },
     });
 
-    // Determine dashboard access
-    let dashboardAccess: "portfolio" | "herpromise" = "herpromise";
-    if (user.dashboard === "PORTFOLIO") {
-      dashboardAccess = "portfolio";
-    } else if (user.dashboard === "BOTH") {
-      dashboardAccess = "herpromise"; // Default to herpromise if both
-    }
-
-    // Set auth cookie
-    await setAuthCookie(dashboardAccess, {
+    // Set auth cookie (default to herpromise dashboard)
+    await setAuthCookie("herpromise", {
       userId: user.id,
       email: user.email,
       role: user.role,
@@ -105,9 +104,8 @@ export async function POST(request: Request) {
         id: user.id,
         email: user.email,
         username: user.username,
-        name: user.name,
+        name: user.profile?.fullName,
         role: user.role,
-        dashboard: user.dashboard,
       },
     });
   } catch (error) {

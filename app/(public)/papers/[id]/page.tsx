@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  BookOpen,
   Users,
   Calendar,
   Quote,
@@ -17,128 +16,99 @@ import {
   ArrowLeft,
   Award,
   Building2,
+  Loader2,
+  AlertCircle,
+  Eye,
+  FileDown,
 } from "lucide-react";
 import { motion } from "framer-motion";
-
-// Author type
-interface Author {
-  name: string;
-  affiliation: string;
-  orcid?: string;
-}
-
-// Paper type
-interface Paper {
-  id: string;
-  title: string;
-  authors: Author[];
-  abstract: string;
-  journal: string;
-  year: number;
-  volume: string;
-  issue: string;
-  pages: string;
-  doi: string;
-  citations: number;
-  publicationType: string;
-  keywords: string[];
-  pdfUrl: string;
-  bibtex: string;
-  relatedPapers: string[];
-  publishedDate: string;
-  isFeatured: boolean;
-  isPublished: boolean;
-}
-
-// Mock paper data - Replace with API call
-const mockPapers: Record<string, Paper> = {
-  "1": {
-    id: "1",
-    title:
-      "Deep Learning Approaches for Retinal Image Segmentation: A Comprehensive Review",
-    authors: [
-      {
-        name: "Sijie Niu",
-        affiliation: "University of Jinan",
-        orcid: "0000-0001-2345-6789",
-      },
-      { name: "Zhang Wei", affiliation: "University of Jinan" },
-      { name: "Li Ming", affiliation: "Tsinghua University" },
-    ],
-    abstract:
-      "This paper presents a comprehensive review of deep learning techniques applied to retinal image segmentation. We analyze various architectures including U-Net, Mask R-CNN, and recent transformer-based models. Our study covers datasets, evaluation metrics, and performance comparisons across different methodologies. We also discuss challenges in medical image segmentation and future research directions in this rapidly evolving field.",
-    journal: "IEEE Transactions on Medical Imaging",
-    year: 2024,
-    volume: "43",
-    issue: "2",
-    pages: "234-256",
-    doi: "10.1109/TMI.2024.1234567",
-    citations: 45,
-    publicationType: "JOURNAL_ARTICLE",
-    keywords: [
-      "Deep Learning",
-      "Medical Imaging",
-      "Retinal Segmentation",
-      "U-Net",
-      "Computer Vision",
-      "Healthcare AI",
-    ],
-    pdfUrl: "/papers/deep-learning-retinal-segmentation.pdf",
-    bibtex: `@article{niu2024deep,
-  title={Deep Learning Approaches for Retinal Image Segmentation: A Comprehensive Review},
-  author={Niu, Sijie and Wei, Zhang and Ming, Li},
-  journal={IEEE Transactions on Medical Imaging},
-  volume={43},
-  number={2},
-  pages={234--256},
-  year={2024},
-  publisher={IEEE}
-}`,
-    relatedPapers: ["2", "3"],
-    publishedDate: "2024-02-15",
-    isFeatured: true,
-    isPublished: true,
-  },
-  // Add more mock papers as needed
-};
+import type { Paper } from "@/lib/types/paper";
 
 export default function PaperDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const [paper, setPaper] = useState<Paper | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showBibtex, setShowBibtex] = useState(false);
 
   const paperId = params.id as string;
-  const paper = mockPapers[paperId];
 
-  // If paper not found
-  if (!paper) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-white flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <BookOpen className="w-16 h-16 mx-auto text-gray-300" />
-          <h1 className="text-2xl font-bold text-gray-900">Paper Not Found</h1>
-          <p className="text-gray-600">
-            The paper you&apos;re looking for doesn&apos;t exist.
-          </p>
-          <Button onClick={() => router.push("/papers")} variant="outline">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Papers
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Fetch paper data
+  useEffect(() => {
+    const fetchPaper = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`/api/papers/${paperId}`);
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || "Failed to fetch paper");
+        }
+
+        setPaper(data.data);
+
+        // Increment view count after successful fetch
+        await fetch(`/api/papers/${paperId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "incrementViews" }),
+        });
+      } catch (err) {
+        console.error("Error fetching paper:", err);
+        setError(err instanceof Error ? err.message : "Failed to load paper");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPaper();
+  }, [paperId]);
+
+  // Generate BibTeX citation
+  const generateBibtex = () => {
+    if (!paper) return "";
+    const firstAuthor =
+      Array.isArray(paper.authors) && paper.authors[0]
+        ? typeof paper.authors[0] === "string"
+          ? paper.authors[0]
+          : paper.authors[0].name
+        : paper.author?.profile?.fullName || "Unknown";
+    const authorLastName =
+      firstAuthor.split(" ").pop()?.toLowerCase() || "unknown";
+
+    return `@article{${authorLastName}${paper.year},
+  title={${paper.title}},
+  author={${
+    Array.isArray(paper.authors)
+      ? paper.authors
+          .map((a: any) => (typeof a === "string" ? a : a.name))
+          .join(" and ")
+      : firstAuthor
+  }},
+  journal={${paper.journal || ""}},
+  year={${paper.year}},
+  volume={${paper.volume || ""}},
+  number={${paper.issue || ""}},
+  pages={${paper.pages || ""}},${paper.doi ? `\n  doi={${paper.doi}},` : ""}
+}`;
+  };
 
   const handleCopyBibtex = () => {
-    navigator.clipboard.writeText(paper.bibtex);
-    // You could add a toast notification here
+    const bibtex = generateBibtex();
+    if (bibtex) {
+      navigator.clipboard.writeText(bibtex);
+      // You could add a toast notification here
+    }
   };
 
   const handleShare = async () => {
     if (navigator.share) {
       await navigator.share({
-        title: paper.title,
-        text: `Check out this paper: ${paper.title}`,
+        title: paper?.title,
+        text: `Check out this paper: ${paper?.title}`,
         url: window.location.href,
       });
     } else {
@@ -146,6 +116,60 @@ export default function PaperDetailPage() {
       // Add toast notification
     }
   };
+
+  const handleDownload = async () => {
+    if (paper?.pdfUrl) {
+      // Increment downloads
+      await fetch(`/api/papers/${paperId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "incrementDownloads" }),
+      });
+
+      // Open PDF in new tab
+      window.open(paper.pdfUrl, "_blank");
+    }
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-white flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-16 h-16 mx-auto text-primary-600 animate-spin" />
+          <p className="text-gray-600">Loading paper details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !paper) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-white flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <AlertCircle className="w-16 h-16 mx-auto text-red-400" />
+          <h1 className="text-2xl font-bold text-gray-900">
+            {error === "Paper not found"
+              ? "Paper Not Found"
+              : "Error Loading Paper"}
+          </h1>
+          <p className="text-gray-600">
+            {error || "The paper you're looking for doesn't exist."}
+          </p>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Try Again
+            </Button>
+            <Button onClick={() => router.push("/papers")}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Papers
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-white">
@@ -182,14 +206,17 @@ export default function PaperDetailPage() {
                   {/* Badges */}
                   <div className="flex flex-wrap gap-2">
                     <Badge className="bg-primary-600 text-white">
-                      {paper.publicationType.replace("_", " ")}
+                      {paper.publicationType?.replace("_", " ") ||
+                        "JOURNAL ARTICLE"}
                     </Badge>
-                    <Badge
-                      variant="outline"
-                      className="border-green-600 text-green-700"
-                    >
-                      {paper.citations} Citations
-                    </Badge>
+                    {paper.citations > 0 && (
+                      <Badge
+                        variant="outline"
+                        className="border-green-600 text-green-700"
+                      >
+                        {paper.citations} Citations
+                      </Badge>
+                    )}
                     {paper.isFeatured && (
                       <Badge
                         variant="outline"
@@ -197,6 +224,24 @@ export default function PaperDetailPage() {
                       >
                         <Award className="w-3 h-3 mr-1" />
                         Featured
+                      </Badge>
+                    )}
+                    {paper.views && (
+                      <Badge
+                        variant="outline"
+                        className="border-blue-600 text-blue-700"
+                      >
+                        <Eye className="w-3 h-3 mr-1" />
+                        {paper.views} Views
+                      </Badge>
+                    )}
+                    {paper.downloads && (
+                      <Badge
+                        variant="outline"
+                        className="border-purple-600 text-purple-700"
+                      >
+                        <FileDown className="w-3 h-3 mr-1" />
+                        {paper.downloads} Downloads
                       </Badge>
                     )}
                   </div>
@@ -210,45 +255,67 @@ export default function PaperDetailPage() {
                   <div className="flex items-start gap-2">
                     <Users className="w-5 h-5 text-gray-400 mt-1 flex-shrink-0" />
                     <div className="flex flex-wrap gap-x-2 gap-y-1">
-                      {paper.authors.map((author: Author, idx: number) => (
-                        <span key={idx} className="text-gray-700">
-                          {author.orcid ? (
-                            <Link
-                              href={`https://orcid.org/${author.orcid}`}
-                              target="_blank"
-                              className="hover:text-primary-600 underline"
-                            >
-                              {author.name}
-                            </Link>
-                          ) : (
-                            author.name
-                          )}
-                          {idx < paper.authors.length - 1 && ","}
+                      {Array.isArray(paper.authors) &&
+                      paper.authors.length > 0 ? (
+                        paper.authors.map((author: any, idx: number) => (
+                          <span key={idx} className="text-gray-700">
+                            {typeof author === "string"
+                              ? author
+                              : author.name || author}
+                            {idx < paper.authors.length - 1 && ","}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-700">
+                          {paper.author?.profile?.fullName || "Unknown Author"}
                         </span>
-                      ))}
+                      )}
                     </div>
                   </div>
 
                   {/* Journal Info */}
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Building2 className="w-5 h-5 text-gray-400" />
-                    <span className="font-medium">{paper.journal}</span>
-                    <span>•</span>
-                    <span>
-                      Vol. {paper.volume}, No. {paper.issue}
-                    </span>
-                    <span>•</span>
-                    <span>{paper.year}</span>
-                  </div>
+                  {paper.journal && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Building2 className="w-5 h-5 text-gray-400" />
+                      <span className="font-medium">{paper.journal}</span>
+                      {paper.year && (
+                        <>
+                          <span>•</span>
+                          <span>{paper.year}</span>
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   {/* Date */}
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Calendar className="w-5 h-5 text-gray-400" />
-                    <span>
-                      Published:{" "}
-                      {new Date(paper.publishedDate).toLocaleDateString()}
-                    </span>
-                  </div>
+                  {paper.createdAt && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Calendar className="w-5 h-5 text-gray-400" />
+                      <span>
+                        Added:{" "}
+                        {new Date(paper.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* DOI */}
+                  {paper.doi && (
+                    <div className="flex items-center gap-2">
+                      <ExternalLink className="w-5 h-5 text-gray-400" />
+                      <a
+                        href={`https://doi.org/${paper.doi}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-600 hover:text-primary-700 hover:underline"
+                      >
+                        DOI: {paper.doi}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </Card>
             </motion.div>
@@ -260,43 +327,45 @@ export default function PaperDetailPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
             >
               <Card className="p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-primary-100 rounded-lg">
-                    <Quote className="w-5 h-5 text-primary-600" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900">Abstract</h2>
-                </div>
-                <p className="text-gray-700 leading-relaxed">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Quote className="w-6 h-6 text-primary-600" />
+                  Abstract
+                </h2>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                   {paper.abstract}
                 </p>
               </Card>
             </motion.div>
 
-            {/* Keywords */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Card className="p-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                  Keywords
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {paper.keywords.map((keyword: string, idx: number) => (
-                    <Badge
-                      key={idx}
-                      variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200"
-                    >
-                      {keyword}
-                    </Badge>
-                  ))}
-                </div>
-              </Card>
-            </motion.div>
+            {/* Keywords/Tags */}
+            {paper.customTags && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Card className="p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    Keywords
+                  </h2>
+                  <div className="flex flex-wrap gap-2">
+                    {paper.customTags
+                      .split(",")
+                      .map((keyword: string, idx: number) => (
+                        <Badge
+                          key={idx}
+                          variant="outline"
+                          className="bg-blue-50 border-blue-200 text-blue-700"
+                        >
+                          {keyword.trim()}
+                        </Badge>
+                      ))}
+                  </div>
+                </Card>
+              </motion.div>
+            )}
 
-            {/* BibTeX */}
+            {/* BibTeX Citation */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -304,27 +373,27 @@ export default function PaperDetailPage() {
             >
               <Card className="p-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">Citation</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">Citation</h2>
                   <Button
+                    onClick={() => setShowBibtex(!showBibtex)}
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowBibtex(!showBibtex)}
                   >
                     {showBibtex ? "Hide" : "Show"} BibTeX
                   </Button>
                 </div>
                 {showBibtex && (
-                  <div className="relative">
-                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
-                      {paper.bibtex}
+                  <div className="space-y-2">
+                    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+                      <code>{generateBibtex()}</code>
                     </pre>
                     <Button
-                      size="sm"
-                      variant="outline"
-                      className="absolute top-2 right-2 bg-gray-800 border-gray-700 hover:bg-gray-700"
                       onClick={handleCopyBibtex}
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
                     >
-                      Copy
+                      Copy BibTeX
                     </Button>
                   </div>
                 )}
@@ -334,81 +403,141 @@ export default function PaperDetailPage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Action Buttons */}
+            {/* Quick Actions */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card className="p-6 sticky top-8">
+                <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
+                <div className="space-y-3">
+                  {paper.pdfUrl && (
+                    <Button
+                      onClick={handleDownload}
+                      className="w-full bg-primary-600 hover:bg-primary-700"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download PDF
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handleShare}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share Paper
+                  </Button>
+                  {paper.doi && (
+                    <Button
+                      onClick={() =>
+                        window.open(`https://doi.org/${paper.doi}`, "_blank")
+                      }
+                      variant="outline"
+                      className="w-full"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      View on Publisher
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            </motion.div>
+
+            {/* Author Info */}
+            {paper.author?.profile && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Card className="p-6">
+                  <h3 className="font-bold text-gray-900 mb-4">
+                    Corresponding Author
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      {paper.author.profile?.avatar ? (
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                          <div
+                            className="w-full h-full bg-cover bg-center"
+                            style={{
+                              backgroundImage: `url(${paper.author.profile.avatar})`,
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
+                          <Users className="w-6 h-6 text-primary-600" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {paper.author.profile?.fullName || "Unknown Author"}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Corresponding Author
+                        </p>
+                      </div>
+                    </div>
+                    {paper.author.profile?.orcidId && (
+                      <a
+                        href={`https://orcid.org/${paper.author.profile.orcidId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary-600 hover:text-primary-700 hover:underline flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        View ORCID Profile
+                      </a>
+                    )}
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+
+            {/* Metrics */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Card className="p-6 sticky top-6">
-                <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
+              <Card className="p-6">
+                <h3 className="font-bold text-gray-900 mb-4">Paper Metrics</h3>
                 <div className="space-y-3">
-                  {paper.pdfUrl && (
-                    <Button
-                      className="w-full bg-primary-600 hover:bg-primary-700"
-                      asChild
-                    >
-                      <Link href={paper.pdfUrl} target="_blank">
-                        <Download className="w-4 h-4 mr-2" />
-                        Download PDF
-                      </Link>
-                    </Button>
+                  {paper.citations > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Citations</span>
+                      <span className="font-semibold text-gray-900">
+                        {paper.citations}
+                      </span>
+                    </div>
                   )}
-                  {paper.doi && (
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link
-                        href={`https://doi.org/${paper.doi}`}
-                        target="_blank"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        View on Publisher
-                      </Link>
-                    </Button>
+                  {paper.views && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Views</span>
+                      <span className="font-semibold text-gray-900">
+                        {paper.views}
+                      </span>
+                    </div>
                   )}
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleShare}
-                  >
-                    <Share2 className="w-4 h-4 mr-2" />
-                    Share
-                  </Button>
-                </div>
-
-                {/* DOI */}
-                {paper.doi && (
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <div className="text-sm text-gray-600 mb-1">DOI</div>
-                    <Link
-                      href={`https://doi.org/${paper.doi}`}
-                      target="_blank"
-                      className="text-primary-600 hover:text-primary-700 text-sm break-all"
-                    >
-                      {paper.doi}
-                    </Link>
-                  </div>
-                )}
-
-                {/* Stats */}
-                <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Citations</span>
-                    <span className="font-semibold text-gray-900">
-                      {paper.citations}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Year</span>
-                    <span className="font-semibold text-gray-900">
-                      {paper.year}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Pages</span>
-                    <span className="font-semibold text-gray-900">
-                      {paper.pages}
-                    </span>
-                  </div>
+                  {paper.downloads && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Downloads</span>
+                      <span className="font-semibold text-gray-900">
+                        {paper.downloads}
+                      </span>
+                    </div>
+                  )}
+                  {paper.year && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Year</span>
+                      <span className="font-semibold text-gray-900">
+                        {paper.year}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </Card>
             </motion.div>

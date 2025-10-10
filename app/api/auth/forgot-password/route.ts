@@ -18,6 +18,13 @@ export async function POST(request: Request) {
     // Find user by email
     const user = await prisma.user.findUnique({
       where: { email },
+      include: {
+        profile: {
+          select: {
+            fullName: true,
+          },
+        },
+      },
     });
 
     // Always return success to prevent email enumeration
@@ -45,7 +52,7 @@ export async function POST(request: Request) {
     // Send password reset email
     const resetUrl = generateResetUrl(resetToken);
     const emailTemplate = emailTemplates.resetPassword(
-      user.name || user.email,
+      user.profile?.fullName || user.email,
       resetUrl
     );
 

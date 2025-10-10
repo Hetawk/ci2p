@@ -53,7 +53,8 @@ const mockResources: Resource[] = [
     id: "2",
     name: "Workstation - Deep Learning",
     category: "Computing",
-    description: "Individual workstation optimized for deep learning development and testing.",
+    description:
+      "Individual workstation optimized for deep learning development and testing.",
     specifications: {
       GPU: "NVIDIA RTX 4090 24GB",
       CPU: "Intel i9-13900K (24 cores)",
@@ -103,7 +104,8 @@ const mockResources: Resource[] = [
     id: "5",
     name: "Cloud Computing Credits",
     category: "Cloud",
-    description: "AWS and Azure cloud computing credits for scalable experiments and deployment.",
+    description:
+      "AWS and Azure cloud computing credits for scalable experiments and deployment.",
     specifications: {
       Provider: "AWS, Azure, Google Cloud",
       Credits: "$50,000/year",
@@ -118,7 +120,8 @@ const mockResources: Resource[] = [
     id: "6",
     name: "3D Printer",
     category: "Fabrication",
-    description: "Industrial-grade 3D printer for prototyping and hardware projects.",
+    description:
+      "Industrial-grade 3D printer for prototyping and hardware projects.",
     specifications: {
       Model: "Ultimaker S5 Pro Bundle",
       "Build Volume": "330 x 240 x 300 mm",
@@ -132,7 +135,14 @@ const mockResources: Resource[] = [
   },
 ];
 
-const categories = ["All", "Computing", "Data", "Visualization", "Cloud", "Fabrication"];
+const categories = [
+  "All",
+  "Computing",
+  "Data",
+  "Visualization",
+  "Cloud",
+  "Fabrication",
+];
 
 export default function ResourcesPage() {
   return (
@@ -166,8 +176,8 @@ export default function ResourcesPage() {
               Lab <span className="text-secondary-400">Resources</span>
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-              State-of-the-art computing infrastructure, datasets, and equipment for cutting-edge
-              research
+              State-of-the-art computing infrastructure, datasets, and equipment
+              for cutting-edge research
             </p>
 
             {/* Stats */}
@@ -216,7 +226,11 @@ export default function ResourcesPage() {
           {/* Resources Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mockResources.map((resource, index) => (
-              <ResourceCard key={resource.id} resource={resource} index={index} />
+              <ResourceCard
+                key={resource.id}
+                resource={resource}
+                index={index}
+              />
             ))}
           </div>
 
@@ -238,11 +252,15 @@ export default function ResourcesPage() {
                   Need to Book a Resource?
                 </h2>
                 <p className="text-gray-700">
-                  Lab members can request access to resources through our booking system. Please
-                  contact the lab administrator for more information.
+                  Lab members can request access to resources through our
+                  booking system. Please contact the lab administrator for more
+                  information.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 pt-4">
-                  <Button className="bg-primary-600 hover:bg-primary-700" asChild>
+                  <Button
+                    className="bg-primary-600 hover:bg-primary-700"
+                    asChild
+                  >
                     <Link href="mailto:lab@ci2p.ujn.edu.cn">
                       <Mail className="w-4 h-4 mr-2" />
                       Contact Lab Admin
@@ -263,7 +281,13 @@ export default function ResourcesPage() {
 }
 
 // Resource Card Component
-function ResourceCard({ resource, index }: { resource: Resource; index: number }) {
+function ResourceCard({
+  resource,
+  index,
+}: {
+  resource: Resource;
+  index: number;
+}) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "available":
@@ -318,14 +342,20 @@ function ResourceCard({ resource, index }: { resource: Resource; index: number }
           {/* Header */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-100 rounded-lg">{getCategoryIcon(resource.category)}</div>
+              <div className="p-2 bg-primary-100 rounded-lg">
+                {getCategoryIcon(resource.category)}
+              </div>
               <div>
                 <Badge variant="outline" className="mb-2 text-xs">
                   {resource.category}
                 </Badge>
               </div>
             </div>
-            <Badge className={`${getStatusColor(resource.status)} flex items-center gap-1`}>
+            <Badge
+              className={`${getStatusColor(
+                resource.status
+              )} flex items-center gap-1`}
+            >
               {getStatusIcon(resource.status)}
               {resource.status}
             </Badge>
@@ -337,7 +367,9 @@ function ResourceCard({ resource, index }: { resource: Resource; index: number }
           </h3>
 
           {/* Description */}
-          <p className="text-gray-600 text-sm line-clamp-2">{resource.description}</p>
+          <p className="text-gray-600 text-sm line-clamp-2">
+            {resource.description}
+          </p>
 
           {/* Specifications */}
           <div className="space-y-2 pt-2">

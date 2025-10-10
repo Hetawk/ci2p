@@ -18,12 +18,15 @@ export async function GET() {
           id: true,
           email: true,
           username: true,
-          name: true,
           role: true,
-          dashboard: true,
           active: true,
           emailVerified: true,
-          image: true,
+          profile: {
+            select: {
+              fullName: true,
+              avatar: true,
+            },
+          },
         },
       });
 
@@ -34,7 +37,9 @@ export async function GET() {
       return NextResponse.json({
         user: {
           ...user,
-          isAdmin: user.role === "ADMIN" || user.role === "SUPER_ADMIN",
+          name: user.profile?.fullName,
+          image: user.profile?.avatar,
+          isAdmin: user.role === "SUPER_ADMIN" || user.role === "RESEARCHER",
           isSuperAdmin: user.role === "SUPER_ADMIN",
         },
       });

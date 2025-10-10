@@ -87,27 +87,36 @@ export async function POST(request: Request) {
       data: {
         email,
         username: username || null,
-        name: name || null,
         password: hashedPassword,
         verificationToken,
         emailVerified: false,
-        role: "USER",
-        dashboard: "NONE",
+        role: "GUEST",
+        profile: name
+          ? {
+              create: {
+                fullName: name,
+              },
+            }
+          : undefined,
       },
       select: {
         id: true,
         email: true,
         username: true,
-        name: true,
         emailVerified: true,
         role: true,
+        profile: {
+          select: {
+            fullName: true,
+          },
+        },
       },
     });
 
     // Send verification email
     const verificationUrl = generateVerificationUrl(verificationToken);
     const emailTemplate = emailTemplates.verifyEmail(
-      user.name || user.email,
+      user.profile?.fullName || user.email,
       verificationUrl
     );
 

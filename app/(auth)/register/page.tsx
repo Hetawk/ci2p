@@ -7,7 +7,17 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { UserPlus, Mail, Lock, User, AlertCircle, Loader2, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import {
+  UserPlus,
+  Mail,
+  Lock,
+  User,
+  AlertCircle,
+  Loader2,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function RegisterPage() {
@@ -26,9 +36,12 @@ export default function RegisterPage() {
 
   const validatePassword = (password: string) => {
     if (password.length < 8) return "Password must be at least 8 characters";
-    if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter";
-    if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter";
-    if (!/[0-9]/.test(password)) return "Password must contain at least one number";
+    if (!/[A-Z]/.test(password))
+      return "Password must contain at least one uppercase letter";
+    if (!/[a-z]/.test(password))
+      return "Password must contain at least one lowercase letter";
+    if (!/[0-9]/.test(password))
+      return "Password must contain at least one number";
     return "";
   };
 
@@ -68,7 +81,7 @@ export default function RegisterPage() {
       }
 
       setSuccess(true);
-      
+
       // Redirect to login after 2 seconds
       setTimeout(() => {
         router.push("/auth/login");
@@ -94,11 +107,16 @@ export default function RegisterPage() {
                 <CheckCircle2 className="w-8 h-8 text-green-600" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Registration Successful!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Registration Successful!
+            </h2>
             <p className="text-gray-600 mb-4">
-              Your account has been created. Please check your email to verify your account.
+              Your account has been created. Please check your email to verify
+              your account.
             </p>
-            <p className="text-sm text-gray-500">Redirecting to login page...</p>
+            <p className="text-sm text-gray-500">
+              Redirecting to login page...
+            </p>
           </Card>
         </motion.div>
       </div>
@@ -130,8 +148,12 @@ export default function RegisterPage() {
                 <UserPlus className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-            <p className="text-gray-600">Join the CI2P Lab research community</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Create Account
+            </h1>
+            <p className="text-gray-600">
+              Join the CI2P Lab research community
+            </p>
           </div>
 
           {/* Error Message */}
@@ -143,7 +165,9 @@ export default function RegisterPage() {
             >
               <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-red-900">Registration Error</p>
+                <p className="text-sm font-medium text-red-900">
+                  Registration Error
+                </p>
                 <p className="text-sm text-red-700">{error}</p>
               </div>
             </motion.div>
@@ -163,7 +187,9 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="John Doe"
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
                   className="pl-10 h-12 border-gray-300"
                   required
                   disabled={isLoading}
@@ -183,13 +209,17 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="your.email@ujn.edu.cn"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="pl-10 h-12 border-gray-300"
                   required
                   disabled={isLoading}
                 />
               </div>
-              <p className="text-xs text-gray-500">Use your university email address</p>
+              <p className="text-xs text-gray-500">
+                Use your university email address
+              </p>
             </div>
 
             {/* Password */}
@@ -204,7 +234,9 @@ export default function RegisterPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a strong password"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="pl-10 pr-12 h-12 border-gray-300"
                   required
                   disabled={isLoading}
@@ -215,7 +247,11 @@ export default function RegisterPage() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
               <p className="text-xs text-gray-500">
@@ -225,7 +261,10 @@ export default function RegisterPage() {
 
             {/* Confirm Password */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-gray-700 font-medium">
+              <Label
+                htmlFor="confirmPassword"
+                className="text-gray-700 font-medium"
+              >
                 Confirm Password
               </Label>
               <div className="relative">
@@ -235,7 +274,12 @@ export default function RegisterPage() {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Re-enter your password"
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   className="pl-10 pr-12 h-12 border-gray-300"
                   required
                   disabled={isLoading}
@@ -246,7 +290,11 @@ export default function RegisterPage() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   disabled={isLoading}
                 >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -277,14 +325,19 @@ export default function RegisterPage() {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Already have an account?</span>
+              <span className="px-2 bg-white text-gray-500">
+                Already have an account?
+              </span>
             </div>
           </div>
 
           {/* Login Link */}
           <div className="text-center">
             <Link href="/auth/login">
-              <Button variant="outline" className="w-full h-12 border-gray-300 hover:border-primary-500 hover:bg-primary-50">
+              <Button
+                variant="outline"
+                className="w-full h-12 border-gray-300 hover:border-primary-500 hover:bg-primary-50"
+              >
                 Sign In Instead
               </Button>
             </Link>
@@ -292,7 +345,10 @@ export default function RegisterPage() {
 
           {/* Back to Home */}
           <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">
+            <Link
+              href="/"
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
               ← Back to Homepage
             </Link>
           </div>
@@ -301,7 +357,8 @@ export default function RegisterPage() {
         {/* University Info */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-300">
-            University of Jinan - Key Laboratory of Intelligent Computing Technology
+            University of Jinan - Key Laboratory of Intelligent Computing
+            Technology
           </p>
         </div>
       </motion.div>

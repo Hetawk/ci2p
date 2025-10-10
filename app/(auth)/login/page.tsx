@@ -7,7 +7,15 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { LogIn, Mail, Lock, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
+import {
+  LogIn,
+  Mail,
+  Lock,
+  AlertCircle,
+  Loader2,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function LoginPage() {
@@ -76,8 +84,12 @@ export default function LoginPage() {
                 <LogIn className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-            <p className="text-gray-600">Sign in to access your CI2P Lab account</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-gray-600">
+              Sign in to access your CI2P Lab account
+            </p>
           </div>
 
           {/* Error Message */}
@@ -109,7 +121,9 @@ export default function LoginPage() {
                   type="email"
                   placeholder="your.email@ujn.edu.cn"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="pl-10 h-12 border-gray-300"
                   required
                   disabled={isLoading}
@@ -137,7 +151,9 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="pl-10 pr-12 h-12 border-gray-300"
                   required
                   disabled={isLoading}
@@ -148,7 +164,11 @@ export default function LoginPage() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -179,14 +199,19 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">New to CI2P Lab?</span>
+              <span className="px-2 bg-white text-gray-500">
+                New to CI2P Lab?
+              </span>
             </div>
           </div>
 
           {/* Register Link */}
           <div className="text-center">
             <Link href="/auth/register">
-              <Button variant="outline" className="w-full h-12 border-gray-300 hover:border-primary-500 hover:bg-primary-50">
+              <Button
+                variant="outline"
+                className="w-full h-12 border-gray-300 hover:border-primary-500 hover:bg-primary-50"
+              >
                 Create an Account
               </Button>
             </Link>
@@ -194,7 +219,10 @@ export default function LoginPage() {
 
           {/* Back to Home */}
           <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">
+            <Link
+              href="/"
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
               ← Back to Homepage
             </Link>
           </div>
@@ -203,7 +231,8 @@ export default function LoginPage() {
         {/* University Info */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-300">
-            University of Jinan - Key Laboratory of Intelligent Computing Technology
+            University of Jinan - Key Laboratory of Intelligent Computing
+            Technology
           </p>
         </div>
       </motion.div>

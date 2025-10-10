@@ -135,11 +135,16 @@ export default function DashboardHomePage() {
                 <h1 className="text-3xl font-bold text-white mb-1">
                   Welcome back, {mockUser.fullName.split(" ")[1]}!
                 </h1>
-                <p className="text-gray-300">{mockUser.title} • {mockUser.email}</p>
+                <p className="text-gray-300">
+                  {mockUser.title} • {mockUser.email}
+                </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+              <Button
+                variant="outline"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              >
                 <Bell className="w-4 h-4 mr-2" />
                 Notifications
               </Button>
@@ -163,7 +168,9 @@ export default function DashboardHomePage() {
                 </div>
                 <Badge className="bg-blue-600">+2 this month</Badge>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">{mockUser.stats.papers}</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {mockUser.stats.papers}
+              </div>
               <div className="text-sm text-gray-600">Publications</div>
             </Card>
           </motion.div>
@@ -180,7 +187,9 @@ export default function DashboardHomePage() {
                 </div>
                 <Badge className="bg-green-600">Active</Badge>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">{mockUser.stats.projects}</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {mockUser.stats.projects}
+              </div>
               <div className="text-sm text-gray-600">Projects</div>
             </Card>
           </motion.div>
@@ -197,7 +206,9 @@ export default function DashboardHomePage() {
                 </div>
                 <Badge className="bg-purple-600">+15 this week</Badge>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">{mockUser.stats.citations}</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {mockUser.stats.citations}
+              </div>
               <div className="text-sm text-gray-600">Citations</div>
             </Card>
           </motion.div>
@@ -214,7 +225,9 @@ export default function DashboardHomePage() {
                 </div>
                 <Badge className="bg-yellow-600">Top 10%</Badge>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">{mockUser.stats.hIndex}</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {mockUser.stats.hIndex}
+              </div>
               <div className="text-sm text-gray-600">H-Index</div>
             </Card>
           </motion.div>
@@ -225,28 +238,42 @@ export default function DashboardHomePage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Quick Actions */}
             <Card className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Quick Actions
+              </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <Link href="/dash/papers/new">
-                  <Button variant="outline" className="w-full h-24 flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-24 flex-col gap-2"
+                  >
                     <Plus className="w-6 h-6" />
                     <span className="text-sm">Add Paper</span>
                   </Button>
                 </Link>
                 <Link href="/dash/projects/new">
-                  <Button variant="outline" className="w-full h-24 flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-24 flex-col gap-2"
+                  >
                     <Rocket className="w-6 h-6" />
                     <span className="text-sm">New Project</span>
                   </Button>
                 </Link>
                 <Link href="/dash/profile/edit">
-                  <Button variant="outline" className="w-full h-24 flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-24 flex-col gap-2"
+                  >
                     <Users className="w-6 h-6" />
                     <span className="text-sm">Edit Profile</span>
                   </Button>
                 </Link>
                 <Link href="/dash/profile/orcid/connect">
-                  <Button variant="outline" className="w-full h-24 flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-24 flex-col gap-2"
+                  >
                     <ExternalLink className="w-6 h-6" />
                     <span className="text-sm">ORCID Sync</span>
                   </Button>
@@ -257,7 +284,9 @@ export default function DashboardHomePage() {
             {/* Recent Papers */}
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Recent Publications</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Recent Publications
+                </h2>
                 <Link href="/dash/papers">
                   <Button variant="ghost" size="sm">
                     View All
@@ -273,7 +302,9 @@ export default function DashboardHomePage() {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-2">{paper.title}</h3>
+                        <h3 className="font-semibold text-gray-900 mb-2">
+                          {paper.title}
+                        </h3>
                         <div className="flex items-center gap-3 text-sm text-gray-600">
                           <span>{paper.journal}</span>
                           <span>•</span>
@@ -305,17 +336,24 @@ export default function DashboardHomePage() {
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Activity className="w-5 h-5 text-primary-600" />
-                <h2 className="text-xl font-bold text-gray-900">Recent Activity</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Recent Activity
+                </h2>
               </div>
               <div className="space-y-3">
                 {recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div
+                    key={activity.id}
+                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
                     <div className={`p-2 rounded-lg ${activity.color}`}>
                       <activity.icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-900">{activity.title}</p>
-                      <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {activity.time}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -329,12 +367,19 @@ export default function DashboardHomePage() {
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Calendar className="w-5 h-5 text-primary-600" />
-                <h2 className="text-lg font-bold text-gray-900">Upcoming Events</h2>
+                <h2 className="text-lg font-bold text-gray-900">
+                  Upcoming Events
+                </h2>
               </div>
               <div className="space-y-3">
                 {upcomingEvents.map((event) => (
-                  <div key={event.id} className="p-3 border border-gray-200 rounded-lg">
-                    <h3 className="font-semibold text-gray-900 text-sm mb-1">{event.title}</h3>
+                  <div
+                    key={event.id}
+                    className="p-3 border border-gray-200 rounded-lg"
+                  >
+                    <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                      {event.title}
+                    </h3>
                     <p className="text-xs text-gray-600 mb-1">{event.time}</p>
                     <p className="text-xs text-gray-500">{event.location}</p>
                   </div>
@@ -344,15 +389,23 @@ export default function DashboardHomePage() {
 
             {/* Profile Completion */}
             <Card className="p-6 bg-gradient-to-br from-primary-50 to-blue-50">
-              <h3 className="font-bold text-gray-900 mb-2">Complete Your Profile</h3>
+              <h3 className="font-bold text-gray-900 mb-2">
+                Complete Your Profile
+              </h3>
               <p className="text-sm text-gray-600 mb-4">
                 80% complete. Add your ORCID to reach 100%!
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                <div className="bg-primary-600 h-2 rounded-full" style={{ width: "80%" }} />
+                <div
+                  className="bg-primary-600 h-2 rounded-full"
+                  style={{ width: "80%" }}
+                />
               </div>
               <Link href="/dash/profile/orcid/connect">
-                <Button className="w-full bg-primary-600 hover:bg-primary-700" size="sm">
+                <Button
+                  className="w-full bg-primary-600 hover:bg-primary-700"
+                  size="sm"
+                >
                   Connect ORCID
                 </Button>
               </Link>

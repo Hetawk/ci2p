@@ -6,7 +6,13 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Mail, ArrowLeft, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
+import {
+  Mail,
+  ArrowLeft,
+  AlertCircle,
+  Loader2,
+  CheckCircle2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ForgotPasswordPage() {
@@ -56,9 +62,12 @@ export default function ForgotPasswordPage() {
                 <CheckCircle2 className="w-8 h-8 text-green-600" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Check Your Email</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Check Your Email
+            </h2>
             <p className="text-gray-600 mb-6">
-              We&apos;ve sent password reset instructions to <strong>{email}</strong>
+              We&apos;ve sent password reset instructions to{" "}
+              <strong>{email}</strong>
             </p>
             <p className="text-sm text-gray-500 mb-6">
               If you don&apos;t see the email, check your spam folder.
@@ -100,9 +109,12 @@ export default function ForgotPasswordPage() {
                 <Mail className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Forgot Password?
+            </h1>
             <p className="text-gray-600">
-              Enter your email address and we&apos;ll send you instructions to reset your password.
+              Enter your email address and we&apos;ll send you instructions to
+              reset your password.
             </p>
           </div>
 
@@ -160,7 +172,10 @@ export default function ForgotPasswordPage() {
 
           {/* Back to Login */}
           <div className="mt-6 text-center">
-            <Link href="/auth/login" className="text-sm text-gray-600 hover:text-gray-900 flex items-center justify-center gap-1">
+            <Link
+              href="/auth/login"
+              className="text-sm text-gray-600 hover:text-gray-900 flex items-center justify-center gap-1"
+            >
               <ArrowLeft className="w-4 h-4" />
               Back to Login
             </Link>
@@ -170,7 +185,8 @@ export default function ForgotPasswordPage() {
         {/* University Info */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-300">
-            University of Jinan - Key Laboratory of Intelligent Computing Technology
+            University of Jinan - Key Laboratory of Intelligent Computing
+            Technology
           </p>
         </div>
       </motion.div>
