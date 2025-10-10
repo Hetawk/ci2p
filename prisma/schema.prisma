@@ -1,474 +1,532 @@
-// Prisma Schema for Patience Fero & Her Promise Fulfilled
+// CI2P Research Lab Management Platform
+// University of Jinan - Key Laboratory of Intelligent Computing Technology
 // Database: MySQL
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
 
-// User model for authentication
+// ============================================
+// CORE USER & AUTH MODELS
+// ============================================
+
 model User {
-  id                String          @id @default(cuid())
-  email             String          @unique
-  username          String?         @unique
-  name              String?
-  password          String
-  role              Role            @default(USER)
-  image             String?
-  dashboard         DashboardAccess @default(NONE)
-  active            Boolean         @default(true)
-  emailVerified     Boolean         @default(false)
-  verificationToken String?         @unique
-  resetToken        String?         @unique
-  resetTokenExpiry  DateTime?
-  lastLogin         DateTime?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  posts             Post[]
-  accounts          Account[]
-  sessions          Session[]
+    id                String    @id @default(cuid())
+    email             String    @unique
+    username          String?   @unique
+    password          String
+    role              UserRole  @default(GUEST)
+    emailVerified     Boolean   @default(false)
+    verificationToken String?   @unique
+    verificationHash  String? // SHA-256 hash for data integrity
+    resetToken        String?   @unique
+    resetTokenExpiry  DateTime?
+    lastLogin         DateTime?
+    active            Boolean   @default(true)
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
 
-  @@map("users")
+    // Relations
+    profile      Profile?
+    publications Publication[]
+    projects     ProjectMember[]
+    achievements Achievement[]
+    bookings     ResourceBooking[]
+    accounts     Account[]
+    sessions     Session[]
+
+    @@index([email])
+    @@index([role])
+    @@index([active])
+    @@map("users")
 }
 
-enum Role {
-  USER
-  EDITOR
-  ADMIN
-  SUPER_ADMIN
+enum UserRole {
+    SUPER_ADMIN // Professor, full access
+    RESEARCHER // Faculty, PhD students
+    STUDENT // Master's, undergrad students
+    GUEST // Read-only access
 }
 
-enum DashboardAccess {
-  NONE
-  PORTFOLIO
-  HERPROMISE
-  BOTH
+// User Profile with ORCID integration
+model Profile {
+    id          String  @id @default(cuid())
+    userId      String  @unique @map("user_id")
+    fullName    String  @map("full_name")
+    chineseName String? @map("chinese_name")
+    title       String? // "Professor", "PhD Student", etc.
+    bio         String? @db.Text
+    avatar      String? // EKD Assets URL
+
+    // ORCID Integration
+    orcidId       String?   @unique @map("orcid_id") // e.g. "0000-0002-1825-0097"
+    orcidToken    String?   @map("orcid_token") @db.Text // OAuth access token
+    orcidSyncedAt DateTime? @map("orcid_synced_at") // Last sync time
+    orcidEnabled  Boolean   @default(false) @map("orcid_enabled") // Auto-sync enabled
+
+    // Team Display
+    showInTeam Boolean @default(true) @map("show_in_team") // Show in hero carousel
+    teamOrder  Int?    @map("team_order") // Display order in team section
+
+    // Contact
+    email  String?
+    phone  String?
+    office String? // Room number
+
+    // Social
+    website       String?
+    github        String?
+    linkedin      String?
+    googleScholar String? @map("google_scholar")
+    researchGate  String? @map("research_gate")
+
+    // Academic
+    education String? @db.Text // JSON array of degrees
+    interests String? @db.Text // Research interests, comma-separated
+
+    // Stats (cached)
+    publicationCount Int @default(0) @map("publication_count")
+    projectCount     Int @default(0) @map("project_count")
+    citationCount    Int @default(0) @map("citation_count")
+    hIndex           Int @default(0) @map("h_index")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([orcidId])
+    @@index([showInTeam, teamOrder])
+    @@map("profiles")
 }
 
-// NextAuth Account model
+// NextAuth models
 model Account {
-  id                String  @id @default(cuid())
-  userId            String  @map("user_id")
-  type              String
-  provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
+    type              String
+    provider          String
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
 }
 
-// NextAuth Session model
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime
 
-  @@map("sessions")
-}
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-// Blog Post model
-model Post {
-  id          String    @id @default(cuid())
-  title       String
-  slug        String    @unique
-  content     String    @db.Text
-  excerpt     String?   @db.Text
-  coverImage  String?
-  published   Boolean   @default(false)
-  publishedAt DateTime?
-  authorId    String    @map("author_id")
-  author      User      @relation(fields: [authorId], references: [id])
-  categoryId  String?   @map("category_id")
-  category    Category? @relation(fields: [categoryId], references: [id])
-  tags        Tag[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([slug])
-  @@index([authorId])
-  @@index([categoryId])
-  @@index([published])
-  @@map("posts")
-}
-
-// Blog Category model
-model Category {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
-  posts     Post[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([slug])
-  @@map("categories")
-}
-
-// Blog Tag model
-model Tag {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
-  posts     Post[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([slug])
-  @@map("tags")
-}
-
-// Program model for Her Promise Fulfilled
-model Program {
-  id            String   @id @default(cuid())
-  name          String
-  slug          String   @unique
-  description   String   @db.Text
-  image         String?
-  gallery       String?  @db.Text // JSON array of images
-  category      String
-  impact        String?  @db.Text
-  beneficiaries Int?     @default(0)
-  startDate     String?
-  endDate       String?
-  location      String?
-  active        Boolean  @default(true)
-  featured      Boolean  @default(false)
-  order         Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@index([slug])
-  @@index([category])
-  @@index([active])
-  @@index([order])
-  @@map("programs")
-}
-
-// Testimonial model
-model Testimonial {
-  id        String   @id @default(cuid())
-  name      String
-  role      String?
-  content   String   @db.Text
-  image     String?
-  featured  Boolean  @default(false)
-  rating    Int?     @default(5)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([featured])
-  @@map("testimonials")
-}
-
-// Contact form submissions
-model Contact {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  subject   String
-  message   String   @db.Text
-  read      Boolean  @default(false)
-  replied   Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  @@index([read])
-  @@index([createdAt])
-  @@map("contacts")
-}
-
-// Impact Metrics for dashboard
-model ImpactMetric {
-  id          String   @id @default(cuid())
-  label       String
-  value       String // Changed to String to support "1000+" formats
-  description String?  @db.Text
-  icon        String?
-  category    String?
-  year        String?
-  order       Int      @default(0)
-  active      Boolean  @default(true)
-  featured    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([order])
-  @@index([active])
-  @@index([featured])
-  @@map("impact_metrics")
-}
-
-// Donation model
-model Donation {
-  id        String         @id @default(cuid())
-  name      String
-  email     String
-  amount    Float
-  currency  String         @default("USD")
-  message   String?        @db.Text
-  anonymous Boolean        @default(false)
-  status    DonationStatus @default(PENDING)
-  paymentId String?
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-
-  @@index([status])
-  @@index([createdAt])
-  @@map("donations")
-}
-
-enum DonationStatus {
-  PENDING
-  COMPLETED
-  FAILED
-  REFUNDED
-}
-
-// Donation Campaigns
-model DonationCampaign {
-  id          String    @id @default(cuid())
-  title       String
-  slug        String    @unique
-  description String    @db.Text
-  goal        Float
-  raised      Float     @default(0)
-  currency    String    @default("USD")
-  image       String?
-  startDate   DateTime
-  endDate     DateTime?
-  active      Boolean   @default(true)
-  featured    Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([slug])
-  @@index([active])
-  @@index([featured])
-  @@map("donation_campaigns")
-}
-
-// Newsletter subscribers
-model Newsletter {
-  id             String    @id @default(cuid())
-  email          String    @unique
-  name           String?
-  active         Boolean   @default(true)
-  subscribedAt   DateTime  @default(now())
-  unsubscribedAt DateTime?
-
-  @@index([email])
-  @@index([active])
-  @@map("newsletters")
-}
-
-// Volunteer applications
-model Volunteer {
-  id        String          @id @default(cuid())
-  name      String
-  email     String
-  phone     String?
-  message   String          @db.Text
-  skills    String?         @db.Text
-  resumeUrl String?         @map("resume_url")
-  status    VolunteerStatus @default(PENDING)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-
-  @@index([email])
-  @@index([status])
-  @@map("volunteers")
-}
-
-enum VolunteerStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  CONTACTED
+    @@map("sessions")
 }
 
 // ============================================
-// PATIENCE PORTFOLIO MODELS
+// PUBLICATIONS (ORCID-POWERED)
 // ============================================
 
-// Education model
-model Education {
-  id          String   @id @default(cuid())
-  degree      String
-  institution String
-  location    String
-  startDate   String // Format: "YYYY" or "YYYY-MM"
-  endDate     String? // Format: "YYYY" or "YYYY-MM" or "Present"
-  description String?  @db.Text
-  published   Boolean  @default(true)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Publication {
+    id String @id @default(cuid())
 
-  @@index([order])
-  @@index([published])
-  @@map("education")
+    // Basic Info
+    title    String  @db.Text
+    abstract String? @db.Text
+    authors  String  @db.Text // JSON array: [{"name": "...", "orcid": "..."}]
+
+    // Publication Details
+    publicationType PublicationType @map("publication_type")
+    journal         String?
+    conference      String?
+    publisher       String?
+    volume          String?
+    issue           String?
+    pages           String?
+    year            Int
+    month           Int?
+    doi             String? // Digital Object Identifier
+    isbn            String?
+    url             String?
+    pdfUrl          String?         @map("pdf_url") // EKD Assets URL
+
+    // ORCID Integration
+    orcidWorkId   String?   @unique @map("orcid_work_id") // ORCID work identifier
+    orcidSyncedAt DateTime? @map("orcid_synced_at")
+    isFromOrcid   Boolean   @default(false) @map("is_from_orcid") // Auto-imported from ORCID
+    orcidData     String?   @map("orcid_data") @db.Text // Full ORCID JSON response
+
+    // Custom Fields (for manual entries or ORCID overrides)
+    customDescription String? @map("custom_description") @db.Text // Override abstract
+    customTags        String? @map("custom_tags") // Comma-separated tags
+
+    // Display Controls
+    isFeatured    Boolean @default(false) @map("is_featured")
+    featuredOrder Int?    @map("featured_order")
+    isPublished   Boolean @default(true) @map("is_published") // Visibility toggle
+
+    // Metrics
+    citations Int @default(0)
+    downloads Int @default(0)
+    views     Int @default(0)
+
+    // Relations
+    authorId String @map("author_id") // Main author (owner)
+    author   User   @relation(fields: [authorId], references: [id])
+
+    // Metadata
+    verificationHash String?  @map("verification_hash") // SHA-256 for integrity
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+
+    @@index([authorId])
+    @@index([year, month])
+    @@index([publicationType])
+    @@index([isFeatured, featuredOrder])
+    @@index([isPublished])
+    @@index([orcidWorkId])
+    @@fulltext([title, abstract])
+    @@map("publications")
 }
 
-// Awards & Certifications model
-model Award {
-  id           String    @id @default(cuid())
-  title        String
-  organization String
-  date         String // Format: "YYYY-MM" or "YYYY"
-  description  String    @db.Text
-  category     AwardType
-  imageUrl     String? // Certificate/Award image (optional)
-  published    Boolean   @default(true)
-  order        Int       @default(0)
-  featured     Boolean   @default(false)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  @@index([category])
-  @@index([featured])
-  @@index([published])
-  @@index([order])
-  @@map("awards")
+enum PublicationType {
+    JOURNAL_ARTICLE
+    CONFERENCE_PAPER
+    BOOK_CHAPTER
+    BOOK
+    PATENT
+    THESIS
+    PREPRINT
+    TECHNICAL_REPORT
+    POSTER
+    OTHER
 }
 
-enum AwardType {
-  ACADEMIC
-  PUBLIC_SPEAKING
-  TECHNICAL
-  SPORTS
-  LEADERSHIP
-  CERTIFICATION
+// ============================================
+// RESEARCH PROJECTS
+// ============================================
+
+model Project {
+    id          String @id @default(cuid())
+    title       String
+    slug        String @unique
+    description String @db.Text
+
+    // Project Details
+    status    ProjectStatus
+    startDate DateTime      @map("start_date")
+    endDate   DateTime?     @map("end_date")
+
+    // Funding
+    fundingSource String? @map("funding_source")
+    fundingAmount Float?  @map("funding_amount")
+    grantNumber   String? @map("grant_number")
+
+    // Media
+    coverImage String? @map("cover_image") // EKD Assets URL
+    gallery    String? @db.Text // JSON array of image URLs
+
+    // Research Areas
+    tags     String? @db.Text // JSON array of tags
+    keywords String? @db.Text // Comma-separated
+
+    // Visibility
+    isFeatured    Boolean @default(false) @map("is_featured")
+    isPublished   Boolean @default(true) @map("is_published")
+    featuredOrder Int?    @map("featured_order")
+
+    // Metrics
+    views Int @default(0)
+
+    // Relations
+    members      ProjectMember[]
+    publications String?         @db.Text // JSON array of publication IDs
+
+    // Metadata
+    verificationHash String?  @map("verification_hash")
+    versionNumber    Int      @default(1) @map("version_number")
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+
+    @@index([slug])
+    @@index([status])
+    @@index([isFeatured, featuredOrder])
+    @@index([isPublished])
+    @@fulltext([title, description])
+    @@map("projects")
 }
 
-// Professional Experience model
-model Experience {
-  id           String   @id @default(cuid())
-  role         String
-  organization String
-  location     String?
-  startDate    String // Format: "YYYY-MM"
-  endDate      String? // Format: "YYYY-MM" or "Present"
-  description  String   @db.Text
-  highlights   String?  @db.Text // JSON array of key achievements
-  type         ExpType
-  published    Boolean  @default(true)
-  order        Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([type])
-  @@index([published])
-  @@index([order])
-  @@map("experiences")
+enum ProjectStatus {
+    PLANNING
+    ACTIVE
+    COMPLETED
+    ON_HOLD
+    CANCELLED
 }
 
-enum ExpType {
-  LEADERSHIP
-  PROFESSIONAL
-  VOLUNTEER
-  ENTREPRENEURSHIP
+// Project collaborators
+model ProjectMember {
+    id        String      @id @default(cuid())
+    projectId String      @map("project_id")
+    userId    String      @map("user_id")
+    role      ProjectRole
+    joinedAt  DateTime    @default(now())
+
+    project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([projectId, userId])
+    @@index([userId])
+    @@map("project_members")
 }
 
-// Skills model
-model Skill {
-  id        String      @id @default(cuid())
-  name      String
-  category  SkillType
-  level     SkillLevel?
-  published Boolean     @default(true)
-  order     Int         @default(0)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
-  @@index([category])
-  @@index([published])
-  @@index([order])
-  @@map("skills")
+enum ProjectRole {
+    LEAD // Principal Investigator
+    CO_LEAD // Co-PI
+    RESEARCHER // Research team member
+    STUDENT // Student contributor
+    COLLABORATOR // External collaborator
 }
 
-enum SkillType {
-  RESEARCH
-  ECONOMICS
-  TECHNICAL
-  COMMUNICATION
-  LEADERSHIP
-  LANGUAGES
+// ============================================
+// ACHIEVEMENTS & AWARDS
+// ============================================
+
+model Achievement {
+    id          String          @id @default(cuid())
+    title       String
+    description String          @db.Text
+    category    AchievementType
+    awardedBy   String          @map("awarded_by") // Organization
+    awardDate   DateTime        @map("award_date")
+
+    // Media
+    certificateUrl String? @map("certificate_url") // EKD Assets URL
+    imageUrl       String? @map("image_url")
+
+    // Visibility
+    isPublished Boolean @default(true) @map("is_published")
+    isFeatured  Boolean @default(false) @map("is_featured")
+
+    // Relations
+    userId String @map("user_id")
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([category])
+    @@index([isFeatured])
+    @@map("achievements")
 }
 
-enum SkillLevel {
-  BASIC
-  INTERMEDIATE
-  ADVANCED
-  FLUENT
-  NATIVE
+enum AchievementType {
+    BEST_PAPER
+    BEST_PRESENTATION
+    SCHOLARSHIP
+    FELLOWSHIP
+    GRANT
+    PATENT
+    COMPETITION
+    TEACHING
+    SERVICE
+    OTHER
 }
 
-// Languages model
-model Language {
-  id        String     @id @default(cuid())
-  name      String     @unique
-  level     SkillLevel
-  published Boolean    @default(true)
-  order     Int        @default(0)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+// ============================================
+// LAB RESOURCES
+// ============================================
 
-  @@index([published])
-  @@index([order])
-  @@map("languages")
+model Resource {
+    id          String       @id @default(cuid())
+    name        String
+    description String       @db.Text
+    type        ResourceType
+
+    // Booking Info
+    isBookable Boolean @default(true) @map("is_bookable")
+    location   String? // Lab room, building
+    capacity   Int? // For meeting rooms
+
+    // Equipment specific
+    modelNumber  String?   @map("model_number")
+    manufacturer String?
+    purchaseDate DateTime? @map("purchase_date")
+
+    // Status
+    status      ResourceStatus @default(AVAILABLE)
+    isPublished Boolean        @default(true) @map("is_published")
+
+    // Media
+    imageUrl  String? @map("image_url")
+    manualUrl String? @map("manual_url") // User manual PDF
+
+    // Relations
+    bookings ResourceBooking[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([type])
+    @@index([status])
+    @@index([isBookable])
+    @@map("resources")
 }
 
-// Research & Projects model
-model Research {
-  id          String   @id @default(cuid())
-  title       String
-  description String   @db.Text
-  status      String? // "In Progress", "Completed", "Published"
-  date        String? // Format: "YYYY" or "YYYY-MM"
-  link        String? // Link to publication/project
-  imageUrl    String? // Optional project image
-  published   Boolean  @default(true)
-  order       Int      @default(0)
-  featured    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([featured])
-  @@index([published])
-  @@index([order])
-  @@map("research")
+enum ResourceType {
+    COMPUTER // Workstation, server
+    GPU // GPU cluster
+    SOFTWARE // Licensed software
+    LAB_EQUIPMENT // Hardware, sensors
+    MEETING_ROOM // Conference room
+    DATASET // Shared dataset
+    OTHER
 }
 
-// Personal Information (single record)
-model PersonalInfo {
-  id           String   @id @default(cuid())
-  fullName     String
-  email        String
-  phone        String
-  location     String
-  linkedIn     String?
-  weChat       String?
-  dateOfBirth  String?
-  nationality  String?
-  placeOfBirth String?
-  bio          String   @db.Text
-  profileImage String? // Optional profile photo
-  resumeUrl    String? // Link to downloadable resume
-  updatedAt    DateTime @updatedAt
+enum ResourceStatus {
+    AVAILABLE
+    IN_USE
+    MAINTENANCE
+    RESERVED
+    RETIRED
+}
 
-  @@map("personal_info")
+model ResourceBooking {
+    id         String @id @default(cuid())
+    resourceId String @map("resource_id")
+    userId     String @map("user_id")
+
+    // Booking Details
+    startTime DateTime      @map("start_time")
+    endTime   DateTime      @map("end_time")
+    purpose   String        @db.Text
+    status    BookingStatus @default(PENDING)
+
+    // Admin
+    approvedBy String?   @map("approved_by") // Admin user ID
+    approvedAt DateTime? @map("approved_at")
+    notes      String?   @db.Text // Admin notes
+
+    resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([resourceId, startTime])
+    @@index([userId])
+    @@index([status])
+    @@map("resource_bookings")
+}
+
+enum BookingStatus {
+    PENDING
+    APPROVED
+    REJECTED
+    CANCELLED
+    COMPLETED
+}
+
+// ============================================
+// NEWS & ANNOUNCEMENTS
+// ============================================
+
+model Announcement {
+    id      String  @id @default(cuid())
+    title   String
+    slug    String  @unique
+    content String  @db.Text
+    excerpt String? @db.Text
+
+    // Media
+    coverImage String? @map("cover_image")
+    gallery    String? @db.Text // JSON array
+
+    // Categorization
+    category NewsCategory
+    tags     String?      @db.Text // JSON array
+
+    // Visibility
+    isPinned    Boolean   @default(false) @map("is_pinned")
+    isPublished Boolean   @default(false) @map("is_published")
+    publishedAt DateTime? @map("published_at")
+
+    // Relations
+    authorId String @map("author_id") // User ID who created
+
+    // Metrics
+    views Int @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([slug])
+    @@index([category])
+    @@index([isPinned, publishedAt])
+    @@index([isPublished])
+    @@fulltext([title, content])
+    @@map("announcements")
+}
+
+enum NewsCategory {
+    LAB_NEWS // General lab updates
+    PUBLICATION // New paper published
+    AWARD // Achievement announcement
+    EVENT // Upcoming event
+    SEMINAR // Seminar/talk
+    RECRUITMENT // Hiring
+    COLLABORATION // New partnership
+    MEDIA // Press coverage
+    OTHER
+}
+
+// ============================================
+// ANALYTICS & METRICS
+// ============================================
+
+model PageView {
+    id        String  @id @default(cuid())
+    page      String // URL path
+    userId    String? @map("user_id") // Null for anonymous
+    ipHash    String  @map("ip_hash") // Hashed IP for privacy
+    userAgent String? @map("user_agent") @db.Text
+    referer   String? @db.Text
+
+    createdAt DateTime @default(now())
+
+    @@index([page, createdAt])
+    @@index([userId])
+    @@map("page_views")
+}
+
+// Lab statistics cache (updated daily)
+model LabMetric {
+    id           String  @id @default(cuid())
+    metricKey    String  @unique @map("metric_key")
+    metricValue  String  @map("metric_value") // JSON value
+    displayLabel String  @map("display_label")
+    description  String? @db.Text
+    category     String? // "research", "team", "publications"
+    order        Int     @default(0)
+    isVisible    Boolean @default(true) @map("is_visible")
+
+    updatedAt DateTime @updatedAt
+
+    @@index([category, order])
+    @@map("lab_metrics")
 }

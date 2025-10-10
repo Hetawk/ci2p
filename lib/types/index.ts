@@ -1,136 +1,187 @@
-// TypeScript types and interfaces
+// CI2P Lab Platform - Main Type Exports
 
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
-  password: string;
-  role: "USER" | "ADMIN";
-  image?: string;
-  createdAt: Date;
-  updatedAt: Date;
+// Re-export all types
+export * from "./paper";
+export * from "./project";
+
+// ============================================
+// COMMON TYPES
+// ============================================
+
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
 }
 
-export interface Post {
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    totalItems: number;
+  };
+}
+
+export interface SearchParams {
+  query?: string;
+  page?: number;
+  limit?: number;
+  sort?: string;
+  order?: "asc" | "desc";
+}
+
+// ============================================
+// USER & AUTH TYPES
+// ============================================
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  username?: string;
+  role: string;
+  profile?: {
+    fullName: string;
+    chineseName?: string;
+    title?: string;
+    bio?: string;
+    avatar?: string;
+    orcidId?: string;
+  };
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+  remember?: boolean;
+}
+
+export interface RegisterData {
+  email: string;
+  username: string;
+  password: string;
+  fullName: string;
+  chineseName?: string;
+  inviteToken: string;
+}
+
+// ============================================
+// FORM TYPES
+// ============================================
+
+export interface FormErrors {
+  [key: string]: string | string[];
+}
+
+export interface FormState {
+  errors?: FormErrors;
+  message?: string;
+  success?: boolean;
+}
+
+// ============================================
+// RESOURCE TYPES
+// ============================================
+
+export interface Resource {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  isBookable: boolean;
+  status: string;
+  location?: string;
+  imageUrl?: string;
+}
+
+export interface ResourceBooking {
+  id: string;
+  resourceId: string;
+  userId: string;
+  startTime: Date;
+  endTime: Date;
+  purpose: string;
+  status: string;
+  resource?: Resource;
+}
+
+// ============================================
+// ANNOUNCEMENT TYPES
+// ============================================
+
+export interface Announcement {
   id: string;
   title: string;
   slug: string;
   content: string;
   excerpt?: string;
   coverImage?: string;
-  published: boolean;
-  publishedAt?: Date;
-  authorId: string;
-  categoryId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Tag {
-  id: string;
-  name: string;
-  slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Program {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image?: string;
   category: string;
-  impact?: string;
-  active: boolean;
-  featured: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Testimonial {
-  id: string;
-  name: string;
-  role?: string;
-  content: string;
-  image?: string;
-  featured: boolean;
-  rating?: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  read: boolean;
-  replied: boolean;
+  isPinned: boolean;
+  isPublished: boolean;
+  publishedAt?: Date;
+  views: number;
   createdAt: Date;
 }
 
-export interface ImpactMetric {
+// ============================================
+// METRICS TYPES
+// ============================================
+
+export interface LabMetric {
   id: string;
-  label: string;
-  value: number;
-  icon?: string;
+  metricKey: string;
+  metricValue: string;
+  displayLabel: string;
+  description?: string;
+  category?: string;
   order: number;
-  active: boolean;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface Newsletter {
-  id: string;
-  email: string;
-  name?: string;
-  active: boolean;
-  subscribedAt: Date;
-  unsubscribedAt?: Date;
-}
-
-export interface Volunteer {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  skills?: string;
-  resumeUrl?: string;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "CONTACTED";
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// API Response types
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: {
-    code: string;
-    message: string;
-    details?: unknown;
-  };
-}
-
-export interface PaginatedResponse<T = unknown> {
-  success: boolean;
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
+export interface DashboardStats {
+  users: {
     total: number;
-    totalPages: number;
+    researchers: number;
+    students: number;
   };
+  publications: {
+    total: number;
+    thisYear: number;
+    featured: number;
+  };
+  projects: {
+    total: number;
+    active: number;
+    completed: number;
+  };
+  resources: {
+    total: number;
+    available: number;
+  };
+}
+
+// ============================================
+// COMPONENT PROPS
+// ============================================
+
+export interface LoadingProps {
+  size?: "sm" | "md" | "lg";
+  text?: string;
+}
+
+export interface EmptyStateProps {
+  title: string;
+  description?: string;
+  icon?: React.ComponentType<any>;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+}
+
+export interface ErrorBoundaryProps {
+  children: React.ReactNode;
+  fallback?: React.ComponentType<{ error: Error }>;
 }
