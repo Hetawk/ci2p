@@ -57,7 +57,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 text-white mt-20">
+    <footer className="relative bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 text-white">
       {/* Modern Ledger-style Top Border */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-50" />
       <div className="absolute top-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-secondary-400 to-transparent" />

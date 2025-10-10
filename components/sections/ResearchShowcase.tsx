@@ -82,9 +82,20 @@ export function ResearchShowcase() {
   };
 
   return (
-    <section className="relative py-20 overflow-hidden">
-      {/* Decorative gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-900/10 to-transparent" />
+    <section className="relative py-20 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/30">
+      {/* Subtle dot pattern background */}
+      <div className="absolute inset-0 opacity-30">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgb(59 130 246 / 0.15) 1px, transparent 1px)`,
+            backgroundSize: "32px 32px",
+          }}
+        />
+      </div>
+
+      {/* Decorative gradient overlay for depth - DISABLED */}
+      {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-900/10 to-transparent" /> */}
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
@@ -96,10 +107,10 @@ export function ResearchShowcase() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
-            <span className="text-primary-400">Our Research</span>{" "}
-            <span className="text-white">in Action</span>
+            <span className="text-primary-600">Our Research</span>{" "}
+            <span className="text-slate-900">in Action</span>
           </h2>
-          <p className="text-xl text-white font-medium max-w-2xl mx-auto drop-shadow-lg">
+          <p className="text-xl text-slate-700 font-medium max-w-2xl mx-auto">
             Explore our cutting-edge work in AI, Machine Learning, and Image
             Processing
           </p>
@@ -235,9 +246,9 @@ export function ResearchShowcase() {
           </div>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-secondary-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-accent-500/10 to-primary-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        {/* Decorative Elements - DISABLED */}
+        {/* <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-secondary-500/10 rounded-full blur-3xl animate-pulse" /> */}
+        {/* <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-accent-500/10 to-primary-500/10 rounded-full blur-3xl animate-pulse delay-1000" /> */}
       </div>
     </section>
   );

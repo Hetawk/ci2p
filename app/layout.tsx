@@ -28,11 +28,9 @@ export const metadata: Metadata = {
     "Intelligent Computing",
   ],
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/logo.svg", type: "image/svg+xml" },
-    ],
+    icon: "/favicon.svg",
     apple: "/logo-192x192.png",
+    shortcut: "/favicon.svg",
   },
   openGraph: {
     title: "CI2P Research Lab - University of Jinan",

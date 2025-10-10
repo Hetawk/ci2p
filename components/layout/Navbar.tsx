@@ -111,6 +111,15 @@ export function Navbar() {
                 >
                   University of Jinan
                 </p>
+                <p
+                  className={`text-[10px] transition-colors ${
+                    isScrolled
+                      ? "text-gray-500"
+                      : "text-blue-100/80 drop-shadow"
+                  }`}
+                >
+                  Key Laboratory of Intelligent Computing
+                </p>
               </div>
             </Link>
 
