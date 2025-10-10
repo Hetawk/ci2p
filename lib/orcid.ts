@@ -1,79 +1,27 @@
-// CI2P Lab Platform - ORCID Integration Service
+// CI2P Lab Platform - ORCID Integration Service (Simplified Public API)
+// No OAuth or API keys required - just use ORCID IDs!
 
-import {
-  OrcidProfile,
-  OrcidWork,
-  OrcidSyncResult,
-  OrcidAuthResponse,
-} from "@/lib/types";
+import { OrcidProfile, OrcidWork, OrcidSyncResult } from "@/lib/types";
 
-const ORCID_API_URL = process.env.ORCID_API_URL || "https://pub.orcid.org/v3.0";
-const ORCID_CLIENT_ID = process.env.ORCID_CLIENT_ID || "";
-const ORCID_CLIENT_SECRET = process.env.ORCID_CLIENT_SECRET || "";
-const ORCID_REDIRECT_URI = process.env.ORCID_REDIRECT_URI || "";
+const ORCID_PUBLIC_API_URL =
+  process.env.ORCID_PUBLIC_API_URL || "https://pub.orcid.org/v3.0";
 
 /**
- * ORCID Service for managing ORCID API integration
- * Handles OAuth authentication, profile fetching, and publication syncing
+ * ORCID Service for fetching public researcher data
+ * Uses ORCID's public API - no authentication needed!
+ * Just provide an ORCID ID like "0000-0002-1825-0097"
  */
 export class OrcidService {
   /**
-   * Generate ORCID OAuth authorization URL
+   * Fetch ORCID profile information using public API (no auth required!)
+   * @param orcidId - ORCID identifier (e.g., "0000-0002-1825-0097")
    */
-  static getAuthorizationUrl(state: string): string {
-    const params = new URLSearchParams({
-      client_id: ORCID_CLIENT_ID,
-      response_type: "code",
-      scope: "/read-limited /activities/update",
-      redirect_uri: ORCID_REDIRECT_URI,
-      state,
-    });
-
-    const baseUrl = ORCID_API_URL.replace("/v3.0", "");
-    return `${baseUrl}/oauth/authorize?${params.toString()}`;
-  }
-
-  /**
-   * Exchange authorization code for access token
-   */
-  static async exchangeCodeForToken(code: string): Promise<OrcidAuthResponse> {
-    const params = new URLSearchParams({
-      client_id: ORCID_CLIENT_ID,
-      client_secret: ORCID_CLIENT_SECRET,
-      grant_type: "authorization_code",
-      code,
-      redirect_uri: ORCID_REDIRECT_URI,
-    });
-
-    const baseUrl = ORCID_API_URL.replace("/v3.0", "");
-    const response = await fetch(`${baseUrl}/oauth/token`, {
-      method: "POST",
+  static async fetchProfile(orcidId: string): Promise<OrcidProfile> {
+    const response = await fetch(`${ORCID_PUBLIC_API_URL}/${orcidId}/person`, {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
       },
-      body: params.toString(),
-    });
-
-    if (!response.ok) {
-      throw new Error(`ORCID token exchange failed: ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  /**
-   * Fetch ORCID profile information
-   */
-  static async fetchProfile(
-    orcidId: string,
-    accessToken: string
-  ): Promise<OrcidProfile> {
-    const response = await fetch(`${ORCID_API_URL}/${orcidId}/person`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Accept: "application/json",
-      },
+      next: { revalidate: 86400 }, // Cache for 24 hours
     });
 
     if (!response.ok) {
@@ -97,17 +45,15 @@ export class OrcidService {
   }
 
   /**
-   * Fetch ORCID works (publications)
+   * Fetch ORCID works (publications) using public API
+   * @param orcidId - ORCID identifier
    */
-  static async fetchWorks(
-    orcidId: string,
-    accessToken: string
-  ): Promise<OrcidWork[]> {
-    const response = await fetch(`${ORCID_API_URL}/${orcidId}/works`, {
+  static async fetchWorks(orcidId: string): Promise<OrcidWork[]> {
+    const response = await fetch(`${ORCID_PUBLIC_API_URL}/${orcidId}/works`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         Accept: "application/json",
       },
+      next: { revalidate: 3600 }, // Cache for 1 hour
     });
 
     if (!response.ok) {
@@ -131,6 +77,22 @@ export class OrcidService {
   }
 
   /**
+   * Fetch complete profile with works in one call
+   * @param orcidId - ORCID identifier
+   */
+  static async fetchCompleteProfile(orcidId: string): Promise<OrcidProfile> {
+    const [profile, works] = await Promise.all([
+      this.fetchProfile(orcidId),
+      this.fetchWorks(orcidId),
+    ]);
+
+    return {
+      ...profile,
+      works,
+    };
+  }
+
+  /**
    * Parse ORCID work summary into our format
    */
   private static parseWork(workSummary: any): OrcidWork {
@@ -150,7 +112,7 @@ export class OrcidService {
     const journal = workSummary["journal-title"]?.value || undefined;
     const doi = workSummary["external-ids"]?.["external-id"]?.find(
       (id: any) => id["external-id-type"] === "doi"
-    )?.["external-id-value"];
+    )?.[" external-id-value"];
 
     const url = workSummary.url?.value || undefined;
 
@@ -203,13 +165,14 @@ export class OrcidService {
   }
 
   /**
-   * Sync ORCID works to database publications
-   * Returns sync result with counts
+   * Sync ORCID works to database publications (simplified - no OAuth needed!)
+   * @param userId - User ID in our database
+   * @param orcidId - User's ORCID ID
+   * @param prisma - Prisma client instance
    */
   static async syncWorksToPublications(
     userId: string,
     orcidId: string,
-    accessToken: string,
     prisma: any
   ): Promise<OrcidSyncResult> {
     const result: OrcidSyncResult = {
@@ -222,8 +185,8 @@ export class OrcidService {
     };
 
     try {
-      // Fetch works from ORCID
-      const works = await this.fetchWorks(orcidId, accessToken);
+      // Fetch works from ORCID public API
+      const works = await this.fetchWorks(orcidId);
 
       for (const work of works) {
         try {
@@ -318,5 +281,42 @@ export class OrcidService {
     };
 
     return typeMap[orcidType] || "OTHER";
+  }
+
+  /**
+   * Validate ORCID ID format
+   * Format: XXXX-XXXX-XXXX-XXXX (e.g., 0000-0002-1825-0097)
+   */
+  static validateOrcidId(orcidId: string): boolean {
+    const orcidRegex = /^\d{4}-\d{4}-\d{4}-\d{3}[0-9X]$/;
+    return orcidRegex.test(orcidId);
+  }
+
+  /**
+   * Extract ORCID ID from various formats
+   * Handles: full URLs, iDs with/without dashes, etc.
+   */
+  static normalizeOrcidId(input: string): string | null {
+    // Remove whitespace
+    input = input.trim();
+
+    // Extract from URL if provided
+    const urlMatch = input.match(/orcid\.org\/(\d{4}-\d{4}-\d{4}-\d{3}[0-9X])/);
+    if (urlMatch) return urlMatch[1];
+
+    // Check if already in correct format
+    if (this.validateOrcidId(input)) return input;
+
+    // Try to format if only digits provided
+    const digitsOnly = input.replace(/[^0-9X]/gi, "");
+    if (digitsOnly.length === 16) {
+      const formatted = `${digitsOnly.slice(0, 4)}-${digitsOnly.slice(
+        4,
+        8
+      )}-${digitsOnly.slice(8, 12)}-${digitsOnly.slice(12, 16)}`;
+      if (this.validateOrcidId(formatted)) return formatted;
+    }
+
+    return null;
   }
 }
