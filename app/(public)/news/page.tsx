@@ -6,20 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/ui/Pagination";
-import {
-  Newspaper,
-  Search,
-  Calendar,
-  TrendingUp,
-  X,
-} from "lucide-react";
+import { Newspaper, Search, Calendar, TrendingUp, X } from "lucide-react";
 
 // Mock news data
 const mockNews = [
   {
     id: "1",
-    title: "CI2P Lab Receives National Science Foundation Grant for AI Research",
-    excerpt: "Our lab has been awarded a prestigious NSF grant to advance research in artificial intelligence and machine learning applications in medical imaging.",
+    title:
+      "CI2P Lab Receives National Science Foundation Grant for AI Research",
+    excerpt:
+      "Our lab has been awarded a prestigious NSF grant to advance research in artificial intelligence and machine learning applications in medical imaging.",
     content: "Full article content...",
     coverImage: "/utils/deep-learning-simulation.jpg",
     category: "Research",
@@ -34,7 +30,8 @@ const mockNews = [
   {
     id: "2",
     title: "New Paper Published in IEEE Transactions on Medical Imaging",
-    excerpt: "Our latest research on deep learning for medical image segmentation has been accepted for publication in a top-tier journal.",
+    excerpt:
+      "Our latest research on deep learning for medical image segmentation has been accepted for publication in a top-tier journal.",
     content: "Full article content...",
     coverImage: "/utils/dnn_flow.jpg",
     category: "Publications",
@@ -49,7 +46,8 @@ const mockNews = [
   {
     id: "3",
     title: "Lab Members Present at CVPR 2024",
-    excerpt: "Three of our research papers were accepted at CVPR 2024, and team members traveled to Seattle to present their work.",
+    excerpt:
+      "Three of our research papers were accepted at CVPR 2024, and team members traveled to Seattle to present their work.",
     content: "Full article content...",
     coverImage: "/utils/machine_learning_robot.jpg",
     category: "Events",
@@ -64,7 +62,8 @@ const mockNews = [
   {
     id: "4",
     title: "Welcoming New Graduate Students to CI2P Lab",
-    excerpt: "We are excited to welcome five new master's students who will be joining our research team this semester.",
+    excerpt:
+      "We are excited to welcome five new master's students who will be joining our research team this semester.",
     content: "Full article content...",
     coverImage: "/team/research-team-outdoor.jpg",
     category: "Team",
@@ -79,7 +78,8 @@ const mockNews = [
   {
     id: "5",
     title: "Collaboration with Stanford University on Medical AI",
-    excerpt: "CI2P Lab announces new collaboration with Stanford University's Medical AI group to advance diagnostic imaging research.",
+    excerpt:
+      "CI2P Lab announces new collaboration with Stanford University's Medical AI group to advance diagnostic imaging research.",
     content: "Full article content...",
     coverImage: "/utils/dnn.jpg",
     category: "Collaboration",
@@ -94,7 +94,8 @@ const mockNews = [
   {
     id: "6",
     title: "Lab Workshop: Introduction to Deep Learning",
-    excerpt: "Successfully conducted a two-day workshop on deep learning fundamentals for undergraduate students interested in AI research.",
+    excerpt:
+      "Successfully conducted a two-day workshop on deep learning fundamentals for undergraduate students interested in AI research.",
     content: "Full article content...",
     coverImage: "/team/workshop.jpg",
     category: "Events",
@@ -185,7 +186,10 @@ export default function NewsPage() {
         </div>
 
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
+        <div
+          className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: "1s" }}
+        />
 
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="text-center space-y-6">
@@ -198,8 +202,8 @@ export default function NewsPage() {
               Lab <span className="text-secondary-400">News</span>
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-              Stay updated with the latest research, events, and achievements from
-              CI2P Lab
+              Stay updated with the latest research, events, and achievements
+              from CI2P Lab
             </p>
           </div>
         </div>
@@ -213,7 +217,9 @@ export default function NewsPage() {
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">Featured News</h2>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Featured News
+              </h2>
               <p className="text-gray-600">Latest update from the lab</p>
             </div>
           </div>
@@ -267,7 +273,9 @@ export default function NewsPage() {
                 {categories.map((category) => (
                   <Button
                     key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
+                    variant={
+                      selectedCategory === category ? "default" : "outline"
+                    }
                     onClick={() => setSelectedCategory(category)}
                     className={
                       selectedCategory === category

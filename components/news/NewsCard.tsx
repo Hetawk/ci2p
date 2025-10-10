@@ -29,7 +29,11 @@ interface NewsCardProps {
   variant?: "default" | "featured";
 }
 
-export function NewsCard({ article, index, variant = "default" }: NewsCardProps) {
+export function NewsCard({
+  article,
+  index,
+  variant = "default",
+}: NewsCardProps) {
   const isFeatured = variant === "featured";
 
   return (
@@ -51,9 +55,7 @@ export function NewsCard({ article, index, variant = "default" }: NewsCardProps)
           {article.coverImage && (
             <div
               className={`relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 ${
-                isFeatured
-                  ? "md:w-2/5 h-64 md:h-auto"
-                  : "w-full h-48"
+                isFeatured ? "md:w-2/5 h-64 md:h-auto" : "w-full h-48"
               }`}
             >
               <Image
@@ -71,7 +73,9 @@ export function NewsCard({ article, index, variant = "default" }: NewsCardProps)
           )}
 
           {/* Content */}
-          <div className={`relative p-6 space-y-4 ${isFeatured ? "md:w-3/5" : ""}`}>
+          <div
+            className={`relative p-6 space-y-4 ${isFeatured ? "md:w-3/5" : ""}`}
+          >
             {/* Meta Info */}
             <div className="flex items-center gap-4 text-sm text-gray-500">
               <div className="flex items-center gap-1">
