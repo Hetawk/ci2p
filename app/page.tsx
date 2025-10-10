@@ -1,76 +1,110 @@
-"use client";
+// CI2P Research Lab - Homepage
+// University of Jinan - Key Laboratory of Intelligent Computing Technology
 
-import { useState, useEffect } from "react";
-import CircularNavbar from "@/components/layout/CircularNavbar";
-import { ViewSwitcher } from "@/components/layout/ViewSwitcher";
-import { Hero } from "@/components/sections/Hero";
-import { Footer } from "@/components/layout/Footer";
+import { HeroSection } from "@/components/hero/HeroSection";
+import { prisma } from "@/lib/prisma";
 
-export type ViewMode = "patience" | "organization";
+// Fetch hero data (ISR every 1 hour)
+async function getHeroData() {
+  // Get team members for carousel (showInTeam = true, ordered by teamOrder)
+  const teamMembers = await prisma.profile.findMany({
+    where: {
+      showInTeam: true,
+      user: { active: true },
+    },
+    select: {
+      id: true,
+      fullName: true,
+      title: true,
+      avatar: true,
+      teamOrder: true,
+    },
+    orderBy: { teamOrder: "asc" },
+    take: 5,
+  });
 
-export default function HomePage() {
-  const [viewMode, setViewMode] = useState<ViewMode>("patience");
+  // Get stats
+  const [publicationsCount, projectsCount, membersCount] = await Promise.all([
+    prisma.publication.count({ where: { isPublished: true } }),
+    prisma.project.count({ where: { status: "ACTIVE", isPublished: true } }),
+    prisma.user.count({ where: { active: true } }),
+  ]);
 
-  // Handle hash-based routing
-  useEffect(() => {
-    // Read hash on mount
-    const hash = window.location.hash.slice(1); // Remove the '#'
-    if (hash === "herpromise" || hash === "organization") {
-      setViewMode("organization");
-    } else {
-      // No hash or patience hash = patience view (default)
-      setViewMode("patience");
-    }
+  return {
+    teamMembers,
+    stats: {
+      publications: publicationsCount,
+      projects: projectsCount,
+      members: membersCount,
+    },
+  };
+}
 
-    // Listen for hash changes (for browser back/forward)
-    const handleHashChange = () => {
-      const newHash = window.location.hash.slice(1);
-      if (newHash === "herpromise" || newHash === "organization") {
-        setViewMode("organization");
-      } else {
-        setViewMode("patience");
-      }
-    };
-
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
-  // Update URL hash when viewMode changes (but not on initial load for patience)
-  useEffect(() => {
-    if (viewMode === "organization") {
-      if (window.location.hash !== "#herpromise") {
-        window.history.replaceState(null, "", "#herpromise");
-      }
-    }
-    // Don't force hash for patience view - allow root path
-  }, [viewMode]);
+export default async function HomePage() {
+  const heroData = await getHeroData();
 
   return (
-    <main className="min-h-screen">
-      <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
-      <CircularNavbar viewMode={viewMode} setViewMode={setViewMode} />
-      <Hero viewMode={viewMode} />
+    <>
+      {/* Hero Section */}
+      <HeroSection teamMembers={heroData.teamMembers} stats={heroData.stats} />
 
-      {/* Content Section - Target for scroll */}
-      <section
-        id="content"
-        className="py-20 bg-gradient-to-b from-white to-brand-50"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4 font-display">
-              Content Coming Soon...
-            </h2>
-            <p className="text-gray-600 text-lg">
-              Dynamic content based on your selection will appear here.
-              Introduction, Quick Stats, Featured Achievements, and more!
+      {/* Featured Research Section */}
+      <section className="py-20 bg-slate-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">Featured Research</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Explore our latest groundbreaking research in Machine Learning,
+              AI, and Image Processing
             </p>
+          </div>
+
+          <div className="text-center text-gray-500">
+            Featured papers component coming soon...
           </div>
         </div>
       </section>
 
-      <Footer />
-    </main>
+      {/* Research Areas Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">Research Areas</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Our lab focuses on cutting-edge research in intelligent computing
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Machine Learning",
+                icon: "🤖",
+                desc: "Deep learning, neural networks, and pattern recognition",
+              },
+              {
+                title: "Artificial Intelligence",
+                icon: "🧠",
+                desc: "Intelligent systems and cognitive computing",
+              },
+              {
+                title: "Image Processing",
+                icon: "📷",
+                desc: "Computer vision and image analysis",
+              },
+            ].map((area) => (
+              <div
+                key={area.title}
+                className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl hover:shadow-lg transition-shadow"
+              >
+                <div className="text-5xl mb-4">{area.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{area.title}</h3>
+                <p className="text-gray-600">{area.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

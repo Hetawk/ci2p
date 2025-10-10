@@ -130,6 +130,8 @@ const config: Config = {
         "slide-up": "slideUp 0.6s ease-out",
         "slide-down": "slideDown 0.6s ease-out",
         "scale-in": "scaleIn 0.6s ease-out",
+        "spin-slow": "spin 8s linear infinite",
+        "spin-slower": "spin 12s linear infinite",
       },
       keyframes: {
         float: {
