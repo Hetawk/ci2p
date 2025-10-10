@@ -1,7 +1,9 @@
 // CI2P Research Lab - Homepage
 // University of Jinan - Key Laboratory of Intelligent Computing Technology
 
+import { Navbar } from "@/components/layout/Navbar";
 import { HeroSection } from "@/components/hero/HeroSection";
+import { ResearchShowcase } from "@/components/sections/ResearchShowcase";
 import { FeaturedPapers } from "@/components/papers/FeaturedPapers";
 import { FeaturedProjects } from "@/components/projects/FeaturedProjects";
 import { ResearchAreas } from "@/components/sections/ResearchAreas";
@@ -142,33 +144,42 @@ export default async function HomePage() {
   const data = await getHomePageData();
 
   return (
-    <main className="min-h-screen">
-      {/* Hero Section with Video Background */}
-      <HeroSection teamMembers={data.teamMembers} stats={data.stats} />
+    <>
+      {/* Navigation */}
+      <Navbar />
 
-      {/* Research Areas */}
-      <ResearchAreas />
+      {/* Main Content */}
+      <main className="min-h-screen">
+        {/* Hero Section with Video Background */}
+        <HeroSection teamMembers={data.teamMembers} stats={data.stats} />
 
-      {/* Lab Impact Metrics */}
-      <LabMetrics
-        publications={data.stats.publications}
-        members={data.stats.members}
-        projects={data.stats.projects}
-        citations={data.stats.citations}
-      />
+        {/* Research Showcase Slider - Beautiful Image Gallery */}
+        <ResearchShowcase />
 
-      {/* Featured Publications */}
-      {data.featuredPapers.length > 0 && (
-        <FeaturedPapers papers={data.featuredPapers} />
-      )}
+        {/* Research Areas */}
+        <ResearchAreas />
 
-      {/* Featured Projects */}
-      {data.featuredProjects.length > 0 && (
-        <FeaturedProjects projects={data.featuredProjects} />
-      )}
+        {/* Lab Impact Metrics */}
+        <LabMetrics
+          publications={data.stats.publications}
+          members={data.stats.members}
+          projects={data.stats.projects}
+          citations={data.stats.citations}
+        />
+
+        {/* Featured Publications */}
+        {data.featuredPapers.length > 0 && (
+          <FeaturedPapers papers={data.featuredPapers} />
+        )}
+
+        {/* Featured Projects */}
+        {data.featuredProjects.length > 0 && (
+          <FeaturedProjects projects={data.featuredProjects} />
+        )}
+      </main>
 
       {/* Footer */}
       <Footer />
-    </main>
+    </>
   );
 }

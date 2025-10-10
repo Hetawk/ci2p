@@ -14,15 +14,32 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Patience Fero - Scholar, Leader, Social Entrepreneur",
+  title: "CI2P Research Lab - University of Jinan",
   description:
-    "Patience Fero's professional portfolio and Her Promise Fulfilled nonprofit organization",
+    "Key Laboratory of Intelligent Computing Technology. Research excellence in Machine Learning, Artificial Intelligence, and Image Processing.",
+  keywords: [
+    "CI2P",
+    "Research Lab",
+    "University of Jinan",
+    "Machine Learning",
+    "Artificial Intelligence",
+    "Image Processing",
+    "Intelligent Computing",
+  ],
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo.svg", type: "image/svg+xml" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: "/logo-192x192.png",
+  },
+  openGraph: {
+    title: "CI2P Research Lab - University of Jinan",
+    description:
+      "Key Laboratory of Intelligent Computing Technology. Research excellence in Machine Learning, AI, and Image Processing.",
+    type: "website",
+    locale: "en_US",
+    siteName: "CI2P Research Lab",
   },
 };
 

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ParticleEffect } from "@/components/effects";
 import { ArrowRight, FileText, Users, Microscope } from "lucide-react";
 
 interface TeamMember {
@@ -41,7 +42,7 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
   }, [teamMembers.length]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <section className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video
@@ -49,9 +50,9 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
           loop
           muted
           playsInline
-          className="object-cover w-full h-full opacity-20"
+          className="object-cover w-full h-full opacity-30"
         >
-          <source src="/assets/lab-bg.mp4" type="video/mp4" />
+          <source src="/videos/lab-bg.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/50" />
       </div>
@@ -80,10 +81,17 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
             width="100%"
             height="100%"
             fill="url(#hexagons)"
-            className="text-blue-500"
+            className="text-secondary-500"
           />
         </svg>
       </div>
+
+      {/* Particle Effect */}
+      <ParticleEffect
+        particleCount={40}
+        particleColor="rgba(6, 182, 212, 0.4)"
+        className="z-0 opacity-60"
+      />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
@@ -91,56 +99,67 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
           {/* Left: Text Content */}
           <div className="space-y-8 text-white">
             {/* Lab Logo/Badge */}
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-blue-500/20 rounded-lg backdrop-blur-sm flex items-center justify-center">
+            <div className="flex items-center gap-4 animate-fade-in">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl shadow-primary-500/30 p-3 ring-2 ring-white/20 ring-offset-2 ring-offset-slate-900">
                 <Image
-                  src="/ci2p-logo.png"
+                  src="/logo.png"
                   alt="CI2P Lab"
-                  width={48}
-                  height={48}
+                  width={64}
+                  height={64}
                   className="object-contain"
                 />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">CI2P Research Lab</h1>
-                <p className="text-sm text-blue-200">
-                  Key Laboratory of Intelligent Computing Technology
+                <h1 className="text-2xl font-bold text-white drop-shadow-lg">
+                  CI2P Research Lab
+                </h1>
+                <p className="text-sm text-secondary-200 font-medium">
+                  University of Jinan
+                </p>
+                <p className="text-xs text-gray-400">
+                  Key Laboratory of Intelligent Computing
                 </p>
               </div>
             </div>
 
             {/* Main Heading */}
-            <div className="space-y-4">
-              <h2 className="text-5xl lg:text-6xl font-bold leading-tight">
+            <div
+              className="space-y-4 animate-slide-up"
+              style={{ animationDelay: "0.2s" }}
+            >
+              <h2 className="text-5xl lg:text-7xl font-bold leading-tight">
                 Advancing
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-secondary-400 via-accent-400 to-primary-400 animate-gradient">
                   Intelligent Computing
                 </span>
               </h2>
-              <p className="text-xl text-gray-300 max-w-2xl">
+              <p className="text-xl text-gray-300 max-w-2xl leading-relaxed">
                 Research excellence in Machine Learning, Artificial
                 Intelligence, and Image Processing at University of Jinan
               </p>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4">
+            <div
+              className="flex flex-wrap gap-4 animate-fade-in"
+              style={{ animationDelay: "0.4s" }}
+            >
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                 asChild
               >
                 <Link href="/research/projects">
                   <Microscope className="w-5 h-5 mr-2" />
                   Our Research
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
 
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white/10"
+                className="border-2 border-white text-white hover:bg-white hover:text-primary-900 shadow-lg transition-all"
                 asChild
               >
                 <Link href="/papers">
@@ -152,7 +171,7 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white/10"
+                className="border-2 border-secondary-400 text-secondary-400 hover:bg-secondary-400 hover:text-white shadow-lg transition-all"
                 asChild
               >
                 <Link href="/team">
@@ -164,24 +183,33 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
 
             {/* Live Stats */}
             {stats && (
-              <div className="flex gap-8 pt-8 border-t border-white/20">
-                <div>
-                  <div className="text-3xl font-bold text-blue-400">
+              <div
+                className="flex gap-8 pt-8 border-t border-white/20 animate-fade-in"
+                style={{ animationDelay: "0.6s" }}
+              >
+                <div className="group cursor-default">
+                  <div className="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-500 group-hover:scale-110 transition-transform">
                     {stats.publications}+
                   </div>
-                  <div className="text-sm text-gray-400">Publications</div>
+                  <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                    Publications
+                  </div>
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-cyan-400">
+                <div className="group cursor-default">
+                  <div className="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-secondary-400 to-secondary-500 group-hover:scale-110 transition-transform">
                     {stats.projects}+
                   </div>
-                  <div className="text-sm text-gray-400">Active Projects</div>
+                  <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                    Active Projects
+                  </div>
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-green-400">
+                <div className="group cursor-default">
+                  <div className="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-accent-500 group-hover:scale-110 transition-transform">
                     {stats.members}
                   </div>
-                  <div className="text-sm text-gray-400">Team Members</div>
+                  <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                    Team Members
+                  </div>
                 </div>
               </div>
             )}
@@ -189,49 +217,49 @@ export function HeroSection({ teamMembers = [], stats }: HeroSectionProps) {
 
           {/* Right: Team Member Carousel */}
           {teamMembers.length > 0 && (
-            <div className="hidden lg:flex items-center justify-center">
+            <div
+              className="hidden lg:flex items-center justify-center animate-fade-in"
+              style={{ animationDelay: "0.8s" }}
+            >
               <div className="relative">
-                {/* Decorative Ring */}
-                <div className="absolute inset-0 -m-8 rounded-full border-2 border-blue-500/30 animate-spin-slow" />
-                <div className="absolute inset-0 -m-16 rounded-full border border-cyan-500/20 animate-spin-slower" />
+                {/* Decorative Rings */}
+                <div className="absolute inset-0 -m-8 rounded-full border-2 border-primary-500/30 animate-spin-slow" />
+                <div className="absolute inset-0 -m-16 rounded-full border border-secondary-500/20 animate-spin-slower" />
 
                 {/* Member Card */}
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl w-80 transition-all duration-500">
+                <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl w-80 transition-all duration-500 hover:scale-105">
                   <div className="space-y-6">
                     {/* Avatar */}
+                    {/* Avatar */}
                     <div className="flex justify-center">
-                      <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500/50 shadow-xl">
+                      <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-gradient-to-r from-primary-500/70 to-secondary-500/70 shadow-xl shadow-primary-500/20">
                         <Image
-                          src={
-                            teamMembers[currentMember].avatar || "/prof-niu.jpg"
-                          }
+                          src={teamMembers[currentMember].avatar || "/SJ.jpg"}
                           alt={teamMembers[currentMember].fullName}
                           fill
                           className="object-cover"
                         />
                       </div>
-                    </div>
-
+                    </div>{" "}
                     {/* Info */}
                     <div className="text-center space-y-2">
                       <h3 className="text-2xl font-bold text-white">
                         {teamMembers[currentMember].fullName}
                       </h3>
-                      <p className="text-blue-300">
-                        {teamMembers[currentMember].title}
+                      <p className="text-secondary-300">
+                        {teamMembers[currentMember].title || "Research Member"}
                       </p>
                     </div>
-
                     {/* Carousel Indicators */}
-                    <div className="flex justify-center gap-2">
+                    <div className="flex justify-center gap-2 pt-2">
                       {teamMembers.map((_, idx) => (
                         <button
                           key={idx}
                           onClick={() => setCurrentMember(idx)}
-                          className={`w-2 h-2 rounded-full transition-all ${
+                          className={`rounded-full transition-all ${
                             idx === currentMember
-                              ? "bg-blue-500 w-8"
-                              : "bg-white/30 hover:bg-white/50"
+                              ? "bg-secondary-500 w-8 h-2 shadow-lg shadow-secondary-500/50"
+                              : "bg-white/30 w-2 h-2 hover:bg-white/50"
                           }`}
                           aria-label={`View team member ${idx + 1}`}
                         />
