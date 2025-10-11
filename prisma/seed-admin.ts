@@ -22,7 +22,7 @@ async function main() {
     throw new Error(
       "ADMIN_EMAIL, ADMIN_PASSWORD, and ADMIN_MEMBER_ID must be set in .env file"
     );
-  }
+  } 
 
   console.log(`Admin Email: ${adminEmail}`);
   console.log(`Admin Password: ${adminPassword}`);
