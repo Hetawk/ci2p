@@ -5,6 +5,22 @@
 
 A modern, full-stack research lab website built with Next.js 15, TypeScript, and Prisma. Features comprehensive content management, authentication, and resource booking systems.
 
+## 🎬 Demo
+
+![Hero Section](public/hero.gif)
+
+### Screenshots
+
+<div align="center">
+  <img src="public/about.png" alt="About Section" width="45%" />
+  <img src="public/reserch_focus_area.png" alt="Research Focus Areas" width="45%" />
+</div>
+
+<div align="center">
+  <img src="public/research_in_action_0.png" alt="Research in Action" width="45%" />
+  <img src="public/nn_flow.png" alt="Neural Network Flow" width="45%" />
+</div>
+
 ## 🚀 Features
 
 ### Public-Facing
@@ -131,12 +147,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-### Default Admin Account
+### Example Login (After Seeding)
 
-After seeding, you can login with:
+After running the seed script, you can login with the credentials configured in your `.env` file:
 
-- **Email**: admin@ci2p.com
-- **Password**: (set during seed)
+- **Email**: `your-admin-email@example.com`
+- **Password**: Set via `SEED_PASSWORD` environment variable
 
 ## 📚 API Documentation
 
@@ -176,26 +192,24 @@ After seeding, you can login with:
 
 Full API documentation available in `/zdir/API_Documentation.md`
 
-## 🔐 User Roles
+## 🔐 User Roles & Registration Flow
+
+### User Roles
 
 - **SUPER_ADMIN**: Full system access, user management
 - **RESEARCHER**: Create/edit own content, view analytics
 - **STUDENT**: Limited content creation, resource booking
 - **GUEST**: View public content only
 
-## 🗂️ Database Schema
+### Registration Process
 
-Key models:
+1. **User Registration**: Prospective researchers/students submit registration form with personal information
+2. **Admin Review**: Registration requests appear in admin dashboard for approval
+3. **Approval & Account Creation**: Admin/Super Admin reviews and approves, system generates temporary password
+4. **First Login**: User receives temporary credentials and must change password on first login
+5. **Access Granted**: User can now access system with their chosen secure password
 
-- **User**: Authentication and authorization
-- **Profile**: User profile information
-- **Publication**: Research papers and publications
-- **Project**: Research projects
-- **News**: Lab news and updates
-- **Resource**: Bookable lab resources
-- **Booking**: Resource reservation system
-
-See `prisma/schema.prisma` for complete schema.
+This ensures proper vetting of all lab members and maintains security standards.
 
 ## 🚀 Deployment
 
@@ -247,9 +261,16 @@ This project is proprietary software for CI2P Research Lab.
 ## 📧 Contact
 
 **CI2P Research Lab**  
+**Prof. Sijie Niu - Lab Director**  
+School of Information Science and Engineering  
 University of Jinan  
-Email: contact@ci2p.edu.cn  
-Website: https://ci2p.ujn.edu.cn
+No. 336 West Road of Nan Xinzhuang  
+Jinan, Shandong 250022, China
+
+📧 Email: sjniu@hotmail.com | ise_niusj@ujn.edu.cn  
+📞 Phone: 0531-82767569  
+🔬 Google Scholar: [Prof. Sijie Niu](https://scholar.google.com.hk/citations?user=tRi0nMcAAAAJ&hl=zh-en)  
+🔗 ORCID: [0000-0002-1401-9859](https://orcid.org/0000-0002-1401-9859)
 
 ---
 
