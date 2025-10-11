@@ -47,10 +47,10 @@ export default function LoginPage() {
       }
 
       // Redirect based on user role
-      if (data.user.role === "ADMIN") {
+      if (data.user.role === "ADMIN" || data.user.role === "SUPER_ADMIN") {
         router.push("/admin/overview");
       } else {
-        router.push("/dash/home");
+        router.push("/");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
