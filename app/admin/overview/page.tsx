@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
 import {
   Users,
   FileText,
@@ -31,18 +32,25 @@ async function getStats() {
         fetch(`${baseUrl}/api/news`, { cache: "no-store" }),
       ]);
 
-    const users = await usersRes.json();
-    const papers = await papersRes.json();
-    const projects = await projectsRes.json();
-    const resources = await resourcesRes.json();
-    const news = await newsRes.json();
+    const usersData = await usersRes.json();
+    const papersData = await papersRes.json();
+    const projectsData = await projectsRes.json();
+    const resourcesData = await resourcesRes.json();
+    const newsData = await newsRes.json();
+
+    // Extract data from API response structures
+    // Users API returns: { users: [...], pagination: {...} }
+    // Papers API returns: { success: true, data: { papers: [...], pagination: {...} } }
+    // Projects API returns: { success: true, data: { projects: [...], pagination: {...} } }
+    // Resources API returns: { success: true, data: { resources: [...], pagination: {...} } }
+    // News API returns: { success: true, data: { news: [...], pagination: {...} } }
 
     return {
-      users: users.length || 0,
-      papers: papers.length || 0,
-      projects: projects.length || 0,
-      resources: resources.data?.length || 0,
-      news: news.length || 0,
+      users: usersData.users?.length || 0,
+      papers: papersData.data?.papers?.length || 0,
+      projects: projectsData.data?.projects?.length || 0,
+      resources: resourcesData.data?.resources?.length || 0,
+      news: newsData.data?.news?.length || 0,
     };
   } catch (error) {
     console.error("Failed to fetch stats:", error);
@@ -51,17 +59,35 @@ async function getStats() {
 }
 
 async function getPendingBookings() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
   try {
-    const res = await fetch(
-      `${baseUrl}/api/resources/bookings?status=PENDING`,
-      {
-        cache: "no-store",
-      }
-    );
-    const data = await res.json();
-    return data.data || [];
+    // Query database directly instead of HTTP call (server component can't send cookies)
+    const bookings = await prisma.resourceBooking.findMany({
+      where: {
+        status: "PENDING",
+      },
+      take: 5, // Limit to 5 most recent
+      orderBy: {
+        startTime: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+            profile: {
+              select: {
+                fullName: true,
+              },
+            },
+          },
+        },
+        resource: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return bookings;
   } catch (error) {
     console.error("Failed to fetch bookings:", error);
     return [];
@@ -193,43 +219,33 @@ async function PendingBookings() {
           <p className="text-sm text-muted-foreground">No pending bookings</p>
         ) : (
           <div className="space-y-4">
-            {bookings
-              .slice(0, 5)
-              .map(
-                (booking: {
-                  id: string;
-                  resource?: { name: string };
-                  user?: { profile?: { fullName: string } };
-                  startTime: string;
-                  endTime: string;
-                }) => (
-                  <div
-                    key={booking.id}
-                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50"
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium">
-                        {booking.resource?.name || "Resource"}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {booking.user?.profile?.fullName || "Unknown User"}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(booking.startTime).toLocaleDateString()} -{" "}
-                        {new Date(booking.endTime).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="default">
-                        <CheckCircle className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="destructive">
-                        <XCircle className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                )
-              )}
+            {bookings.slice(0, 5).map((booking) => (
+              <div
+                key={booking.id}
+                className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50"
+              >
+                <div className="flex-1">
+                  <p className="font-medium">
+                    {booking.resource?.name || "Resource"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {booking.user?.profile?.fullName || "Unknown User"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(booking.startTime).toLocaleDateString()} -{" "}
+                    {new Date(booking.endTime).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="default">
+                    <CheckCircle className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="destructive">
+                    <XCircle className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
             {bookings.length > 5 && (
               <Link href="/admin/resources">
                 <Button variant="outline" className="w-full">

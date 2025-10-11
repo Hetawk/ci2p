@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { AUTH_COOKIE_NAME } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/jwt";
 
@@ -88,7 +89,7 @@ export async function PUT(
     const { id } = await params;
 
     // Verify authentication
-    const token = request.cookies.get("auth-token")?.value;
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
     if (!token) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
@@ -176,7 +177,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Verify authentication
-    const token = request.cookies.get("auth-token")?.value;
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
     if (!token) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },

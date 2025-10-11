@@ -16,10 +16,16 @@ async function getAnalytics() {
       fetch(`${baseUrl}/api/news`, { cache: "no-store" }),
     ]);
 
-    const users = await usersRes.json();
-    const papers = await papersRes.json();
-    const projects = await projectsRes.json();
-    const news = await newsRes.json();
+    const usersData = await usersRes.json();
+    const papersData = await papersRes.json();
+    const projectsData = await projectsRes.json();
+    const newsData = await newsRes.json();
+
+    // Extract arrays from nested data structures
+    const users = usersData.users || [];
+    const papers = papersData?.data?.papers || [];
+    const projects = projectsData?.data?.projects || [];
+    const news = newsData?.data?.news || [];
 
     // Calculate total views
     const paperViews = papers.reduce(

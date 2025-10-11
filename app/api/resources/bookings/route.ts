@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/jwt";
+import { AUTH_COOKIE_NAME } from "@/lib/auth";
 
 // GET /api/resources/bookings - Get bookings (authenticated)
 export async function GET(request: NextRequest) {
   try {
     // Verify authentication
-    const token = request.cookies.get("auth-token")?.value;
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
     if (!token) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
@@ -123,7 +124,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication
-    const token = request.cookies.get("auth-token")?.value;
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
     if (!token) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },

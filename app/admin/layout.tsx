@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
+import { AUTH_COOKIE_NAME } from "@/lib/auth";
 import {
   LayoutDashboard,
   FileText,
@@ -16,7 +17,7 @@ import {
 
 async function getUser() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
 
   if (!token) {
     return null;
@@ -37,8 +38,8 @@ export default async function AdminLayout({
 }) {
   const user = await getUser();
 
-  // Only SUPER_ADMIN can access admin panel
-  if (!user || user.role !== "SUPER_ADMIN") {
+  // Only SUPER_ADMIN and ADMIN can access admin panel
+  if (!user || (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN")) {
     redirect("/login");
   }
 

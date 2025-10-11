@@ -25,8 +25,9 @@ async function getPublications() {
     if (!res.ok) {
       throw new Error("Failed to fetch publications");
     }
-    const data = await res.json();
-    return data;
+    const result = await res.json();
+    // Extract papers array from nested data structure
+    return result?.data?.papers || [];
   } catch (error) {
     console.error("Error fetching publications:", error);
     return [];

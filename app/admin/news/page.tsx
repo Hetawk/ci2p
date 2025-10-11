@@ -24,8 +24,9 @@ async function getNews() {
     if (!res.ok) {
       throw new Error("Failed to fetch news");
     }
-    const data = await res.json();
-    return data;
+    const result = await res.json();
+    // Extract news array from nested data structure
+    return result?.data?.news || [];
   } catch (error) {
     console.error("Error fetching news:", error);
     return [];

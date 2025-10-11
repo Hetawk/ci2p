@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { AUTH_COOKIE_NAME } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { verifyAuth } from "@/lib/jwt";
 import { prisma } from "@/lib/prisma";
@@ -15,7 +16,7 @@ export async function PATCH(
 
     // Verify admin authentication
     const cookieStore = await cookies();
-    const token = cookieStore.get("auth-token");
+    const token = cookieStore.get(AUTH_COOKIE_NAME);
 
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

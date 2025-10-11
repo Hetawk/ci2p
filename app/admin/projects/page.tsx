@@ -25,8 +25,9 @@ async function getProjects() {
     if (!res.ok) {
       throw new Error("Failed to fetch projects");
     }
-    const data = await res.json();
-    return data;
+    const result = await res.json();
+    // Extract projects array from nested data structure
+    return result?.data?.projects || [];
   } catch (error) {
     console.error("Error fetching projects:", error);
     return [];

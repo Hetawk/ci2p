@@ -26,8 +26,9 @@ async function getResources() {
     if (!res.ok) {
       throw new Error("Failed to fetch resources");
     }
-    const data = await res.json();
-    return data.data || [];
+    const result = await res.json();
+    // Extract resources array from nested data structure
+    return result?.data?.resources || [];
   } catch (error) {
     console.error("Error fetching resources:", error);
     return [];
@@ -41,6 +42,12 @@ async function getBookings() {
     const res = await fetch(`${baseUrl}/api/resources/bookings`, {
       cache: "no-store",
     });
+
+    // Server-side fetch doesn't send cookies, so 401 is expected
+    if (res.status === 401) {
+      return [];
+    }
+
     if (!res.ok) {
       throw new Error("Failed to fetch bookings");
     }
