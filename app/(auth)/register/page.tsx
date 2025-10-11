@@ -28,7 +28,7 @@ type UserRole = "STUDENT" | "RESEARCHER";
 export default function RegisterPage() {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  
+
   // Check if user is already logged in
   useEffect(() => {
     const checkAuth = async () => {
