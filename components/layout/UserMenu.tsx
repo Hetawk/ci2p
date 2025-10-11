@@ -9,9 +9,6 @@ import {
   User,
   LogOut,
   Settings,
-  LayoutDashboard,
-  Heart,
-  Briefcase,
   ChevronDown,
   Mail,
   Shield,
@@ -117,19 +114,6 @@ export default function UserMenu() {
     return "U";
   };
 
-  const getDashboardLink = () => {
-    if (user.dashboard === "BOTH" || user.isSuperAdmin) {
-      return "/dashboard";
-    }
-    if (user.dashboard === "PORTFOLIO") {
-      return "/portfolio";
-    }
-    if (user.dashboard === "HERPROMISE") {
-      return "/dashboard";
-    }
-    return "/dashboard";
-  };
-
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -175,7 +159,7 @@ export default function UserMenu() {
             className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50"
           >
             {/* User Info Header */}
-            <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-4">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4">
               <div className="flex items-center gap-3">
                 {user.image ? (
                   <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
@@ -202,11 +186,11 @@ export default function UserMenu() {
                   </p>
                 </div>
               </div>
-              {user.isAdmin && (
+              {user.role && (
                 <div className="mt-2 flex items-center gap-1 text-white/90 text-xs">
                   <Shield className="w-3 h-3" />
-                  <span>
-                    {user.isSuperAdmin ? "Super Admin" : "Admin"} Access
+                  <span className="capitalize">
+                    {user.role.replace("_", " ")}
                   </span>
                 </div>
               )}
@@ -214,14 +198,13 @@ export default function UserMenu() {
 
             {/* Menu Items */}
             <div className="py-2">
-              {/* Dashboard Links */}
-              <div className="px-2 pb-2 border-b border-gray-100">
-                <p className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
-                  Dashboards
-                </p>
+              {/* Admin Links */}
+              {(user.role === "SUPER_ADMIN" || user.role === "ADMIN") && (
+                <div className="px-2 pb-2 border-b border-gray-100">
+                  <p className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
+                    Administration
+                  </p>
 
-                {/* Admin Dashboard - Only for SUPER_ADMIN */}
-                {user.isSuperAdmin && (
                   <Link
                     href="/admin/overview"
                     onClick={() => setIsOpen(false)}
@@ -230,52 +213,34 @@ export default function UserMenu() {
                     <Shield className="w-4 h-4 group-hover:text-blue-600" />
                     <span className="text-sm font-medium">Admin Dashboard</span>
                   </Link>
-                )}
 
-                {(user.dashboard === "BOTH" ||
-                  user.dashboard === "HERPROMISE" ||
-                  user.isSuperAdmin) && (
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-pink-50 text-gray-700 hover:text-pink-600 transition-colors group"
-                  >
-                    <Heart className="w-4 h-4 group-hover:fill-pink-600" />
-                    <span className="text-sm font-medium">
-                      Her Promise Dashboard
-                    </span>
-                  </Link>
-                )}
+                  {user.role === "SUPER_ADMIN" && (
+                    <>
+                      <Link
+                        href="/admin/registration-requests"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-blue-600 transition-colors group"
+                      >
+                        <User className="w-4 h-4" />
+                        <span className="text-sm font-medium">
+                          Registration Requests
+                        </span>
+                      </Link>
 
-                {(user.dashboard === "BOTH" ||
-                  user.dashboard === "PORTFOLIO" ||
-                  user.isSuperAdmin) && (
-                  <Link
-                    href="/portfolio/dashboard"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition-colors group"
-                  >
-                    <Briefcase className="w-4 h-4" />
-                    <span className="text-sm font-medium">
-                      Portfolio Dashboard
-                    </span>
-                  </Link>
-                )}
-
-                {!user.isSuperAdmin &&
-                  user.dashboard !== "BOTH" &&
-                  user.dashboard !== "PORTFOLIO" &&
-                  user.dashboard !== "HERPROMISE" && (
-                    <Link
-                      href={getDashboardLink()}
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-colors group"
-                    >
-                      <LayoutDashboard className="w-4 h-4" />
-                      <span className="text-sm font-medium">Dashboard</span>
-                    </Link>
+                      <Link
+                        href="/admin/users"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-blue-600 transition-colors group"
+                      >
+                        <User className="w-4 h-4" />
+                        <span className="text-sm font-medium">
+                          User Management
+                        </span>
+                      </Link>
+                    </>
                   )}
-              </div>
+                </div>
+              )}
 
               {/* Account Links */}
               <div className="px-2 py-2 border-b border-gray-100">

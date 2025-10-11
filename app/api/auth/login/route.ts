@@ -88,15 +88,22 @@ export async function POST(request: Request) {
       data: { lastLogin: new Date() },
     });
 
-    // Set auth cookie (default to herpromise dashboard)
+    // Set auth cookie - use "herpromise" as default dashboard value for backward compatibility
     await setAuthCookie("herpromise", {
       userId: user.id,
       email: user.email,
       role: user.role,
     });
 
+    // Determine redirect URL based on role
+    let redirectUrl = "/";
+    if (user.role === "SUPER_ADMIN" || user.role === "ADMIN") {
+      redirectUrl = "/admin/overview";
+    }
+
     return NextResponse.json({
       success: true,
+      redirectUrl,
       user: {
         id: user.id,
         email: user.email,

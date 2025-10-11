@@ -59,6 +59,7 @@ model User {
 
 enum UserRole {
     SUPER_ADMIN // Professor, full access
+    ADMIN // Lab administrator
     RESEARCHER // Faculty, PhD students
     STUDENT // Master's, undergrad students
     GUEST // Read-only access

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +18,6 @@ import {
 import { motion } from "framer-motion";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     identifier: "", // Can be email, username, or student ID
     password: "",
@@ -46,12 +44,11 @@ export default function LoginPage() {
         throw new Error(data.error || "Login failed");
       }
 
-      // Redirect based on user role
-      if (data.user.role === "ADMIN" || data.user.role === "SUPER_ADMIN") {
-        router.push("/admin/overview");
-      } else {
-        router.push("/");
-      }
+      // Use the redirect URL from the API response
+      const redirectUrl = data.redirectUrl || "/";
+
+      // Force a hard redirect to ensure cookies are properly set
+      window.location.href = redirectUrl;
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

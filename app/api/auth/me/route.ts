@@ -37,23 +37,21 @@ export async function GET() {
       return NextResponse.json({
         user: {
           ...user,
-          name: user.profile?.fullName,
+          name: user.profile?.fullName || user.username,
           image: user.profile?.avatar,
-          isAdmin: user.role === "SUPER_ADMIN" || user.role === "RESEARCHER",
+          isAdmin: user.role === "SUPER_ADMIN" || user.role === "ADMIN",
           isSuperAdmin: user.role === "SUPER_ADMIN",
         },
       });
     }
 
-    // For super admin (env-based auth without database user)
+    // Fallback for auth without userId
     return NextResponse.json({
       user: {
         email: auth.email,
-        name: "Super Admin",
-        role: "SUPER_ADMIN",
-        dashboard: auth.dashboard,
-        isAdmin: true,
-        isSuperAdmin: true,
+        role: auth.role,
+        isAdmin: auth.role === "SUPER_ADMIN" || auth.role === "ADMIN",
+        isSuperAdmin: auth.role === "SUPER_ADMIN",
       },
     });
   } catch (error) {

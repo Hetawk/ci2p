@@ -5,17 +5,8 @@ import { isAuthenticatedSync } from "./lib/auth";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Portfolio dashboard routes
-  if (pathname.startsWith("/portfolio/dashboard")) {
-    if (!isAuthenticatedSync(request)) {
-      const loginUrl = new URL("/portfolio/login", request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-  }
-
-  // Her Promise dashboard routes
-  if (pathname.startsWith("/dashboard") && pathname !== "/dashboard") {
+  // Admin routes - require authentication
+  if (pathname.startsWith("/admin")) {
     if (!isAuthenticatedSync(request)) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
@@ -23,8 +14,8 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // If accessing /dashboard (the Her Promise dashboard overview)
-  if (pathname === "/dashboard") {
+  // Settings routes - require authentication
+  if (pathname.startsWith("/settings")) {
     if (!isAuthenticatedSync(request)) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
@@ -36,5 +27,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/portfolio/dashboard/:path*", "/dashboard/:path*", "/dashboard"],
+  matcher: ["/admin/:path*", "/settings/:path*"],
 };
