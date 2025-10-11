@@ -64,18 +64,6 @@ export async function clearAuthCookie() {
   cookieStore.delete(AUTH_COOKIE_NAME);
 }
 
-export function verifyPassword(
-  inputPassword: string,
-  dashboard: "portfolio" | "herpromise"
-): boolean {
-  const correctPassword =
-    dashboard === "portfolio"
-      ? process.env.PORTFOLIO_DASHBOARD_PASSWORD
-      : process.env.HERPROMISE_DASHBOARD_PASSWORD;
-
-  return inputPassword === correctPassword;
-}
-
 export async function isAuthenticated(
   request: NextRequest,
   dashboard: "portfolio" | "herpromise"
@@ -88,7 +76,7 @@ export async function isAuthenticated(
 
   try {
     const payload = await verifyToken(authCookie.value);
-    
+
     if (!payload) {
       return false;
     }
@@ -106,11 +94,9 @@ export async function isAuthenticated(
 }
 
 // Synchronous check for middleware (basic validation)
-export function isAuthenticatedSync(
-  request: NextRequest
-): boolean {
+export function isAuthenticatedSync(request: NextRequest): boolean {
   const authCookie = request.cookies.get(AUTH_COOKIE_NAME);
-  
+
   // If cookie exists, assume authenticated (full verification happens in routes)
   return !!authCookie?.value;
 }

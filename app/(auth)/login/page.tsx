@@ -21,7 +21,7 @@ import { motion } from "framer-motion";
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: "",
+    identifier: "", // Can be email, username, or student ID
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -109,26 +109,30 @@ export default function LoginPage() {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
+            {/* Email / Username / Member ID / University ID */}
+            {/* Email / Username / Member ID / University ID */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700 font-medium">
-                Email Address
+              <Label htmlFor="identifier" className="text-gray-700 font-medium">
+                Email, Username, Member ID, or University ID
               </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="your.email@ujn.edu.cn"
-                  value={formData.email}
+                  id="identifier"
+                  type="text"
+                  placeholder="your.email@ujn.edu.cn or your ID (202534100003)"
+                  value={formData.identifier}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
+                    setFormData({ ...formData, identifier: e.target.value })
                   }
                   className="pl-10 h-12 border-gray-300"
                   required
                   disabled={isLoading}
                 />
               </div>
+              <p className="text-xs text-gray-500">
+                Login with your email, username, lab member ID, or university ID
+              </p>
             </div>
 
             {/* Password */}

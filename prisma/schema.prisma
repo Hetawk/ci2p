@@ -28,21 +28,32 @@ model User {
     resetTokenExpiry  DateTime?
     lastLogin         DateTime?
     active            Boolean   @default(true)
-    createdAt         DateTime  @default(now())
-    updatedAt         DateTime  @updatedAt
+
+    // Password Management
+    isTemporaryPassword Boolean   @default(false) @map("is_temporary_password")
+    mustChangePassword  Boolean   @default(false) @map("must_change_password")
+    passwordChangedAt   DateTime? @map("password_changed_at")
+
+    // Registration Request Link
+    registrationRequestId String? @unique @map("registration_request_id")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     // Relations
-    profile      Profile?
-    publications Publication[]
-    projects     ProjectMember[]
-    achievements Achievement[]
-    bookings     ResourceBooking[]
-    accounts     Account[]
-    sessions     Session[]
+    profile             Profile?
+    publications        Publication[]
+    projects            ProjectMember[]
+    achievements        Achievement[]
+    bookings            ResourceBooking[]
+    accounts            Account[]
+    sessions            Session[]
+    registrationRequest RegistrationRequest? @relation(fields: [registrationRequestId], references: [id])
 
     @@index([email])
     @@index([role])
     @@index([active])
+    @@index([registrationRequestId])
     @@map("users")
 }
 
@@ -86,8 +97,10 @@ model Profile {
     researchGate  String? @map("research_gate")
 
     // Academic
-    education String? @db.Text // JSON array of degrees
-    interests String? @db.Text // Research interests, comma-separated
+    memberId     String? @unique @map("member_id") // Lab member ID (assigned when joining, required)
+    universityId String? @map("university_id") // University ID (optional, added after enrollment)
+    education    String? @db.Text // JSON array of degrees
+    interests    String? @db.Text // Research interests, comma-separated
 
     // Stats (cached)
     publicationCount Int @default(0) @map("publication_count")
@@ -103,6 +116,56 @@ model Profile {
     @@index([orcidId])
     @@index([showInTeam, teamOrder])
     @@map("profiles")
+}
+
+// Registration Request Model - Admin Approval Required
+model RegistrationRequest {
+    id            String   @id @default(cuid())
+    email         String   @unique
+    fullName      String   @map("full_name")
+    chineseName   String?  @map("chinese_name")
+    requestedRole UserRole @default(STUDENT) @map("requested_role")
+
+    // Personal Information
+    phone              String?
+    universityId       String?   @map("university_id") // University ID (student, staff, or faculty ID)
+    major              String? // For students
+    expectedGraduation DateTime? @map("expected_graduation") // For students
+    researchInterests  String?   @map("research_interests") @db.Text
+
+    // Academic Background
+    institution String?
+    degree      String?
+    supervisor  String? // Current/previous supervisor
+
+    // Additional Info
+    message String? @db.Text
+    cvUrl   String? @map("cv_url") // CV/Resume file URL
+
+    // Status & Review
+    status          RegistrationStatus @default(PENDING)
+    reviewedBy      String?            @map("reviewed_by") // Admin user ID
+    reviewedAt      DateTime?          @map("reviewed_at")
+    rejectionReason String?            @map("rejection_reason") @db.Text
+
+    // Metadata
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    // Relations
+    user User?
+
+    @@index([email])
+    @@index([status])
+    @@index([createdAt])
+    @@map("registration_requests")
+}
+
+enum RegistrationStatus {
+    PENDING
+    APPROVED
+    REJECTED
+    EXPIRED
 }
 
 // NextAuth models

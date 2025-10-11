@@ -6,45 +6,42 @@ import { comparePassword } from "@/lib/password";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { identifier, password } = body; // identifier can be email or username
+    const { identifier, password } = body; // identifier can be email, username, or student ID
 
     if (!identifier || !password) {
       return NextResponse.json(
-        { success: false, error: "Email/username and password are required" },
+        {
+          success: false,
+          error: "Login credentials and password are required",
+        },
         { status: 400 }
       );
     }
 
-    // Check if super admin login
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.DASHBOARD_PASSWORD;
-
-    if (identifier === adminEmail && password === adminPassword) {
-      // Super admin login
-      await setAuthCookie("herpromise", {
-        email: adminEmail,
-        role: "SUPER_ADMIN",
-      });
-
-      return NextResponse.json({
-        success: true,
-        user: {
-          email: adminEmail,
-          role: "SUPER_ADMIN",
-          dashboard: "BOTH",
-        },
-      });
-    }
-
-    // Find user by email or username
+    // Find user by email, username, member ID, or university ID
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email: identifier }, { username: identifier }],
+        OR: [
+          { email: identifier },
+          { username: identifier },
+          {
+            profile: {
+              memberId: identifier,
+            },
+          },
+          {
+            profile: {
+              universityId: identifier,
+            },
+          },
+        ],
       },
       include: {
         profile: {
           select: {
             fullName: true,
+            memberId: true,
+            universityId: true,
           },
         },
       },
