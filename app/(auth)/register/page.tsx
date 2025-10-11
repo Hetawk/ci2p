@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,31 @@ import { motion } from "framer-motion";
 type UserRole = "STUDENT" | "RESEARCHER";
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/api/auth/me");
+        if (response.ok) {
+          const data = await response.json();
+          // User is logged in, redirect based on role
+          if (data.role === "SUPER_ADMIN" || data.role === "ADMIN") {
+            router.replace("/admin/overview");
+          } else {
+            router.replace("/");
+          }
+        } else {
+          setCheckingAuth(false);
+        }
+      } catch {
+        setCheckingAuth(false);
+      }
+    };
+    checkAuth();
+  }, [router]);
   const [formData, setFormData] = useState({
     // Required fields
     fullName: "",
@@ -84,6 +110,15 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
+
+  // Show loading while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+      </div>
+    );
+  }
 
   if (success) {
     return (
