@@ -57,3 +57,13 @@ export async function refreshToken(oldToken: string): Promise<string | null> {
 
   return signToken(newPayload);
 }
+
+/**
+ * Verify authentication token for API routes
+ * Returns payload if valid, null if invalid
+ */
+export async function verifyAuth(
+  token: string
+): Promise<AuthJWTPayload | null> {
+  return verifyToken(token);
+}
