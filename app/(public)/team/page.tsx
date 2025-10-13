@@ -13,44 +13,48 @@ export const metadata: Metadata = {
 
 // Mark this page as dynamic (not static)
 export const dynamic = "force-dynamic";
+export const revalidate = 0; // Disable caching
 
-// Fetch team members from API
+// Fetch team members directly from database
 async function getTeamMembers(): Promise<TeamMember[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const response = await fetch(
-      `${baseUrl}/api/users?showInTeam=true&limit=100`,
-      {
-        cache: "no-store",
-      }
-    );
+    const { prisma } = await import("@/lib/prisma");
 
-    if (!response.ok) {
-      console.error("Failed to fetch team members");
-      return [];
-    }
-
-    const data = await response.json();
-
-    // Map API response to TeamMember format
-    return data.users.map(
-      (user: {
-        id: string;
-        role: UserRole;
+    const users = await prisma.user.findMany({
+      where: {
+        active: true,
         profile: {
-          fullName: string;
-          chineseName?: string;
-          title?: string;
-          avatar?: string;
-          email?: string;
-          interests?: string;
-          orcidId?: string;
-          github?: string;
-          publicationCount?: number;
-          projectCount?: number;
-        };
-      }) => {
-        const profile = user.profile;
+          isNot: null,
+        },
+      },
+      select: {
+        id: true,
+        role: true,
+        profile: {
+          select: {
+            fullName: true,
+            chineseName: true,
+            title: true,
+            avatar: true,
+            email: true,
+            interests: true,
+            orcidId: true,
+            github: true,
+            publicationCount: true,
+            projectCount: true,
+            teamOrder: true,
+            showInTeam: true,
+          },
+        },
+      },
+      orderBy: [{ profile: { teamOrder: "asc" } }, { createdAt: "desc" }],
+    });
+
+    // Map to TeamMember format
+    return users
+      .filter((user) => user.profile && user.profile.showInTeam)
+      .map((user) => {
+        const profile = user.profile!;
 
         // Determine category based on role and title
         let category: "faculty" | "phd" | "masters" | "undergrad" | "alumni" =
@@ -71,20 +75,19 @@ async function getTeamMembers(): Promise<TeamMember[]> {
         return {
           id: user.id,
           name: profile.fullName || "Unknown",
-          chineseName: profile.chineseName,
+          chineseName: profile.chineseName || undefined,
           role: profile.title || "Researcher",
           category,
-          photo: profile.avatar,
-          email: profile.email,
+          photo: profile.avatar || undefined,
+          email: profile.email || undefined,
           researchInterests:
             profile.interests?.split(",").map((i: string) => i.trim()) || [],
-          orcid: profile.orcidId,
-          github: profile.github,
+          orcid: profile.orcidId || undefined,
+          github: profile.github || undefined,
           publications: profile.publicationCount || 0,
           projects: profile.projectCount || 0,
         };
-      }
-    );
+      });
   } catch (error) {
     console.error("Error fetching team members:", error);
     return [];
@@ -290,43 +293,54 @@ export default async function TeamPage() {
         )}
 
         {/* Join Team CTA */}
-<section className="relative py-20 px-4">
-  {/* Subtle background gradient */}
-  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800" />
+        <section className="relative py-20 px-4">
+          {/* Subtle background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800" />
 
-  <div className="relative container mx-auto max-w-4xl text-center">
-    <div className="p-12 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-gray-200 dark:border-slate-700 shadow-lg rounded-2xl">
-      <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-gray-100">
-        Join Our Team
-      </h2>
+          <div className="relative container mx-auto max-w-4xl text-center">
+            <div className="p-12 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-gray-200 dark:border-slate-700 shadow-lg rounded-2xl">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+                Join Our Team
+              </h2>
 
-      <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-2xl mx-auto">
-        We’re always looking for talented and motivated individuals to join our research group.
-        Explore opportunities for <span className="font-semibold text-gray-800 dark:text-gray-100">PhD</span>,
-        <span className="font-semibold text-gray-800 dark:text-gray-100"> Master’s</span>, and
-        <span className="font-semibold text-gray-800 dark:text-gray-100"> undergraduate</span> research positions.
-      </p>
+              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-2xl mx-auto">
+                We’re always looking for talented and motivated individuals to
+                join our research group. Explore opportunities for{" "}
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  PhD
+                </span>
+                ,
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  {" "}
+                  Master’s
+                </span>
+                , and
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  {" "}
+                  undergraduate
+                </span>{" "}
+                research positions.
+              </p>
 
-      <div className="flex flex-wrap gap-4 justify-center">
-        <Button
-          size="lg"
-          className="bg-gray-800 text-white hover:bg-gray-700 dark:bg-slate-700 dark:hover:bg-slate-600 transition-all shadow-md"
-        >
-          <Mail className="w-5 h-5 mr-2" />
-          Contact Us
-        </Button>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <Button
+                  size="lg"
+                  className="bg-gray-800 text-white hover:bg-gray-700 dark:bg-slate-700 dark:hover:bg-slate-600 transition-all shadow-md"
+                >
+                  <Mail className="w-5 h-5 mr-2" />
+                  Contact Us
+                </Button>
 
-        <Button
-          size="lg"
-          className="bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 dark:bg-slate-800 dark:text-gray-100 dark:border-slate-600 dark:hover:bg-slate-700 transition-all"
-        >
-          View Open Positions
-        </Button>
-      </div>
-    </div>
-  </div>
-</section>
-
+                <Button
+                  size="lg"
+                  className="bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 dark:bg-slate-800 dark:text-gray-100 dark:border-slate-600 dark:hover:bg-slate-700 transition-all"
+                >
+                  View Open Positions
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </>
   );
