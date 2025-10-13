@@ -343,14 +343,14 @@ export default async function TeamMemberPage({ params }: PageProps) {
 
               {/* Projects */}
               {member.projects && member.projects.length > 0 && (
-                <Card className="p-6">
-                  <div className="flex items-center gap-2 mb-6">
+                <Card className="p-6 ">
+                  <div className="flex items-center gap-2 mb-6 ">
                     <FileText className="w-5 h-5 text-purple-600" />
                     <h2 className="text-2xl font-bold text-gray-900">
                       Active Projects
                     </h2>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-4 ">
                     {member.projects.map(
                       (project: {
                         id: string;
@@ -364,7 +364,7 @@ export default async function TeamMemberPage({ params }: PageProps) {
                           href={`/research/projects/${project.id}`}
                           className="block group"
                         >
-                          <div className="p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all">
+                          <div className="bg-gradient-to-b from-gray-100 to-white p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all">
                             <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 mb-2">
                               {project.title}
                             </h3>
