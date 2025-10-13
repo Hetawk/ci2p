@@ -62,7 +62,7 @@ export function MemberCard({ member, index }: MemberCardProps) {
               )}
 
               {/* Category badge */}
-              <div className="absolute top-3 right-3">
+              <div className="absolute top-3 right-3 ">
                 <Badge
                   variant={
                     member.category === "faculty" ? "default" : "secondary"
@@ -72,7 +72,7 @@ export function MemberCard({ member, index }: MemberCardProps) {
                     member.category === "faculty"
                       ? "bg-primary-600 text-white"
                       : member.category === "masters"
-                      ? "bg-secondary-600 text-white"
+                      ? "bg-green-700 text-white"
                       : member.category === "undergrad"
                       ? "bg-purple-600 text-white"
                       : "bg-gray-600 text-white"
