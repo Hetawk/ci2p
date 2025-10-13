@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { MemberCard, TeamMember } from "@/components/team";
+import { MemberCard, TeamMember, TeamGallery } from "@/components/team";
 import { Button } from "@/components/ui/button";
 import { PublicHeader } from "@/components/layout";
 import { Users, GraduationCap, Sparkles, Award, Mail } from "lucide-react";
@@ -191,6 +191,9 @@ export default async function TeamPage() {
             </div>
           </section>
         )}
+
+        {/* Team Gallery Section */}
+        <TeamGallery />
 
         {/* PhD Students Section */}
         {phd.length > 0 && (
