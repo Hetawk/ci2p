@@ -35,8 +35,31 @@ export async function GET() {
           emailVerified: true,
           profile: {
             select: {
+              id: true,
               fullName: true,
+              chineseName: true,
+              title: true,
               avatar: true,
+              bio: true,
+              interests: true,
+              phone: true,
+              office: true,
+              email: true,
+              website: true,
+              github: true,
+              linkedin: true,
+              googleScholar: true,
+              researchGate: true,
+              orcidId: true,
+              orcidEnabled: true,
+              memberId: true,
+              universityId: true,
+              showInTeam: true,
+              teamOrder: true,
+              publicationCount: true,
+              projectCount: true,
+              citationCount: true,
+              hIndex: true,
             },
           },
         },
@@ -88,6 +111,83 @@ export async function GET() {
     console.error("Error fetching user:", error);
     return NextResponse.json(
       { error: "Failed to fetch user data" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const auth = await getAuthCookie();
+
+    if (!auth?.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+
+    // Update user profile
+    const updatedUser = await prisma.user.update({
+      where: { id: auth.userId },
+      data: {
+        profile: {
+          update: {
+            fullName: body.fullName,
+            chineseName: body.chineseName || null,
+            title: body.title || null,
+            bio: body.bio || null,
+            interests: body.interests || null,
+            phone: body.phone || null,
+            office: body.office || null,
+            email: body.email || null,
+            website: body.website || null,
+            github: body.github || null,
+            linkedin: body.linkedin || null,
+            googleScholar: body.googleScholar || null,
+            researchGate: body.researchGate || null,
+            avatar: body.avatar || null,
+          },
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        profile: {
+          select: {
+            id: true,
+            fullName: true,
+            chineseName: true,
+            title: true,
+            avatar: true,
+            bio: true,
+            interests: true,
+            phone: true,
+            office: true,
+            email: true,
+            website: true,
+            github: true,
+            linkedin: true,
+            googleScholar: true,
+            researchGate: true,
+            orcidId: true,
+            orcidEnabled: true,
+            memberId: true,
+            universityId: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return NextResponse.json(
+      { error: "Failed to update profile" },
       { status: 500 }
     );
   }

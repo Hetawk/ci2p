@@ -305,20 +305,20 @@ export default async function TeamMemberPage({ params }: PageProps) {
 
       {/* Main Content */}
       <section className="py-12 px-4">
-        <div className="container mx-auto max-w-7xl">
+        <div className="container mx-auto max-w-7xl ">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-8 ">
               {/* Research Interests */}
               {researchInterests.length > 0 && (
-                <Card className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
+                <Card className="p-6 bg-green-50">
+                  <div className="flex items-center gap-2 mb-4 ">
                     <Award className="w-5 h-5 text-blue-600" />
                     <h2 className="text-2xl font-bold text-gray-900">
                       Research Interests
                     </h2>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 bg">
                     {researchInterests.map(
                       (interest: string, index: number) => (
                         <Badge
@@ -398,7 +398,7 @@ export default async function TeamMemberPage({ params }: PageProps) {
             <div className="space-y-6">
               {/* Contact Card */}
               {(profile.office || profile.phone || profile.email) && (
-                <Card className="p-6">
+                <Card className="p-6 bg-green-50">
                   <h3 className="text-lg font-bold text-gray-900 mb-4">
                     Contact Information
                   </h3>
