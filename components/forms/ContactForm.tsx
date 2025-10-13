@@ -147,7 +147,7 @@ export function ContactForm({ className }: ContactFormProps) {
           type="submit"
           size="lg"
           disabled={isLoading}
-          className="w-full bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white shadow-lg hover:shadow-xl transition-all"
+          className="w-full bg-blue-500 from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white shadow-lg hover:shadow-xl transition-all"
         >
           {isLoading ? (
             <>

@@ -37,6 +37,26 @@ export default function UserMenu() {
 
   useEffect(() => {
     fetchUser();
+
+    // Listen for storage events (used for cross-tab communication)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "user-changed") {
+        fetchUser();
+      }
+    };
+
+    // Listen for custom events (used for same-tab communication)
+    const handleUserChange = () => {
+      fetchUser();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("user-changed", handleUserChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("user-changed", handleUserChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -52,8 +72,20 @@ export default function UserMenu() {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/auth/me");
+      // Add timestamp to prevent any caching
+      const timestamp = new Date().getTime();
+      const res = await fetch(`/api/auth/me?_=${timestamp}`, {
+        cache: "no-store",
+        credentials: "include",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
       const data = await res.json();
+
+      console.log("UserMenu - Fetched user data:", data.user); // Debug log
       setUser(data.user);
     } catch (error) {
       console.error("Failed to fetch user:", error);
@@ -67,6 +99,11 @@ export default function UserMenu() {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
       setUser(null);
+
+      // Trigger user data refresh
+      localStorage.setItem("user-changed", Date.now().toString());
+      window.dispatchEvent(new Event("user-changed"));
+
       router.push("/");
       router.refresh();
     } catch (error) {
@@ -90,7 +127,7 @@ export default function UserMenu() {
     return (
       <Link
         href="/login"
-        className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-700 hover:text-brand-600 font-medium transition-all duration-300"
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 font-medium transition-all duration-300 shadow-md hover:shadow-lg"
       >
         <User className="w-5 h-5" />
         <span className="text-sm font-medium whitespace-nowrap">Sign In</span>

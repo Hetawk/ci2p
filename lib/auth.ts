@@ -61,7 +61,19 @@ export async function getAuthCookie(): Promise<DashboardAuth | null> {
 
 export async function clearAuthCookie() {
   const cookieStore = await cookies();
+
+  // Delete the cookie
   cookieStore.delete(AUTH_COOKIE_NAME);
+
+  // Also set it with immediate expiration as a fallback
+  cookieStore.set(AUTH_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 0,
+    path: "/",
+    expires: new Date(0),
+  });
 }
 
 export async function isAuthenticated(

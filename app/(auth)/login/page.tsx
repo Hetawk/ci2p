@@ -30,25 +30,48 @@ export default function LoginPage() {
 
   // Check if user is already logged in
   useEffect(() => {
+    let mounted = true;
+
     const checkAuth = async () => {
       try {
-        const response = await fetch("/api/auth/me");
+        const response = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+
+        if (!mounted) return;
+
         if (response.ok) {
           const data = await response.json();
-          // User is logged in, redirect based on role
-          if (data.role === "SUPER_ADMIN" || data.role === "ADMIN") {
-            router.replace("/admin/overview");
+          // Only redirect if we have a valid user with role
+          if (data && data.role) {
+            // User is logged in, redirect based on role
+            if (data.role === "SUPER_ADMIN" || data.role === "ADMIN") {
+              router.replace("/admin/overview");
+            } else {
+              router.replace("/");
+            }
           } else {
-            router.replace("/");
+            setIsLoading(false);
           }
         } else {
           setIsLoading(false);
         }
-      } catch {
-        setIsLoading(false);
+      } catch (error) {
+        console.error("Auth check error:", error);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
-    checkAuth();
+
+    // Small delay to ensure cookies are cleared after logout
+    const timer = setTimeout(checkAuth, 100);
+
+    return () => {
+      mounted = false;
+      clearTimeout(timer);
+    };
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,6 +94,10 @@ export default function LoginPage() {
 
       // Use the redirect URL from the API response
       const redirectUrl = data.redirectUrl || "/";
+
+      // Trigger user data refresh for UserMenu
+      localStorage.setItem("user-changed", Date.now().toString());
+      window.dispatchEvent(new Event("user-changed"));
 
       // Force a hard redirect to ensure cookies are properly set
       window.location.href = redirectUrl;
@@ -211,7 +238,7 @@ export default function LoginPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg shadow-blue-500/30"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold shadow-lg rounded-xl disabled:opacity-50"
               disabled={isLoading}
             >
               {isLoading ? (

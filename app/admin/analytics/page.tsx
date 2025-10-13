@@ -1,60 +1,88 @@
 import { Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Eye, Users, FileText, FolderOpen } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
 // Mark this page as dynamic (not static)
 export const dynamic = "force-dynamic";
 
 async function getAnalytics() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
   try {
-    const [usersRes, papersRes, projectsRes, newsRes] = await Promise.all([
-      fetch(`${baseUrl}/api/users`, { cache: "no-store" }),
-      fetch(`${baseUrl}/api/papers`, { cache: "no-store" }),
-      fetch(`${baseUrl}/api/projects`, { cache: "no-store" }),
-      fetch(`${baseUrl}/api/news`, { cache: "no-store" }),
-    ]);
+    // Get actual counts from database
+    const [totalUsers, totalPapers, totalProjects, totalNews] =
+      await Promise.all([
+        prisma.user.count({
+          where: {
+            active: true,
+            profile: { isNot: null },
+          },
+        }),
+        prisma.publication.count({
+          where: {
+            isPublished: true,
+          },
+        }),
+        prisma.project.count(),
+        prisma.announcement.count({
+          where: {
+            isPublished: true,
+          },
+        }),
+      ]);
 
-    const usersData = await usersRes.json();
-    const papersData = await papersRes.json();
-    const projectsData = await projectsRes.json();
-    const newsData = await newsRes.json();
+    // Get top viewed publications
+    const topPapers = await prisma.publication.findMany({
+      where: {
+        isPublished: true,
+      },
+      orderBy: {
+        views: "desc",
+      },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        views: true,
+      },
+    });
 
-    // Extract arrays from nested data structures
-    const users = usersData.users || [];
-    const papers = papersData?.data?.papers || [];
-    const projects = projectsData?.data?.projects || [];
-    const news = newsData?.data?.news || [];
+    // Get top viewed news/announcements
+    const topNews = await prisma.announcement.findMany({
+      where: {
+        isPublished: true,
+      },
+      orderBy: {
+        views: "desc",
+      },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        views: true,
+      },
+    });
 
-    // Calculate total views
-    const paperViews = papers.reduce(
-      (sum: number, p: { views: number }) => sum + (p.views || 0),
-      0
-    );
-    const newsViews = news.reduce(
-      (sum: number, n: { views: number }) => sum + (n.views || 0),
-      0
-    );
+    // Get all publications total views
+    const allPapersViews = await prisma.publication.aggregate({
+      where: { isPublished: true },
+      _sum: { views: true },
+    });
+
+    // Get all news total views
+    const allNewsViews = await prisma.announcement.aggregate({
+      where: { isPublished: true },
+      _sum: { views: true },
+    });
 
     return {
-      totalUsers: users.length || 0,
-      totalPapers: papers.length || 0,
-      totalProjects: projects.length || 0,
-      totalNews: news.length || 0,
-      totalViews: paperViews + newsViews,
-      topPapers: papers
-        .sort(
-          (a: { views: number }, b: { views: number }) =>
-            (b.views || 0) - (a.views || 0)
-        )
-        .slice(0, 5),
-      topNews: news
-        .sort(
-          (a: { views: number }, b: { views: number }) =>
-            (b.views || 0) - (a.views || 0)
-        )
-        .slice(0, 5),
+      totalUsers,
+      totalPapers,
+      totalProjects,
+      totalNews,
+      totalViews:
+        (allPapersViews._sum.views || 0) + (allNewsViews._sum.views || 0),
+      topPapers,
+      topNews,
     };
   } catch (error) {
     console.error("Failed to fetch analytics:", error);

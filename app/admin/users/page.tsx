@@ -1,26 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, ColumnDef } from "@/components/ui/data-table";
-import { Input } from "@/components/ui/input";
 import {
   Users,
-  Edit,
   Mail,
   Shield,
   CheckCircle,
   XCircle,
   Loader2,
-  Save,
-  X,
+  Edit,
 } from "lucide-react";
 
 type User = {
   id: string;
   email: string;
-  username: string | null;
   role: string;
   active: boolean;
   emailVerified: boolean;
@@ -33,22 +30,9 @@ type User = {
   };
 };
 
-type EditingUser = {
-  role: string;
-  memberId: string;
-  universityId: string;
-};
-
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingUser, setEditingUser] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<EditingUser>({
-    role: "",
-    memberId: "",
-    universityId: "",
-  });
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -56,7 +40,7 @@ export default function AdminUsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("/api/users");
+      const res = await fetch("/api/users", { cache: "no-store" });
       const data = await res.json();
       setUsers(data.users || []);
     } catch (error) {
@@ -64,54 +48,6 @@ export default function AdminUsersPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleEdit = (user: User) => {
-    setEditingUser(user.id);
-    setEditForm({
-      role: user.role,
-      memberId: user.profile?.memberId || "",
-      universityId: user.profile?.universityId || "",
-    });
-  };
-
-  const handleSave = async (userId: string) => {
-    setSaving(true);
-    try {
-      // Update role
-      const roleRes = await fetch(`/api/admin/users/${userId}/role`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: editForm.role }),
-      });
-
-      // Update IDs
-      const idsRes = await fetch(`/api/admin/users/${userId}/ids`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          memberId: editForm.memberId || null,
-          universityId: editForm.universityId || null,
-        }),
-      });
-
-      if (roleRes.ok && idsRes.ok) {
-        await fetchUsers();
-        setEditingUser(null);
-      } else {
-        alert("Failed to update user");
-      }
-    } catch (error) {
-      console.error("Update error:", error);
-      alert("Failed to update user");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
-    setEditingUser(null);
-    setEditForm({ role: "", memberId: "", universityId: "" });
   };
 
   const columns: ColumnDef<User>[] = [
@@ -123,7 +59,7 @@ export default function AdminUsersPage() {
       render: (_, user) => (
         <div>
           <div className="font-medium text-gray-900">
-            {user.profile?.fullName || user.username || "No Name"}
+            {user.profile?.fullName || "No Name"}
           </div>
           {user.profile?.chineseName && (
             <div className="text-xs text-gray-500">
@@ -150,74 +86,41 @@ export default function AdminUsersPage() {
       label: "Role",
       sortable: true,
       width: "w-32",
-      render: (_, user) =>
-        editingUser === user.id ? (
-          <select
-            value={editForm.role}
-            onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-            className="text-xs border rounded px-2 py-1 w-full"
-          >
-            <option value="SUPER_ADMIN">Super Admin</option>
-            <option value="ADMIN">Admin</option>
-            <option value="RESEARCHER">Researcher</option>
-            <option value="STUDENT">Student</option>
-            <option value="GUEST">Guest</option>
-          </select>
-        ) : (
-          <Badge
-            variant={
-              user.role === "SUPER_ADMIN" || user.role === "ADMIN"
-                ? "default"
-                : "secondary"
-            }
-            className="text-xs"
-          >
-            <Shield className="w-3 h-3 mr-1" />
-            {user.role}
-          </Badge>
-        ),
+      render: (_, user) => (
+        <Badge
+          variant={
+            user.role === "SUPER_ADMIN" || user.role === "ADMIN"
+              ? "default"
+              : "secondary"
+          }
+          className="text-xs"
+        >
+          <Shield className="w-3 h-3 mr-1" />
+          {user.role}
+        </Badge>
+      ),
     },
     {
       key: "memberId",
       label: "Member ID",
       sortable: true,
       width: "w-32",
-      render: (_, user) =>
-        editingUser === user.id ? (
-          <Input
-            value={editForm.memberId}
-            onChange={(e) =>
-              setEditForm({ ...editForm, memberId: e.target.value })
-            }
-            placeholder="CI2P001"
-            className="h-7 text-xs"
-          />
-        ) : (
-          <span className="text-sm text-gray-700">
-            {user.profile?.memberId || "-"}
-          </span>
-        ),
+      render: (_, user) => (
+        <span className="text-sm text-gray-700">
+          {user.profile?.memberId || "-"}
+        </span>
+      ),
     },
     {
       key: "universityId",
       label: "University ID",
       sortable: true,
       width: "w-32",
-      render: (_, user) =>
-        editingUser === user.id ? (
-          <Input
-            value={editForm.universityId}
-            onChange={(e) =>
-              setEditForm({ ...editForm, universityId: e.target.value })
-            }
-            placeholder="202534100001"
-            className="h-7 text-xs"
-          />
-        ) : (
-          <span className="text-sm text-gray-700">
-            {user.profile?.universityId || "-"}
-          </span>
-        ),
+      render: (_, user) => (
+        <span className="text-sm text-gray-700">
+          {user.profile?.universityId || "-"}
+        </span>
+      ),
     },
     {
       key: "status",
@@ -277,6 +180,9 @@ export default function AdminUsersPage() {
             Manage user accounts, roles, and permissions
           </p>
         </div>
+        <Link href="/admin/users/new">
+          <Button className="border border-blue-600">Add Team Member</Button>
+        </Link>
       </div>
 
       {/* Stats by Role */}
@@ -312,43 +218,11 @@ export default function AdminUsersPage() {
         searchPlaceholder="Search users by name, email, ID..."
         emptyMessage="No users found"
         actions={(user) => (
-          <>
-            {editingUser === user.id ? (
-              <>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
-                  onClick={() => handleSave(user.id)}
-                  disabled={saving}
-                >
-                  {saving ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
-                  onClick={handleCancel}
-                  disabled={saving}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </>
-            ) : (
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-8 w-8 p-0"
-                onClick={() => handleEdit(user)}
-              >
-                <Edit className="w-4 h-4" />
-              </Button>
-            )}
-          </>
+          <Link href={`/admin/users/${user.id}`}>
+            <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+              <Edit className="w-4 h-4" />
+            </Button>
+          </Link>
         )}
       />
     </div>

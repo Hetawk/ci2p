@@ -88,6 +88,13 @@ export async function POST(request: Request) {
       data: { lastLogin: new Date() },
     });
 
+    console.log("Setting auth cookie for user:", {
+      userId: user.id,
+      email: user.email,
+      name: user.profile?.fullName,
+      role: user.role,
+    }); // Debug log
+
     // Set auth cookie - use "herpromise" as default dashboard value for backward compatibility
     await setAuthCookie("herpromise", {
       userId: user.id,
@@ -100,6 +107,8 @@ export async function POST(request: Request) {
     if (user.role === "SUPER_ADMIN" || user.role === "ADMIN") {
       redirectUrl = "/admin/overview";
     }
+
+    console.log("Login successful, redirecting to:", redirectUrl); // Debug log
 
     return NextResponse.json({
       success: true,

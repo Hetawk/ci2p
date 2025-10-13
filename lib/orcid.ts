@@ -5,7 +5,15 @@
 // Note: This file uses 'any' types for external ORCID API responses
 // which have complex, dynamic structures
 
-import { OrcidProfile, OrcidWork, OrcidSyncResult } from "@/lib/types";
+import {
+  OrcidProfile,
+  OrcidWork,
+  OrcidSyncResult,
+  OrcidEmployment,
+  OrcidEducation,
+  OrcidFunding,
+  OrcidPeerReview,
+} from "@/lib/types";
 
 const ORCID_PUBLIC_API_URL =
   process.env.ORCID_PUBLIC_API_URL || "https://pub.orcid.org/v3.0";
@@ -21,18 +29,7 @@ export class OrcidService {
    * @param orcidId - ORCID identifier (e.g., "0000-0002-1825-0097")
    */
   static async fetchProfile(orcidId: string): Promise<OrcidProfile> {
-    const response = await fetch(`${ORCID_PUBLIC_API_URL}/${orcidId}/person`, {
-      headers: {
-        Accept: "application/json",
-      },
-      next: { revalidate: 86400 }, // Cache for 24 hours
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ORCID profile: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await this.fetchOrcidJson(orcidId, "person", 86400);
 
     return {
       orcid: orcidId,
@@ -45,6 +42,10 @@ export class OrcidService {
       emails: data.emails?.email?.map((e: any) => e.email) || [],
       affiliations: this.parseAffiliations(data),
       works: [], // Fetched separately
+      employment: [],
+      education: [],
+      funding: [],
+      peerReviews: [],
     };
   }
 
@@ -53,18 +54,7 @@ export class OrcidService {
    * @param orcidId - ORCID identifier
    */
   static async fetchWorks(orcidId: string): Promise<OrcidWork[]> {
-    const response = await fetch(`${ORCID_PUBLIC_API_URL}/${orcidId}/works`, {
-      headers: {
-        Accept: "application/json",
-      },
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ORCID works: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await this.fetchOrcidJson(orcidId, "works", 3600);
     const works: OrcidWork[] = [];
 
     // ORCID returns summary, need to fetch details for each work
@@ -83,17 +73,163 @@ export class OrcidService {
   /**
    * Fetch complete profile with works in one call
    * @param orcidId - ORCID identifier
+   * Robust version: continues even if some sections fail
    */
   static async fetchCompleteProfile(orcidId: string): Promise<OrcidProfile> {
-    const [profile, works] = await Promise.all([
-      this.fetchProfile(orcidId),
-      this.fetchWorks(orcidId),
-    ]);
+    console.log(`[OrcidService] Fetching complete profile for ${orcidId}`);
+
+    // Fetch profile first (required)
+    const profile = await this.fetchProfile(orcidId);
+    console.log(`[OrcidService] Basic profile fetched for ${orcidId}`);
+
+    // Fetch all other sections with error handling
+    const [works, employment, education, funding, peerReviews] =
+      await Promise.all([
+        this.fetchWorks(orcidId).catch((err) => {
+          console.warn(`Failed to fetch ORCID works for ${orcidId}:`, err);
+          return [];
+        }),
+        this.fetchEmployment(orcidId).catch((err) => {
+          console.warn(`Failed to fetch ORCID employment for ${orcidId}:`, err);
+          return [];
+        }),
+        this.fetchEducation(orcidId).catch((err) => {
+          console.warn(`Failed to fetch ORCID education for ${orcidId}:`, err);
+          return [];
+        }),
+        this.fetchFunding(orcidId).catch((err) => {
+          console.warn(`Failed to fetch ORCID funding for ${orcidId}:`, err);
+          return [];
+        }),
+        this.fetchPeerReviews(orcidId).catch((err) => {
+          console.warn(
+            `Failed to fetch ORCID peer reviews for ${orcidId}:`,
+            err
+          );
+          return [];
+        }),
+      ]);
+
+    console.log(`[OrcidService] Complete profile assembled for ${orcidId}:`, {
+      works: works.length,
+      employment: employment.length,
+      education: education.length,
+      funding: funding.length,
+      peerReviews: peerReviews.length,
+    });
 
     return {
       ...profile,
       works,
+      employment,
+      education,
+      funding,
+      peerReviews,
     };
+  }
+
+  /**
+   * Fetch employment records from ORCID public API
+   */
+  static async fetchEmployment(orcidId: string): Promise<OrcidEmployment[]> {
+    const data = await this.fetchWithFallback(
+      orcidId,
+      "employments",
+      "employment"
+    );
+    return this.parseAffiliationSummaries<OrcidEmployment>(data, "employment");
+  }
+
+  /**
+   * Fetch education history from ORCID public API
+   */
+  static async fetchEducation(orcidId: string): Promise<OrcidEducation[]> {
+    const data = await this.fetchWithFallback(
+      orcidId,
+      "educations",
+      "education"
+    );
+    return this.parseAffiliationSummaries<OrcidEducation>(data, "education");
+  }
+
+  /**
+   * Fetch funding records from ORCID public API
+   */
+  static async fetchFunding(orcidId: string): Promise<OrcidFunding[]> {
+    const data = await this.fetchWithFallback(orcidId, "fundings", "funding");
+    return this.parseFundingSummaries(data);
+  }
+
+  /**
+   * Fetch peer review activity from ORCID public API
+   */
+  static async fetchPeerReviews(orcidId: string): Promise<OrcidPeerReview[]> {
+    try {
+      const data = await this.fetchOrcidJson(orcidId, "peer-reviews", 3600);
+      return this.parsePeerReviewSummaries(data);
+    } catch (error: any) {
+      // Many ORCID profiles don't have peer review data
+      if (error instanceof Error && /404/.test(error.message)) {
+        console.warn(`No peer review data available for ORCID ${orcidId}`);
+        return [];
+      }
+      throw error;
+    }
+  }
+
+  private static async fetchOrcidJson(
+    orcidId: string,
+    endpoint: string,
+    revalidateSeconds: number
+  ): Promise<any> {
+    const response = await fetch(
+      `${ORCID_PUBLIC_API_URL}/${orcidId}/${endpoint}`,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        next: { revalidate: revalidateSeconds },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch ORCID ${endpoint}: ${response.status} ${response.statusText}`
+      );
+    }
+
+    return response.json();
+  }
+
+  private static async fetchWithFallback(
+    orcidId: string,
+    primaryEndpoint: string,
+    fallbackEndpoint: string
+  ): Promise<any> {
+    try {
+      return await this.fetchOrcidJson(orcidId, primaryEndpoint, 3600);
+    } catch (error: any) {
+      // Some ORCID profiles expose singular endpoints instead of plural
+      if (error instanceof Error && /404/.test(error.message)) {
+        try {
+          return await this.fetchOrcidJson(orcidId, fallbackEndpoint, 3600);
+        } catch (fallbackError: any) {
+          // If both fail with 404, return empty data structure
+          if (
+            fallbackError instanceof Error &&
+            /404/.test(fallbackError.message)
+          ) {
+            console.warn(
+              `No ${primaryEndpoint} or ${fallbackEndpoint} data available for ORCID ${orcidId}`
+            );
+            return null;
+          }
+          throw fallbackError;
+        }
+      }
+      throw error;
+    }
   }
 
   /**
@@ -116,7 +252,7 @@ export class OrcidService {
     const journal = workSummary["journal-title"]?.value || undefined;
     const doi = workSummary["external-ids"]?.["external-id"]?.find(
       (id: any) => id["external-id-type"] === "doi"
-    )?.[" external-id-value"];
+    )?.["external-id-value"];
 
     const url = workSummary.url?.value || undefined;
 
@@ -156,6 +292,172 @@ export class OrcidService {
     }
 
     return affiliations;
+  }
+
+  private static parseAffiliationSummaries<
+    T extends OrcidEmployment | OrcidEducation
+  >(data: any, type: "employment" | "education"): T[] {
+    const records: T[] = [];
+
+    if (!data) {
+      return records;
+    }
+
+    const summaryKey = `${type}-summary`;
+
+    const handleEntry = (entry: any) => {
+      const summary = entry?.[summaryKey] ?? entry;
+      if (!summary) return;
+
+      const organization = summary.organization?.name || "";
+      if (!organization) return;
+
+      const base = {
+        id: summary["put-code"]?.toString() || `${type}-${Math.random()}`,
+        organization,
+        department: summary["department-name"] || undefined,
+        role: summary["role-title"] || undefined,
+        startDate: this.formatDate(summary["start-date"]),
+        endDate: this.formatDate(summary["end-date"]),
+      };
+
+      if (type === "employment") {
+        const employment: OrcidEmployment = {
+          ...base,
+          city: summary.organization?.address?.city || undefined,
+          country: summary.organization?.address?.country || undefined,
+        };
+        records.push(employment as T);
+      } else {
+        const education: OrcidEducation = {
+          id: base.id,
+          institution: organization,
+          department: base.department,
+          role: base.role,
+          degree: summary["degree-name"] || undefined,
+          startDate: base.startDate,
+          endDate: base.endDate,
+        };
+        records.push(education as T);
+      }
+    };
+
+    if (Array.isArray(data["affiliation-group"])) {
+      for (const group of data["affiliation-group"]) {
+        const summaries = group?.summaries || [];
+        for (const entry of summaries) {
+          handleEntry(entry);
+        }
+      }
+    }
+
+    if (Array.isArray(data.summaries)) {
+      for (const entry of data.summaries) {
+        handleEntry(entry);
+      }
+    }
+
+    if (data[summaryKey]) {
+      handleEntry({ [summaryKey]: data[summaryKey] });
+    }
+
+    return records;
+  }
+
+  private static parseFundingSummaries(data: any): OrcidFunding[] {
+    const records: OrcidFunding[] = [];
+    if (!data) return records;
+
+    const handleSummary = (summary: any) => {
+      if (!summary) return;
+      const record: OrcidFunding = {
+        id: summary["put-code"]?.toString() || `funding-${Math.random()}`,
+        title: summary.title?.title?.value || "Untitled Grant",
+        type: summary.type || undefined,
+        organization: summary.organization?.name || undefined,
+        amount: summary.amount?.value || undefined,
+        currency: summary.amount?.["currency-code"] || undefined,
+        startDate: this.formatDate(summary["start-date"]),
+        endDate: this.formatDate(summary["end-date"]),
+      };
+      records.push(record);
+    };
+
+    if (Array.isArray(data.group)) {
+      for (const group of data.group) {
+        const summaries = group["funding-summary"] || [];
+        if (Array.isArray(summaries)) {
+          summaries.forEach(handleSummary);
+        }
+      }
+    }
+
+    if (Array.isArray(data["funding-summary"])) {
+      data["funding-summary"].forEach(handleSummary);
+    } else if (data["funding-summary"]) {
+      handleSummary(data["funding-summary"]);
+    }
+
+    if (Array.isArray(data)) {
+      data.forEach(handleSummary);
+    }
+
+    return records;
+  }
+
+  private static parsePeerReviewSummaries(data: any): OrcidPeerReview[] {
+    const records: OrcidPeerReview[] = [];
+    if (!data || !Array.isArray(data.group)) return records;
+
+    for (const group of data.group) {
+      const externalIds = group["external-ids"]?.["external-id"] || [];
+      let issn: string | undefined;
+
+      for (const ext of externalIds) {
+        if (
+          ext["external-id-type"] === "issn" ||
+          ext["external-id-type"] === "peer-review"
+        ) {
+          issn = (ext["external-id-value"] || "").replace("issn:", "");
+        }
+      }
+
+      const peerGroup = group["peer-review-group"] || [];
+      for (const reviewGroup of peerGroup) {
+        const summaries = reviewGroup["peer-review-summary"] || [];
+        for (const summary of summaries) {
+          const record: OrcidPeerReview = {
+            id: summary["put-code"]?.toString() || `review-${Math.random()}`,
+            title:
+              summary["review-group-id"]?.replace("issn:", "") ||
+              summary["reviewer-role"] ||
+              "Peer Review",
+            role: summary["reviewer-role"] || undefined,
+            organization:
+              summary["convening-organization"]?.name ||
+              summary.source?.["source-name"]?.value ||
+              undefined,
+            completionDate: this.formatDate(summary["completion-date"]),
+            url: summary["review-url"]?.value || undefined,
+            status: summary.source?.["source-name"]?.value || undefined,
+            issn,
+          };
+
+          if (!record.url && summary["external-ids"]) {
+            const reviewExt = summary["external-ids"]["external-id"] || [];
+            for (const ext of reviewExt) {
+              if (ext["external-id-url"]?.value) {
+                record.url = ext["external-id-url"].value;
+              }
+            }
+          }
+
+          records.push(record);
+        }
+      }
+    }
+
+    return records;
   }
 
   /**

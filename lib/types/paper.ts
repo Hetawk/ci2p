@@ -90,6 +90,10 @@ export interface OrcidProfile {
   emails: string[];
   affiliations: OrcidAffiliation[];
   works: OrcidWork[];
+  employment: OrcidEmployment[];
+  education: OrcidEducation[];
+  funding: OrcidFunding[];
+  peerReviews: OrcidPeerReview[];
   lastSyncedAt?: Date;
 }
 
@@ -99,6 +103,49 @@ export interface OrcidAffiliation {
   role?: string;
   startDate?: string;
   endDate?: string;
+}
+
+export interface OrcidEmployment {
+  id: string;
+  organization: string;
+  department?: string;
+  role?: string;
+  startDate?: string;
+  endDate?: string;
+  city?: string;
+  country?: string;
+}
+
+export interface OrcidEducation {
+  id: string;
+  institution: string;
+  department?: string;
+  degree?: string;
+  role?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface OrcidFunding {
+  id: string;
+  title: string;
+  type?: string;
+  organization?: string;
+  amount?: string;
+  currency?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface OrcidPeerReview {
+  id: string;
+  title: string;
+  role?: string;
+  organization?: string;
+  completionDate?: string;
+  url?: string;
+  status?: string;
+  issn?: string;
 }
 
 export interface OrcidWork {

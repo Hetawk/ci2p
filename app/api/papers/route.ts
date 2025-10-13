@@ -2,10 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/jwt";
+import { autoSyncAllUsersIfNeeded } from "@/lib/orcid-auto-sync";
 
 // GET /api/papers - List all papers with filtering and pagination
 export async function GET(request: Request) {
   try {
+    // Trigger background sync for all users (non-blocking)
+    autoSyncAllUsersIfNeeded().catch((error) => {
+      console.error("Background auto-sync failed:", error);
+    });
+
     const { searchParams } = new URL(request.url);
 
     // Pagination
@@ -60,7 +66,7 @@ export async function GET(request: Request) {
         break;
     }
 
-    // Fetch papers and total count
+    // Fetch all papers from database (including synced ORCID publications)
     const [papers, total] = await Promise.all([
       prisma.publication.findMany({
         where,
@@ -74,6 +80,7 @@ export async function GET(request: Request) {
           authors: true,
           year: true,
           journal: true,
+          conference: true,
           volume: true,
           issue: true,
           pages: true,
@@ -85,18 +92,31 @@ export async function GET(request: Request) {
           customTags: true,
           isFeatured: true,
           isPublished: true,
+          isFromOrcid: true,
+          orcidWorkId: true,
           orcidSyncedAt: true,
           createdAt: true,
           updatedAt: true,
+          authorId: true,
         },
       }),
       prisma.publication.count({ where }),
     ]);
 
+    // Add source field based on isFromOrcid
+    const papersWithSource = papers.map((paper) => ({
+      ...paper,
+      source: paper.isFromOrcid ? "orcid" : "manual",
+      orcidPutCode: paper.orcidWorkId,
+    }));
+
+    const orcidCount = papers.filter((p) => p.isFromOrcid).length;
+    const manualCount = papers.filter((p) => !p.isFromOrcid).length;
+
     return NextResponse.json({
       success: true,
       data: {
-        papers,
+        papers: papersWithSource,
         pagination: {
           page,
           limit,
@@ -104,6 +124,11 @@ export async function GET(request: Request) {
           totalPages: Math.ceil(total / limit),
           hasNextPage: page < Math.ceil(total / limit),
           hasPreviousPage: page > 1,
+        },
+        stats: {
+          manual: manualCount,
+          orcid: orcidCount,
+          merged: total,
         },
       },
     });

@@ -56,7 +56,7 @@ export default function AdminSettingsPage() {
                 placeholder="Enter lab location"
               />
             </div>
-            <Button>
+            <Button className="border border-blue-600">
               <Save className="w-4 h-4 mr-2" />
               Save Changes
             </Button>
@@ -99,7 +99,7 @@ export default function AdminSettingsPage() {
                 placeholder="Enter office address"
               />
             </div>
-            <Button>
+            <Button className="border border-blue-600">
               <Save className="w-4 h-4 mr-2" />
               Save Changes
             </Button>
@@ -132,7 +132,7 @@ export default function AdminSettingsPage() {
               <Label htmlFor="github">GitHub</Label>
               <Input id="github" placeholder="GitHub organization URL" />
             </div>
-            <Button>
+            <Button className="border border-blue-600">
               <Save className="w-4 h-4 mr-2" />
               Save Changes
             </Button>
@@ -171,15 +171,23 @@ export default function AdminSettingsPage() {
             <div className="space-y-2">
               <Label>Email Verification</Label>
               <div className="flex items-center gap-4">
-                <Button variant="outline" size="sm">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border border-blue-600"
+                >
                   Enabled
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border border-gray-300"
+                >
                   Disabled
                 </Button>
               </div>
             </div>
-            <Button>
+            <Button className="border border-blue-600">
               <Save className="w-4 h-4 mr-2" />
               Save Changes
             </Button>

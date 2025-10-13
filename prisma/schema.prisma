@@ -79,7 +79,7 @@ model Profile {
     orcidId       String?   @unique @map("orcid_id") // e.g. "0000-0002-1825-0097"
     orcidToken    String?   @map("orcid_token") @db.Text // OAuth access token
     orcidSyncedAt DateTime? @map("orcid_synced_at") // Last sync time
-    orcidEnabled  Boolean   @default(false) @map("orcid_enabled") // Auto-sync enabled
+    orcidEnabled  Boolean   @default(true) @map("orcid_enabled") // Auto-sync enabled
 
     // Team Display
     showInTeam Boolean @default(true) @map("show_in_team") // Show in hero carousel

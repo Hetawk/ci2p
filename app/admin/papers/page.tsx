@@ -28,27 +28,56 @@ type Paper = {
   views: number;
   isFeatured: boolean;
   isPublished: boolean;
+  source?: "orcid" | "manual";
+  orcidPutCode?: string;
+  isEnhanced?: boolean;
   createdAt: string;
 };
 
 export default function AdminPapersPage() {
   const [papers, setPapers] = useState<Paper[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+
+  const fetchPapers = async () => {
+    try {
+      const res = await fetch("/api/admin/papers");
+      const result = await res.json();
+      setPapers(result?.data?.papers || []);
+    } catch (error) {
+      console.error("Failed to fetch papers:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPapers = async () => {
-      try {
-        const res = await fetch("/api/papers");
-        const result = await res.json();
-        setPapers(result?.data?.papers || []);
-      } catch (error) {
-        console.error("Failed to fetch papers:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPapers();
   }, []);
+
+  const handleSyncOrcid = async () => {
+    setSyncing(true);
+    try {
+      const res = await fetch("/api/admin/sync-orcid", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}), // Sync all users
+      });
+
+      if (res.ok) {
+        // Refresh papers list
+        await fetchPapers();
+        alert("ORCID publications synced successfully!");
+      } else {
+        throw new Error("Failed to sync");
+      }
+    } catch (error) {
+      console.error("Failed to sync ORCID:", error);
+      alert("Failed to sync ORCID publications");
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const columns: ColumnDef<Paper>[] = [
     {
@@ -58,12 +87,32 @@ export default function AdminPapersPage() {
       width: "w-1/3",
       render: (_, paper) => (
         <div>
-          <div className="font-medium text-gray-900 line-clamp-2">
-            {paper.title}
+          <div className="flex items-center gap-2 mb-1">
+            <div className="font-medium text-gray-900 line-clamp-2">
+              {paper.title}
+            </div>
           </div>
-          <div className="text-xs text-gray-500 mt-1">
-            {paper.authors.split(",")[0]}
-            {paper.authors.split(",").length > 1 ? ", et al." : ""}
+          <div className="flex items-center gap-2 mt-1">
+            <div className="text-xs text-gray-500">
+              {paper.authors.split(",")[0]}
+              {paper.authors.split(",").length > 1 ? ", et al." : ""}
+            </div>
+            {paper.source === "orcid" && (
+              <Badge
+                variant="outline"
+                className="text-xs bg-green-50 text-green-700 border-green-300"
+              >
+                ORCID
+              </Badge>
+            )}
+            {paper.isEnhanced && (
+              <Badge
+                variant="outline"
+                className="text-xs bg-purple-50 text-purple-700 border-purple-300"
+              >
+                Verified
+              </Badge>
+            )}
           </div>
         </div>
       ),
@@ -174,12 +223,32 @@ export default function AdminPapersPage() {
             Manage research papers and publications
           </p>
         </div>
-        <Link href="/admin/papers/new">
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Publication
+        <div className="flex gap-2">
+          <Button
+            onClick={handleSyncOrcid}
+            disabled={syncing}
+            variant="outline"
+            className="border-green-600 text-green-600 hover:bg-green-50"
+          >
+            {syncing ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Syncing...
+              </>
+            ) : (
+              <>
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Sync ORCID
+              </>
+            )}
           </Button>
-        </Link>
+          <Link href="/admin/papers/new">
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Publication
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}
@@ -229,19 +298,45 @@ export default function AdminPapersPage() {
                 </Button>
               </a>
             )}
-            <Link href={`/admin/papers/${paper.id}/edit`}>
-              <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+            {/* Only allow edit for manual publications or enhanced ones */}
+            {paper.source !== "orcid" ? (
+              <Link href={`/admin/papers/${paper.id}/edit`}>
+                <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 opacity-50 cursor-not-allowed"
+                disabled
+                title="ORCID publications cannot be edited directly"
+              >
                 <Edit className="w-4 h-4" />
               </Button>
-            </Link>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-              onClick={() => handleDelete(paper.id)}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
+            )}
+            {/* Only allow delete for manual publications */}
+            {paper.source !== "orcid" ? (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => handleDelete(paper.id)}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 opacity-50 cursor-not-allowed"
+                disabled
+                title="ORCID publications cannot be deleted"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
           </>
         )}
       />

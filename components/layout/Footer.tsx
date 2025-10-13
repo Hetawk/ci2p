@@ -186,7 +186,7 @@ export function Footer() {
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-primary-400/30 transition-colors">
               <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <div className="p-2 rounded-lg bg-primary-500/20">
-                  <Mail className="w-5 h-5 text-primary-400" />
+                  <Mail className="w-5 h-5 text-white-400" />
                 </div>
                 Get in Touch
               </h4>

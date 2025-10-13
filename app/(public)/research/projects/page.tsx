@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PublicHeader } from "@/components/layout";
 import Pagination from "@/components/ui/Pagination";
 import {
   Rocket,
@@ -182,278 +183,281 @@ export default function ProjectsPage() {
   const activeProjects = projects.filter((p) => p.status === "ACTIVE").length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-white">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="w-full h-full"
-            style={{
-              backgroundImage: `radial-gradient(circle, rgb(59 130 246 / 0.15) 1px, transparent 1px)`,
-              backgroundSize: "32px 32px",
-            }}
-          />
-        </div>
-
-        {/* Animated gradient orbs */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl animate-float" />
-        <div
-          className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float"
-          style={{ animationDelay: "1s" }}
-        />
-
-        <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center space-y-6">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-primary-500/20 rounded-2xl backdrop-blur-sm border border-primary-400/30">
-                <Rocket className="w-8 h-8 text-primary-300" />
-              </div>
-            </div>
-            <h1 className="text-5xl lg:text-6xl font-bold text-white">
-              Research Projects
-            </h1>
-            <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-              Explore our active research initiatives in AI, Machine Learning,
-              and Computer Vision
-            </p>
-
-            {/* Stats */}
-            <div className="flex items-center justify-center gap-8 pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-secondary-400">
-                  {totalProjects}
-                </div>
-                <div className="text-sm text-gray-300">Total Projects</div>
-              </div>
-              <div className="w-px h-12 bg-gray-600" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-secondary-400">
-                  {activeProjects}
-                </div>
-                <div className="text-sm text-gray-300">Active</div>
-              </div>
-              <div className="w-px h-12 bg-gray-600" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-secondary-400">
-                  {featuredProjects.length}
-                </div>
-                <div className="text-sm text-gray-300">Featured</div>
-              </div>
-            </div>
+    <>
+      <PublicHeader />
+      <div className="min-h-screen bg-gradient-to-b from-white via-blue-50/20 to-white pt-16">
+        {/* Hero Section */}
+        <section className="relative py-20 px-4 bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div
+              className="w-full h-full"
+              style={{
+                backgroundImage: `radial-gradient(circle, rgb(59 130 246 / 0.15) 1px, transparent 1px)`,
+                backgroundSize: "32px 32px",
+              }}
+            />
           </div>
-        </div>
-      </section>
 
-      {/* Featured Projects */}
-      {featuredProjects.length > 0 && (
-        <section className="py-16 px-4 bg-gradient-to-br from-blue-50/50 via-white to-cyan-50/30">
-          <div className="container mx-auto max-w-7xl">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="p-3 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-xl shadow-lg">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900">
-                  Featured Projects
-                </h2>
-                <p className="text-gray-600">
-                  Highlighted research initiatives
-                </p>
-              </div>
-            </div>
+          {/* Animated gradient orbs */}
+          <div className="absolute top-20 left-10 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl animate-float" />
+          <div
+            className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-float"
+            style={{ animationDelay: "1s" }}
+          />
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredProjects.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  featured
-                />
-              ))}
+          <div className="container mx-auto max-w-7xl relative z-10">
+            <div className="text-center space-y-6">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="p-3 bg-primary-500/20 rounded-2xl backdrop-blur-sm border border-primary-400/30">
+                  <Rocket className="w-8 h-8 text-primary-300 text-white" />
+                </div>
+              </div>
+              <h1 className="text-5xl lg:text-6xl font-bold text-white">
+                Research Projects
+              </h1>
+              <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                Explore our active research initiatives in AI, Machine Learning,
+                and Computer Vision
+              </p>
+
+              {/* Stats */}
+              <div className="flex items-center justify-center gap-8 pt-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary-400">
+                    {totalProjects}
+                  </div>
+                  <div className="text-sm text-gray-300">Total Projects</div>
+                </div>
+                <div className="w-px h-12 bg-gray-600" />
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary-400">
+                    {activeProjects}
+                  </div>
+                  <div className="text-sm text-gray-300">Active</div>
+                </div>
+                <div className="w-px h-12 bg-gray-600" />
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary-400">
+                    {featuredProjects.length}
+                  </div>
+                  <div className="text-sm text-gray-300">Featured</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
-      )}
 
-      {/* All Projects Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-lg">
-                <Rocket className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900">
-                  All Projects
-                </h2>
-                <p className="text-gray-600">
-                  {totalProjects} {totalProjects === 1 ? "project" : "projects"}{" "}
-                  found
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="bg-white rounded-2xl shadow-md p-6 mb-8 space-y-6">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search projects..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="pl-10"
-              />
-            </div>
-
-            {/* Status and Sort */}
-            <div className="flex flex-wrap gap-4">
-              <select
-                value={selectedStatus}
-                onChange={(e) => {
-                  setSelectedStatus(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="px-4 py-2 border border-gray-300 rounded-lg"
-              >
-                <option value="all">All Statuses</option>
-                <option value="ACTIVE">Active</option>
-                <option value="PLANNING">Planning</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="ON_HOLD">On Hold</option>
-              </select>
-
-              <select
-                value={sortOrder}
-                onChange={(e) =>
-                  setSortOrder(e.target.value as typeof sortOrder)
-                }
-                className="px-4 py-2 border border-gray-300 rounded-lg"
-              >
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="alphabetical">Alphabetical</option>
-              </select>
-            </div>
-
-            {/* Tags */}
-            {allTags.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Tag className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-700">
-                    Filter by tags:
-                  </span>
+        {/* Featured Projects */}
+        {featuredProjects.length > 0 && (
+          <section className="py-16 px-4 bg-gradient-to-br from-blue-50/50 via-white to-cyan-50/30">
+            <div className="container mx-auto max-w-7xl">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-xl shadow-lg bg-green-200">
+                  <TrendingUp className="w-6 h-6 text-amber-700" />
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {allTags.map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant={
-                        selectedTags.includes(tag) ? "default" : "outline"
-                      }
-                      className="cursor-pointer"
-                      onClick={() => toggleTag(tag)}
-                    >
-                      {tag}
-                      {selectedTags.includes(tag) && (
-                        <X className="w-3 h-3 ml-1" />
-                      )}
-                    </Badge>
-                  ))}
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    Featured Projects
+                  </h2>
+                  <p className="text-gray-600">
+                    Highlighted research initiatives
+                  </p>
                 </div>
               </div>
-            )}
 
-            {/* Active Filters */}
-            {selectedTags.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Active filters:</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedTags([]);
-                    setCurrentPage(1);
-                  }}
-                >
-                  Clear all
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Loading State */}
-          {loading && (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
-              <span className="ml-3 text-gray-600">Loading projects...</span>
-            </div>
-          )}
-
-          {/* Error State */}
-          {error && !loading && (
-            <div className="flex items-center justify-center py-20">
-              <div className="text-center space-y-4">
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
-                <p className="text-gray-600">{error}</p>
-                <Button onClick={() => window.location.reload()}>
-                  Try Again
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Projects Grid */}
-          {!loading && !error && projects.length > 0 && (
-            <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {projects.map((project, index) => (
+                {featuredProjects.map((project, index) => (
                   <ProjectCard
                     key={project.id}
                     project={project}
                     index={index}
+                    featured
                   />
                 ))}
               </div>
+            </div>
+          </section>
+        )}
 
-              {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
-                <div className="mt-12 flex justify-center">
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={pagination.totalPages}
-                    onPageChange={setCurrentPage}
-                    hasNextPage={pagination.hasNextPage}
-                    hasPreviousPage={pagination.hasPreviousPage}
-                  />
+        {/* All Projects Section */}
+        <section className="py-16 px-4">
+          <div className="container mx-auto max-w-7xl">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-red-950 from-primary-500 to-primary-600 rounded-xl shadow-lg">
+                  <Rocket className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    All Projects
+                  </h2>
+                  <p className="text-gray-600">
+                    {totalProjects}{" "}
+                    {totalProjects === 1 ? "project" : "projects"} found
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="bg-white rounded-2xl shadow-md p-6 mb-8 space-y-6">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Search projects..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="pl-10"
+                />
+              </div>
+
+              {/* Status and Sort */}
+              <div className="flex flex-wrap gap-4">
+                <select
+                  value={selectedStatus}
+                  onChange={(e) => {
+                    setSelectedStatus(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="PLANNING">Planning</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="ON_HOLD">On Hold</option>
+                </select>
+
+                <select
+                  value={sortOrder}
+                  onChange={(e) =>
+                    setSortOrder(e.target.value as typeof sortOrder)
+                  }
+                  className="px-4 py-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="alphabetical">Alphabetical</option>
+                </select>
+              </div>
+
+              {/* Tags */}
+              {allTags.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Tag className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm font-medium text-gray-700">
+                      Filter by tags:
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {allTags.map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant={
+                          selectedTags.includes(tag) ? "default" : "outline"
+                        }
+                        className="cursor-pointer"
+                        onClick={() => toggleTag(tag)}
+                      >
+                        {tag}
+                        {selectedTags.includes(tag) && (
+                          <X className="w-3 h-3 ml-1" />
+                        )}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               )}
-            </>
-          )}
 
-          {/* Empty State */}
-          {!loading && !error && projects.length === 0 && (
-            <div className="text-center py-20">
-              <Rocket className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                No projects found
-              </h3>
-              <p className="text-gray-500">
-                Try adjusting your filters or search query
-              </p>
+              {/* Active Filters */}
+              {selectedTags.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Active filters:</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedTags([]);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Clear all
+                  </Button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </section>
-    </div>
+
+            {/* Loading State */}
+            {loading && (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+                <span className="ml-3 text-gray-600">Loading projects...</span>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && !loading && (
+              <div className="flex items-center justify-center py-20">
+                <div className="text-center space-y-4">
+                  <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+                  <p className="text-gray-600">{error}</p>
+                  <Button onClick={() => window.location.reload()}>
+                    Try Again
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Projects Grid */}
+            {!loading && !error && projects.length > 0 && (
+              <>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {projects.map((project, index) => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      index={index}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {pagination && pagination.totalPages > 1 && (
+                  <div className="mt-12 flex justify-center">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={pagination.totalPages}
+                      onPageChange={setCurrentPage}
+                      hasNextPage={pagination.hasNextPage}
+                      hasPreviousPage={pagination.hasPreviousPage}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Empty State */}
+            {!loading && !error && projects.length === 0 && (
+              <div className="text-center py-20">
+                <Rocket className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                  No projects found
+                </h3>
+                <p className="text-gray-500">
+                  Try adjusting your filters or search query
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </>
   );
 }
 
@@ -478,7 +482,7 @@ function ProjectCard({
     >
       <Link href={`/research/projects/${project.slug}`}>
         <Card
-          className={`group overflow-hidden h-full hover:shadow-xl transition-all duration-300 ${
+          className={`group overflow-hidden h-full hover:shadow-xl transition-all duration-300 bg-gradient-to-b from-gray-100 to-white ${
             featured ? "border-2 border-secondary-500" : ""
           }`}
         >

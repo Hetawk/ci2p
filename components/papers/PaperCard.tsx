@@ -27,14 +27,27 @@ export function PaperCard({
   onToggleFeatured,
   onTogglePublished,
 }: PaperCardProps) {
-  const authorNames = JSON.parse((paper.authors as string) || "[]")
-    .map((a: { name: string }) => a.name)
-    .join(", ");
+  // Handle authors field - can be JSON array or plain string
+  let authorNames = "";
+  try {
+    const authorsData = paper.authors as string;
+    // Try to parse as JSON first
+    const parsed = JSON.parse(authorsData || "[]");
+    if (Array.isArray(parsed)) {
+      authorNames = parsed.map((a: { name: string }) => a.name).join(", ");
+    } else {
+      // If it's not an array after parsing, use the raw string
+      authorNames = authorsData;
+    }
+  } catch {
+    // If JSON parse fails, treat it as a plain string
+    authorNames = paper.authors as string;
+  }
 
   return (
     <Card
       className={cn(
-        "transition-all hover:shadow-lg",
+        "transition-all hover:shadow-lg bg-gradient-to-b from-gray-100 to-white",
         variant === "featured" && "border-blue-500 border-2",
         variant === "compact" && "p-4",
         !paper.isPublished && "opacity-60"

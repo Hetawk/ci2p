@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import OrcidProfile from "@/components/profile/OrcidProfile";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,6 @@ import {
   Github,
   ExternalLink,
   Award,
-  BookOpen,
   GraduationCap,
   ArrowLeft,
   FileText,
@@ -39,6 +39,12 @@ async function getTeamMember(id: string) {
     }
 
     const data = await response.json();
+
+    // Hide ORCID data if user disabled sync
+    if (!data.profile?.orcidEnabled && data.orcid) {
+      delete data.orcid;
+    }
+
     return data;
   } catch (error) {
     console.error("Error fetching team member:", error);
@@ -328,69 +334,12 @@ export default async function TeamMemberPage({ params }: PageProps) {
                 </Card>
               )}
 
-              {/* Publications */}
-              {member.publications && member.publications.length > 0 && (
-                <Card className="p-6">
-                  <div className="flex items-center gap-2 mb-6">
-                    <BookOpen className="w-5 h-5 text-green-600" />
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      Recent Publications
-                    </h2>
-                  </div>
-                  <div className="space-y-4">
-                    {member.publications
-                      .slice(0, 5)
-                      .map(
-                        (pub: {
-                          id: string;
-                          title: string;
-                          journal?: string;
-                          conference?: string;
-                          year: number;
-                          customTags?: string;
-                        }) => (
-                          <Link
-                            key={pub.id}
-                            href={`/papers/${pub.id}`}
-                            className="block group"
-                          >
-                            <div className="p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50/50 transition-all">
-                              <h3 className="font-semibold text-gray-900 group-hover:text-green-600 mb-2">
-                                {pub.title}
-                              </h3>
-                              <p className="text-sm text-gray-600 mb-2">
-                                {pub.journal || pub.conference} • {pub.year}
-                              </p>
-                              {pub.customTags && (
-                                <div className="flex flex-wrap gap-1">
-                                  {pub.customTags
-                                    .split(",")
-                                    .slice(0, 3)
-                                    .map((tag: string, i: number) => (
-                                      <Badge
-                                        key={i}
-                                        variant="outline"
-                                        className="text-xs"
-                                      >
-                                        {tag.trim()}
-                                      </Badge>
-                                    ))}
-                                </div>
-                              )}
-                            </div>
-                          </Link>
-                        )
-                      )}
-                  </div>
-                  {member.publications.length > 5 && (
-                    <Button variant="outline" className="w-full mt-4" asChild>
-                      <Link href="/papers">
-                        View All Publications ({member.publications.length})
-                      </Link>
-                    </Button>
-                  )}
-                </Card>
-              )}
+              {/* Unified Profile Section - Publications, Employment, Education, Funding, Reviews */}
+              <OrcidProfile
+                orcidProfile={member.orcid}
+                manualPublications={member.publications}
+                isOwnProfile={false}
+              />
 
               {/* Projects */}
               {member.projects && member.projects.length > 0 && (

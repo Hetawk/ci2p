@@ -42,6 +42,8 @@ export async function GET(req: NextRequest) {
           id: true,
           email: true,
           role: true,
+          active: true,
+          emailVerified: true,
           profile: {
             select: {
               id: true,
@@ -62,6 +64,9 @@ export async function GET(req: NextRequest) {
               googleScholar: true,
               researchGate: true,
               orcidId: true,
+              memberId: true,
+              universityId: true,
+              orcidEnabled: true,
               publicationCount: true,
               projectCount: true,
               citationCount: true,
@@ -128,6 +133,8 @@ export async function GET(req: NextRequest) {
       id: user.id,
       email: user.email,
       role: user.role,
+      active: user.active,
+      emailVerified: user.emailVerified,
       profile: user.profile,
       stats: {
         publications: user._count.publications,

@@ -1,8 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { AUTH_COOKIE_NAME } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import {
   LayoutDashboard,
   FileText,
@@ -13,6 +15,7 @@ import {
   Settings,
   BarChart3,
   LogOut,
+  Home,
 } from "lucide-react";
 
 async function getUser() {
@@ -25,6 +28,33 @@ async function getUser() {
 
   try {
     const payload = await verifyToken(token);
+
+    // Fetch full user data from database
+    if (payload?.userId) {
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          profile: {
+            select: {
+              fullName: true,
+              avatar: true,
+            },
+          },
+        },
+      });
+
+      if (user) {
+        return {
+          ...payload,
+          fullName: user.profile?.fullName,
+          avatar: user.profile?.avatar,
+        };
+      }
+    }
+
     return payload;
   } catch {
     return null;
@@ -44,6 +74,11 @@ export default async function AdminLayout({
   }
 
   const navigation = [
+    {
+      name: "Home",
+      href: "/",
+      icon: Home,
+    },
     {
       name: "Overview",
       href: "/admin/overview",
@@ -93,8 +128,14 @@ export default async function AdminLayout({
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center gap-2 p-6 border-b">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold">CI</span>
+            <div className="w-8 h-8 relative">
+              <Image
+                src="/ci2p_logo.png"
+                alt="CI2P Lab Logo"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
             </div>
             <div>
               <h1 className="font-bold text-lg">CI2P Admin</h1>
@@ -122,12 +163,47 @@ export default async function AdminLayout({
           {/* User Info & Logout */}
           <div className="p-4 border-t">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <span className="text-blue-600 font-medium">SN</span>
-              </div>
+              {"avatar" in user && user.avatar ? (
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  <Image
+                    src={user.avatar}
+                    alt={
+                      "fullName" in user && user.fullName
+                        ? user.fullName
+                        : "User"
+                    }
+                    width={40}
+                    height={40}
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-blue-600 font-medium">
+                    {"fullName" in user && user.fullName
+                      ? user.fullName
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 2)
+                      : user.email?.[0]?.toUpperCase() || "A"}
+                  </span>
+                </div>
+              )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">Prof. Sijie Niu</p>
-                <p className="text-xs text-muted-foreground">Super Admin</p>
+                <p className="text-sm font-medium truncate">
+                  {"fullName" in user && user.fullName
+                    ? user.fullName
+                    : user.email || "Admin"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {user.role === "SUPER_ADMIN"
+                    ? "Super Admin"
+                    : user.role === "ADMIN"
+                    ? "Admin"
+                    : user.role}
+                </p>
               </div>
             </div>
             <Link

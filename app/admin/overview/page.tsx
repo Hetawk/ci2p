@@ -20,37 +20,35 @@ import {
 export const dynamic = "force-dynamic";
 
 async function getStats() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
   try {
-    const [usersRes, papersRes, projectsRes, resourcesRes, newsRes] =
-      await Promise.all([
-        fetch(`${baseUrl}/api/users`, { cache: "no-store" }),
-        fetch(`${baseUrl}/api/papers`, { cache: "no-store" }),
-        fetch(`${baseUrl}/api/projects`, { cache: "no-store" }),
-        fetch(`${baseUrl}/api/resources`, { cache: "no-store" }),
-        fetch(`${baseUrl}/api/news`, { cache: "no-store" }),
-      ]);
-
-    const usersData = await usersRes.json();
-    const papersData = await papersRes.json();
-    const projectsData = await projectsRes.json();
-    const resourcesData = await resourcesRes.json();
-    const newsData = await newsRes.json();
-
-    // Extract data from API response structures
-    // Users API returns: { users: [...], pagination: {...} }
-    // Papers API returns: { success: true, data: { papers: [...], pagination: {...} } }
-    // Projects API returns: { success: true, data: { projects: [...], pagination: {...} } }
-    // Resources API returns: { success: true, data: { resources: [...], pagination: {...} } }
-    // News API returns: { success: true, data: { news: [...], pagination: {...} } }
+    // Query database directly for accurate counts
+    const [users, papers, projects, resources, news] = await Promise.all([
+      prisma.user.count({
+        where: {
+          active: true,
+          profile: { isNot: null },
+        },
+      }),
+      prisma.publication.count({
+        where: {
+          isPublished: true,
+        },
+      }),
+      prisma.project.count(),
+      prisma.resource.count(),
+      prisma.announcement.count({
+        where: {
+          isPublished: true,
+        },
+      }),
+    ]);
 
     return {
-      users: usersData.users?.length || 0,
-      papers: papersData.data?.papers?.length || 0,
-      projects: projectsData.data?.projects?.length || 0,
-      resources: resourcesData.data?.resources?.length || 0,
-      news: newsData.data?.news?.length || 0,
+      users,
+      papers,
+      projects,
+      resources,
+      news,
     };
   } catch (error) {
     console.error("Failed to fetch stats:", error);
@@ -374,18 +372,78 @@ function QuickActions() {
   );
 }
 
-export default function AdminOverviewPage() {
-  return (
-    <div className="space-y-6">
+async function WelcomeMessage() {
+  try {
+    const { cookies } = await import("next/headers");
+    const { verifyToken } = await import("@/lib/jwt");
+    const { AUTH_COOKIE_NAME } = await import("@/lib/auth");
+
+    const cookieStore = await cookies();
+    const authCookie = cookieStore.get(AUTH_COOKIE_NAME);
+
+    let userName = "Admin";
+
+    if (authCookie?.value) {
+      const payload = await verifyToken(authCookie.value);
+      if (payload?.userId) {
+        const user = await prisma.user.findUnique({
+          where: { id: payload.userId },
+          select: {
+            profile: {
+              select: {
+                fullName: true,
+              },
+            },
+          },
+        });
+
+        if (user?.profile?.fullName) {
+          userName = user.profile.fullName;
+        }
+      }
+    }
+
+    return (
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
           Dashboard Overview
         </h1>
         <p className="text-muted-foreground">
-          Welcome back, Professor Niu! Here&apos;s what&apos;s happening in CI2P
+          Welcome back, {userName}! Here&apos;s what&apos;s happening in CI2P
           Research Lab.
         </p>
       </div>
+    );
+  } catch (error) {
+    console.error("Error fetching user name:", error);
+    return (
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">
+          Dashboard Overview
+        </h1>
+        <p className="text-muted-foreground">
+          Welcome back! Here&apos;s what&apos;s happening in CI2P Research Lab.
+        </p>
+      </div>
+    );
+  }
+}
+
+export default function AdminOverviewPage() {
+  return (
+    <div className="space-y-6">
+      <Suspense
+        fallback={
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Dashboard Overview
+            </h1>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        }
+      >
+        <WelcomeMessage />
+      </Suspense>
 
       <Suspense fallback={<div>Loading statistics...</div>}>
         <StatsCards />
